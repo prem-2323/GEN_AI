@@ -1,0 +1,6 @@
+{
+  "name": "GEN TRANSFORM AI",
+  "description": "Transform documents, articles, reports, images and ideas into ready-to-use communication deliverables with AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

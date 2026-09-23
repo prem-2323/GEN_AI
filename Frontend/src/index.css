@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #090D16;
+    color: #F1F5F9;
+  }
+  
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* AI Studio Enterprise Utility Tokens */
+.border-subtle {
+  border: 1px solid rgba(148, 163, 184, 0.10);
+}
+
+.border-subtle-hover:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.card-studio {
+  background-color: #0D1424;
+  border: 1px solid rgba(148, 163, 184, 0.10);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-studio:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.card-studio-selected {
+  background-color: #0D1424;
+  border: 1px solid #8B5CF6 !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15) !important;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 51, 234, 0.5);
+}
+
+@keyframes shimmerScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmerScan 2.2s infinite linear;
+}
