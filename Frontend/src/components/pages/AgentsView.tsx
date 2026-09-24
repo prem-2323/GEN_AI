@@ -94,7 +94,7 @@ export const AgentsView: React.FC = () => {
 
             <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
               <span className="text-[11px] text-slate-400 font-mono">
-                Latency: ~420ms
+                {typeof agent.latencyMs === 'number' ? `Latency: ~${agent.latencyMs}ms` : 'Latency: —'}
               </span>
               <button
                 onClick={() => setSelectedAgent(agent)}

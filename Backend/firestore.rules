@@ -2,22 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
     function isValidId(id) {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
-
-    function incoming() {
-      return request.resource.data;
-    }
-
-    function existing() {
-      return resource.data;
-    }
-
-    function isSignedIn() {
-      return request.auth != null;
-    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
 
     function isValidUser(data) {
       return data.keys().hasAll(['userId', 'email']) &&
@@ -25,23 +15,29 @@ service cloud.firestore {
         data.email is string && data.email.size() <= 256;
     }
 
+    // Supports BOTH minimal spec {projectName, sourceFile, status}
+    // and full frontend payload {title, source, config, analysis, uckr, deliverables}.
+    // title and projectName are kept in sync by the backend.
+    function hasValidName(data) {
+      return (
+        (('title' in data) && data.title is string && data.title.size() > 0 && data.title.size() <= 300) ||
+        (('projectName' in data) && data.projectName is string && data.projectName.size() > 0 && data.projectName.size() <= 300)
+      );
+    }
+
     function isValidProject(data) {
       return ('userId' in data) && data.userId is string && data.userId.size() <= 128 &&
-        (
-          (('title' in data) && data.title is string && data.title.size() > 0 && data.title.size() <= 300) ||
-          (('projectName' in data) && data.projectName is string && data.projectName.size() > 0 && data.projectName.size() <= 300)
-        ) &&
+        hasValidName(data) &&
         (!('id' in data) || (data.id is string && data.id.size() <= 128)) &&
         (!('description' in data) || (data.description is string && data.description.size() <= 2000)) &&
         (!('status' in data) || (data.status is string && data.status.size() <= 64));
     }
 
-    // Health check endpoint for connection validation
     match /test/connection {
       allow read: if true;
     }
 
-    // User profile documents
+    // users/{uid} — owner only
     match /users/{userId} {
       allow read: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
       allow create: if isSignedIn() && isValidId(userId) && request.auth.uid == userId &&
@@ -51,8 +47,7 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Transformation Projects collection — User A ↔ User A projects only
-    // Supports minimal spec {projectName, sourceFile} and full payload {title, source, uckr, deliverables}
+    // projects/{projectId} — User A can access User A projects only
     match /projects/{projectId} {
       allow get: if isSignedIn() && isValidId(projectId) && existing().userId == request.auth.uid;
       allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
@@ -68,7 +63,6 @@ service cloud.firestore {
       allow delete: if isSignedIn() && isValidId(projectId) && existing().userId == request.auth.uid;
     }
 
-    // Default deny catch-all
     match /{document=**} {
       allow read, write: if false;
     }

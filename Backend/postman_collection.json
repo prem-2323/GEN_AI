@@ -1,0 +1,389 @@
+{
+  "info": {
+    "name": "Gen-Transform-AI Backend",
+    "description": "Phase 2: Login -> Create project -> Save -> Refresh (list) -> Project still exists. Auth = Firebase ID token (Bearer) OR dev header X-User-Uid when DEV_BYPASS_AUTH=true.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "idToken", "value": "PASTE_FIREBASE_ID_TOKEN_HERE" },
+    { "key": "uidA", "value": "user-A-test-uid" },
+    { "key": "uidB", "value": "user-B-test-uid" },
+    { "key": "projectId", "value": "proj-postman-001" },
+    { "key": "sourceId", "value": "" },
+    { "key": "jobId", "value": "" },
+    { "key": "deliverableId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0 - Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Health 200 + ok=true', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().ok).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "1 - Auth Me (dev header User A)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Auth me 200 + uid', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().uid).to.eql(pm.variables.get('uidA')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Create Project (User A)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidA}}" }
+        ],
+        "url": "{{baseUrl}}/projects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{projectId}}\",\n  \"projectName\": \"Postman Phase-2 Project\",\n  \"sourceFile\": { \"name\": \"source.txt\", \"type\": \"TEXT\", \"extractedText\": \"hello world\" },\n  \"status\": \"Draft\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Created 201', () => pm.response.to.have.status(201));",
+              "pm.test('Owner forced = User A', () => pm.expect(pm.response.json().userId).to.eql(pm.variables.get('uidA')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - List Projects (User A) - refresh check",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/projects"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('List 200', () => pm.response.to.have.status(200));",
+              "pm.test('Project persists (refresh check)', () => { const ids = pm.response.json().map(p => p.id); pm.expect(ids).to.include(pm.variables.get('projectId')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Get Project (User A)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/projects/{{projectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Get 200 + matching id', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(pm.variables.get('projectId')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Update Project = Save (User A)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidA}}" }
+        ],
+        "url": "{{baseUrl}}/projects/{{projectId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Completed\",\n  \"description\": \"saved after generation\",\n  \"uckr\": { \"stats\": { \"totalFacts\": 1 }, \"facts\": [] },\n  \"deliverables\": { \"linkedin\": { \"hook\": \"hi\", \"body\": \"hello\" } }\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Save 200 + status Completed', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().status).to.eql('Completed'); });",
+              "pm.test('UCKR + deliverables persisted', () => { const j = pm.response.json(); pm.expect(j.uckr.stats.totalFacts).to.eql(1); pm.expect(j.deliverables.linkedin.hook).to.eql('hi'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - ISOLATION: Get same project as User B -> expect 403",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidB}}" }],
+        "url": "{{baseUrl}}/projects/{{projectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Cross-tenant get blocked with 403', () => pm.response.to.have.status(403));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 - ISOLATION: List as User B -> must NOT contain User A project",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidB}}" }],
+        "url": "{{baseUrl}}/projects"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('User B list 200 and empty of A data', () => { pm.response.to.have.status(200); const ids = pm.response.json().map(p => p.id); pm.expect(ids).to.not.include(pm.variables.get('projectId')); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8 - Delete Project (User A)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/projects/{{projectId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Deleted 200 + ok', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().ok).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9 - Real Firebase token example (no dev header)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{idToken}}" }],
+        "url": "{{baseUrl}}/projects"
+      }
+    },
+    {
+      "name": "10 - Create (frontend full payload)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidA}}" }
+        ],
+        "url": "{{baseUrl}}/projects",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{projectId}}-ui\",\n  \"title\": \"Frontend UI Project\",\n  \"description\": \"General Public | Professional | 2 deliverables\",\n  \"status\": \"Completed\",\n  \"source\": { \"id\": \"src-1\", \"name\": \"report.txt\", \"type\": \"TXT\", \"size\": \"0.1 MB\", \"status\": \"ready\", \"uploadedAt\": \"2026-09-24T00:00:00.000Z\", \"extractedText\": \"hello world\" },\n  \"config\": { \"targetAudience\": \"General Public\", \"tone\": \"Professional\", \"language\": \"English\", \"levelOfDetail\": \"Balanced\", \"objective\": \"Inform\", \"contentStyle\": \"Professional\" },\n  \"selectedOutputs\": [\"linkedin\", \"executive_summary\"],\n  \"analysis\": { \"detectedTopic\": \"Test topic\", \"confidenceScore\": 0.9, \"keyEntities\": [\"Entity A\"], \"importantFacts\": [\"Fact 1\"], \"audienceSignals\": [\"general\"], \"communicationObjective\": \"Inform\", \"sentiment\": \"neutral\", \"readabilityScore\": \"Grade 8\" },\n  \"uckr\": { \"stats\": { \"totalFacts\": 1, \"totalEntities\": 1, \"totalEvents\": 0, \"totalMetrics\": 0, \"totalActions\": 0, \"totalSources\": 1, \"totalRelationships\": 0, \"coverage\": 100, \"grounding\": 100, \"readiness\": 100 }, \"facts\": [], \"entities\": [], \"events\": [], \"metrics\": [], \"relationships\": [], \"actions\": [], \"sources\": [] },\n  \"deliverables\": { \"linkedin\": { \"hook\": \"Hook line\", \"body\": \"Body copy\", \"callToAction\": \"CTA\", \"hashtags\": [\"#genai\"] } },\n  \"createdAt\": \"2026-09-24T00:00:00.000Z\",\n  \"updatedAt\": \"2026-09-24T00:00:00.000Z\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('UI payload created 201', () => pm.response.to.have.status(201));",
+              "pm.test('source + deliverables persisted', () => { const j = pm.response.json(); pm.expect(j.source.name).to.eql('report.txt'); pm.expect(j.deliverables.linkedin.hook).to.eql('Hook line'); pm.expect(j.selectedOutputs.length).to.eql(2); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Get (frontend payload persisted)",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/projects/{{projectId}}-ui"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Get UI project 200', () => pm.response.to.have.status(200));",
+              "pm.test('analysis + UCKR + config persisted', () => { const j = pm.response.json(); pm.expect(j.analysis.detectedTopic).to.eql('Test topic'); pm.expect(j.uckr.stats.grounding).to.eql(100); pm.expect(j.config.tone).to.eql('Professional'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Delete (frontend payload project)",
+      "request": {
+        "method": "DELETE",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/projects/{{projectId}}-ui"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Delete UI project 200 + ok', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().ok).to.be.true; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Phase 2-14 pipeline (Mongo contentforge)",
+      "description": "Full flow: upload -> sources -> analyze -> UCKR -> transform 7 -> validate -> export -> search -> jobs. Run in order with X-User-Uid headers (DEV_BYPASS_AUTH=true).",
+      "item": [
+        {
+          "name": "P1 - Upload file to project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/upload",
+            "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": "report.pdf" }] }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Upload 200 + completed', () => { pm.response.to.have.status(200); const j = pm.response.json(); pm.expect(j.source.processing.stage).to.eql('completed'); pm.variables.set('sourceId', j.source.sourceId); });"] } }]
+        },
+        {
+          "name": "P2 - List project sources",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/sources"
+          }
+        },
+        {
+          "name": "P3 - Analyze source -> UCKR",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/analyze",
+            "body": { "mode": "raw", "raw": "{ \"sourceId\": \"{{sourceId}}\" }" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('UCKR built with facts', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().uckr.facts.length).to.be.above(0); });"] } }]
+        },
+        {
+          "name": "P4 - Get latest UCKR",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/uckr"
+          }
+        },
+        {
+          "name": "P5 - Transform: generate 7 deliverables",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/transform",
+            "body": { "mode": "raw", "raw": "{ \"types\": [\"linkedin\", \"twitter\", \"advisory\", \"executive_summary\", \"infographic\", \"presentation\", \"video\"], \"config\": { \"audience\": \"executive\", \"tone\": \"professional\", \"language\": \"English\", \"detailLevel\": \"medium\" } }" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('7 deliverables', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().count).to.eql(7); pm.variables.set('deliverableId', pm.response.json().deliverables[0].deliverableId); });"] } }]
+        },
+        {
+          "name": "P6 - List deliverables",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/deliverables"
+          }
+        },
+        {
+          "name": "P7 - Validate consistency",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/validate"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Validation computed', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().validation.results.factPreservation).to.be.a('number'); });"] } }]
+        },
+        {
+          "name": "P8 - Export deliverable (md)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/deliverables/{{deliverableId}}/export?format=md"
+          }
+        },
+        {
+          "name": "P9 - Search own content",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/search?q=report&kind=all"
+          }
+        },
+        {
+          "name": "P10 - Project overview bundle",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/overview"
+          }
+        },
+        {
+          "name": "P11 - Start full-transformation job",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }, { "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/jobs",
+            "body": { "mode": "raw", "raw": "{ \"sourceId\": \"{{sourceId}}\" }" }
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Job queued', () => { pm.response.to.have.status(201); pm.variables.set('jobId', pm.response.json().job.jobId); });"] } }]
+        },
+        {
+          "name": "P12 - Poll job status",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+            "url": "{{baseUrl}}/api/jobs/{{jobId}}"
+          },
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Job finished', () => { pm.expect(['completed', 'processing', 'queued']).to.include(pm.response.json().job.stage); });"] } }]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+import { auth } from '../lib/firebase';
+
+/**
+ * Optional FastAPI backend client (ContentForge AI, MongoDB `contentforge`).
+ * Set VITE_BACKEND_URL=http://127.0.0.1:8000 to route project persistence
+ * through the backend (Firebase ID token -> UID -> users -> projects ->
+ * sources -> UCKR -> deliverables). When unset, the app keeps using direct
+ * Firestore (see FirebaseContext).
+ */
+
+const BASE = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+  ?.VITE_BACKEND_URL as string | undefined;
+
+export const backendEnabled = Boolean(BASE);
+
+async function headers(): Promise<HeadersInit> {
+  const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
+async function authHeaders(): Promise<HeadersInit> {
+  const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function req(path: string, init?: RequestInit) {
+  if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
+  const h = await headers();
+  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...h, ...(init?.headers || {}) } });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+  }
+  return res.json().catch(() => ({}));
+}
+
+async function uploadReq(path: string, file: File) {
+  if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
+  const h = await authHeaders();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${BASE}${path}`, { method: 'POST', headers: h, body: form });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+  }
+  return res.json().catch(() => ({}));
+}
+
+export const backendApi = {
+  me: () => req('/api/me'),
+  listProjects: () => req('/api/projects'),
+  getProject: (id: string) => req(`/api/projects/${id}`),
+  createProject: (body: unknown) =>
+    req('/api/projects', { method: 'POST', body: JSON.stringify(body) }),
+  updateProject: (id: string, body: unknown) =>
+    req(`/api/projects/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deleteProject: (id: string) => req(`/api/projects/${id}`, { method: 'DELETE' }),
+  // Phase 9 dashboard bundle: project + sources + UCKR + deliverables + validations + jobs
+  getOverview: (id: string) => req(`/api/projects/${id}/overview`),
+  // Phase 2: file upload + sources
+  uploadSource: (projectId: string, file: File) =>
+    uploadReq(`/api/projects/${projectId}/upload`, file),
+  listSources: (projectId: string) => req(`/api/projects/${projectId}/sources`),
+  getSource: (sourceId: string) => req(`/api/sources/${sourceId}`),
+  // Phases 3-6: analyze -> UCKR -> transform -> validate
+  analyzeSource: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/analyze`, { method: 'POST', body: JSON.stringify({ sourceId }) }),
+  getUckr: (projectId: string) => req(`/api/projects/${projectId}/uckr`),
+  transform: (projectId: string, types: string[], config?: unknown) =>
+    req(`/api/projects/${projectId}/transform`, { method: 'POST', body: JSON.stringify({ types, config }) }),
+  listDeliverables: (projectId: string) => req(`/api/projects/${projectId}/deliverables`),
+  validateProject: (projectId: string) =>
+    req(`/api/projects/${projectId}/validate`, { method: 'POST' }),
+  // Phase 7: background jobs
+  startJob: (projectId: string, sourceId: string, outputs?: string[]) =>
+    req(`/api/projects/${projectId}/jobs`, { method: 'POST', body: JSON.stringify({ sourceId, outputs }) }),
+  getJob: (jobId: string) => req(`/api/jobs/${jobId}`),
+  // Phase 10: exports (returns { storagePath, ... }; download via backend static or storage)
+  exportDeliverable: (deliverableId: string, format: 'md' | 'json' | 'pptx' = 'md') =>
+    req(`/api/deliverables/${deliverableId}/export?format=${format}`, { method: 'POST' }),
+  // Phase 11: search own content
+  search: (q: string, kind: 'all' | 'project' | 'source' = 'all') =>
+    req(`/api/search?q=${encodeURIComponent(q)}&kind=${kind}`),
+};

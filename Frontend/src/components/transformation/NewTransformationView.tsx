@@ -250,14 +250,18 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
       let extractedText = '';
       try {
-        if (!isImg && !isVid && file.size < 5 * 1024 * 1024) {
+        if (!isPdf && !isDoc && !isImg && !isVid && file.size < 5 * 1024 * 1024) {
           extractedText = await file.text();
         }
       } catch {
         extractedText = '';
       }
       if (!extractedText.trim()) {
-        extractedText = `File "${file.name}" uploaded. Text extraction for ${fileType} requires pasting content into the Paste Text tab.`;
+        onShowToast(
+          'Text Extraction Pending',
+          `"${file.name}" was added with metadata only — the browser cannot read ${fileType} content directly. Paste the text or wait for backend extraction.`,
+          'info'
+        );
       }
 
       onUpdateAnalysis(null);
@@ -269,7 +273,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
         size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
         pages: undefined,
         status: 'ready',
-        uploadedAt: 'Just now',
+        uploadedAt: new Date().toISOString(),
         extractedText
       });
     }
@@ -285,7 +289,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
       type: 'TEXT',
       size: `${(pasteContent.length / 1024).toFixed(1)} KB`,
       status: 'ready',
-      uploadedAt: 'Just now',
+      uploadedAt: new Date().toISOString(),
       extractedText: pasteContent
     });
   };

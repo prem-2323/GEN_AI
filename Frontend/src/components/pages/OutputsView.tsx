@@ -42,7 +42,8 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       summary: deliverables.linkedin?.hook || 'No content yet — run a transformation to generate.',
       fullText: deliverables.linkedin ? `${deliverables.linkedin.hook}\n\n${deliverables.linkedin.body}` : '',
       status: 'ready' as const,
-      timestamp: deliverables.linkedin ? 'Generated' : 'Empty'
+      timestamp: deliverables.linkedin ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.linkedin)
     },
     {
       id: 'twitter',
@@ -52,7 +53,8 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       summary: deliverables.twitter?.singlePost || 'No content yet — run a transformation to generate.',
       fullText: deliverables.twitter ? deliverables.twitter.thread.map((t: { text: string }) => t.text).join('\n\n') : '',
       status: 'ready' as const,
-      timestamp: deliverables.twitter ? 'Generated' : 'Empty'
+      timestamp: deliverables.twitter ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.twitter)
     },
     {
       id: 'advisory',
@@ -61,8 +63,9 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       title: deliverables.advisory?.title || 'Advisory — not generated',
       summary: deliverables.advisory?.situation || 'No content yet — run a transformation to generate.',
       fullText: deliverables.advisory?.situation || '',
-      status: 'verified' as const,
-      timestamp: deliverables.advisory ? 'Generated' : 'Empty'
+      status: 'ready' as const,
+      timestamp: deliverables.advisory ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.advisory)
     },
     {
       id: 'infographic',
@@ -72,7 +75,8 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       summary: deliverables.infographic?.keyMessage || 'No content yet — run a transformation to generate.',
       fullText: deliverables.infographic?.keyMessage || '',
       status: 'ready' as const,
-      timestamp: deliverables.infographic ? 'Generated' : 'Empty'
+      timestamp: deliverables.infographic ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.infographic)
     },
     {
       id: 'executive_summary',
@@ -81,8 +85,9 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       title: 'Executive Summary',
       summary: deliverables.executive_summary?.executiveOverview || 'No content yet — run a transformation to generate.',
       fullText: deliverables.executive_summary?.executiveOverview || '',
-      status: 'verified' as const,
-      timestamp: deliverables.executive_summary ? 'Generated' : 'Empty'
+      status: 'ready' as const,
+      timestamp: deliverables.executive_summary ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.executive_summary)
     },
     {
       id: 'presentation',
@@ -92,7 +97,8 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       summary: deliverables.presentation ? 'Slide deck with speaker notes.' : 'No content yet — run a transformation to generate.',
       fullText: deliverables.presentation?.deckTitle || '',
       status: 'ready' as const,
-      timestamp: deliverables.presentation ? 'Generated' : 'Empty'
+      timestamp: deliverables.presentation ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.presentation)
     },
     {
       id: 'video',
@@ -102,7 +108,8 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
       summary: 'No content yet — run a transformation to generate.',
       fullText: deliverables.video?.script || '',
       status: 'ready' as const,
-      timestamp: deliverables.video ? 'Generated' : 'Empty'
+      timestamp: deliverables.video ? 'Generated' : 'Empty',
+      generated: Boolean(deliverables.video)
     }
   ];
 
@@ -191,7 +198,11 @@ export const OutputsView: React.FC<OutputsViewProps> = ({
                     <span className="text-xs font-semibold text-purple-300">
                       {item.type}
                     </span>
-                    <StatusBadge status={item.status} size="xs" />
+                    {item.generated ? (
+                      <StatusBadge status={item.status} size="xs" />
+                    ) : (
+                      <span className="text-[10px] font-mono font-semibold text-slate-500 uppercase">Not generated</span>
+                    )}
                   </div>
 
                   <h3 className="text-sm font-bold text-white truncate">

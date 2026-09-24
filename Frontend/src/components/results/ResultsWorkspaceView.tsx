@@ -24,7 +24,8 @@ import {
   Check,
   Loader2,
   ShieldCheck,
-  Database
+  Database,
+  AlertTriangle
 } from 'lucide-react';
 import {
   SourceFile,
@@ -80,6 +81,17 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
   const activeUckr = uckr;
   const facts = activeUckr?.facts || [];
   const grounding = activeUckr?.stats.grounding || 0;
+
+  // Consistency checkpoints are derived from real UCKR stats — no hardcoded claims
+  const checkpoints = activeUckr
+    ? [
+        { label: 'Facts preserved', detail: `${activeUckr.stats.totalFacts} verified`, ok: activeUckr.stats.totalFacts > 0 },
+        { label: 'Numbers consistent', detail: `${activeUckr.stats.totalMetrics} metrics`, ok: activeUckr.stats.totalMetrics > 0 },
+        { label: 'Entities consistent', detail: `${activeUckr.stats.totalEntities} resolved`, ok: activeUckr.stats.totalEntities > 0 },
+        { label: 'Dates consistent', detail: `${activeUckr.stats.totalEvents} timeline nodes`, ok: activeUckr.stats.totalEvents > 0 },
+        { label: 'Knowledge graph', detail: `${activeUckr.stats.totalRelationships} relations`, ok: activeUckr.stats.totalRelationships > 0 }
+      ]
+    : [];
 
   if (!source) {
     return (
@@ -161,7 +173,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
                 <span className="text-xs uppercase font-semibold text-purple-400">
                   Transformation Results Workspace
                 </span>
-                <StatusBadge status="verified" size="xs" />
+                <StatusBadge status="ready" size="xs" />
               </div>
 
               <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
@@ -248,12 +260,16 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
                   <h2 className="text-sm font-bold text-white uppercase tracking-wider">
                     UCKR CONSISTENCY VALIDATION
                   </h2>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    PARITY VERIFIED
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                    grounding > 0
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-slate-800/60 text-slate-400 border-slate-700'
+                  }`}>
+                    {grounding > 0 ? 'GROUNDING REPORTED' : 'GROUNDING PENDING'}
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Unified Content Knowledge Representation verified across all {selectedOutputs.length} generated deliverables
+                  Unified Content Knowledge Representation linked to {selectedOutputs.length} generated deliverables
                 </p>
               </div>
             </div>
@@ -261,7 +277,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
             <div className="flex items-center gap-3 self-start sm:self-auto">
               <div className="text-right">
                 <div className="text-2xl font-bold font-mono text-emerald-400">{grounding}%</div>
-                <div className="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Parity Index</div>
+                <div className="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Grounding Index</div>
               </div>
             </div>
           </div>
@@ -274,47 +290,26 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
             />
           </div>
 
-          {/* Consistency Checkpoints Grid */}
+          {/* Data-driven consistency checkpoints */}
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1 text-xs">
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="font-semibold text-white">Facts preserved</div>
-                <div className="text-[11px] text-slate-400 font-mono">{activeUckr.stats.totalFacts} verified</div>
+            {checkpoints.map((cp) => (
+              <div
+                key={cp.label}
+                className={`flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border last:col-span-2 sm:last:col-span-1 ${
+                  cp.ok ? 'border-slate-800/80' : 'border-amber-500/30'
+                }`}
+              >
+                {cp.ok ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                )}
+                <div>
+                  <div className="font-semibold text-white">{cp.label}</div>
+                  <div className="text-[11px] text-slate-400 font-mono">{cp.detail}</div>
+                </div>
               </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="font-semibold text-white">Numbers consistent</div>
-                <div className="text-[11px] text-slate-400 font-mono">{activeUckr.stats.totalMetrics} metrics</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="font-semibold text-white">Entities consistent</div>
-                <div className="text-[11px] text-slate-400 font-mono">{activeUckr.stats.totalEntities} resolved</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="font-semibold text-white">Dates consistent</div>
-                <div className="text-[11px] text-slate-400 font-mono">{activeUckr.stats.totalEvents} timeline nodes</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800/80 col-span-2 sm:col-span-1">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="font-semibold text-white">Knowledge graph</div>
-                <div className="text-[11px] text-slate-400 font-mono">{activeUckr.stats.totalRelationships} relations</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
         )}

@@ -33,6 +33,8 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
   const [integrations, setIntegrations] = useState<McpIntegration[]>([]);
   const [configuringItem, setConfiguringItem] = useState<McpIntegration | null>(null);
 
+  const connectedCount = integrations.filter((item) => item.isConnected).length;
+
   const toggleIntegration = (id: string) => {
     const targetItem = integrations.find(item => item.id === id);
     if (!targetItem) return;
@@ -50,8 +52,8 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
     }));
 
     onShowToast(
-      `${targetItem.name} ${nextConnected ? 'Connected' : 'Disconnected'}`,
-      `MCP endpoint ${targetItem.endpoint || `mcp://${targetItem.id}.corp.internal:8080`} ${nextConnected ? 'is now online' : 'has been unmounted'}.`,
+      `${targetItem.name} ${nextConnected ? 'Enabled' : 'Disabled'}`,
+      `Local connection state updated${targetItem.endpoint ? ` for ${targetItem.endpoint}` : ''}. Live dispatch activates when the backend MCP endpoint reports online.`,
       nextConnected ? 'success' : 'info'
     );
   };
@@ -75,7 +77,7 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
 
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-xs font-mono">
           <Terminal className="w-3.5 h-3.5 text-purple-400" />
-          <span>MCP Server: v2026.3-LTS</span>
+          <span>MCP Server: {connectedCount > 0 ? `${connectedCount} endpoint${connectedCount === 1 ? '' : 's'} active` : 'awaiting backend connection'}</span>
         </div>
       </div>
 
@@ -91,8 +93,12 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
               Zero-friction orchestration: automatically distributes verified UCKR deliverables to subscribed enterprise endpoints.
             </p>
           </div>
-          <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-semibold">
-            PROTOCOL STATUS: TLS 1.3 ACTIVE
+          <div className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold border ${
+            connectedCount > 0
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              : 'bg-slate-800/60 border-slate-700 text-slate-400'
+          }`}>
+            {connectedCount > 0 ? 'PROTOCOL STATUS: ACTIVE' : 'PROTOCOL STATUS: AWAITING BACKEND'}
           </div>
         </div>
 
@@ -192,7 +198,7 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
                     <div>
                       <h3 className="text-sm font-bold text-white">{item.name}</h3>
                       <span className="text-[10px] font-mono text-slate-400 truncate block max-w-[140px]">
-                        {item.endpoint || `mcp://${item.id}.corp.internal`}
+                        {item.endpoint || 'Endpoint not configured'}
                       </span>
                     </div>
                   </div>
@@ -256,7 +262,7 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
               {/* Configure Button */}
               <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                 <span className="text-[11px] font-mono text-slate-500">
-                  {isConnected ? 'Sync: Real-time' : 'Inactive'}
+                  {isConnected ? 'Connected' : 'Inactive'}
                 </span>
 
                 <button
@@ -304,19 +310,21 @@ export const McpView: React.FC<McpViewProps> = ({ onShowToast }) => {
               <div>
                 <label className="text-slate-300 block mb-1 font-semibold">Connection Status</label>
                 <div className="p-2 rounded bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-2">
-                  <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />
-                  <span>Verified TLS 1.3 handshake with local daemon</span>
+                  <Radio className={`w-3 h-3 ${configuringItem.isConnected ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`} />
+                  <span>
+                    {configuringItem.isConnected
+                      ? 'Connected — session reported by the MCP backend.'
+                      : 'Not connected — awaiting backend MCP endpoint.'}
+                  </span>
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-300 block mb-1 font-semibold">Authentication Token</label>
-                <input
-                  type="password"
-                  value="mcp_sec_984f89d71a6245ee8"
-                  readOnly
-                  className="w-full rounded-lg bg-slate-900 border border-slate-800 p-2 text-xs font-mono text-slate-400"
-                />
+                <label className="text-slate-300 block mb-1 font-semibold">Authentication</label>
+                <div className="p-2 rounded bg-slate-900 border border-slate-800 text-slate-400 flex items-center gap-2">
+                  <Lock className="w-3 h-3 text-slate-500" />
+                  <span>Credentials are managed by the backend MCP connection — no secrets are stored in the UI.</span>
+                </div>
               </div>
             </div>
 

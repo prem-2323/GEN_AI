@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+serviceAccountKey.json
+serviceAccount*.json
+mock_db.json
+# local file bytes + generated exports (Phase 2/10; metadata lives in MongoDB)
+storage/
+uploads/
+outputs/

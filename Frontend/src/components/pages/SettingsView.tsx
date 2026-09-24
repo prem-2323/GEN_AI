@@ -209,8 +209,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div className="font-semibold text-white">Zero Data Retention Mode</div>
               <div className="text-slate-400 text-[11px]">Temporary memory buffers purged immediately following deliverable export</div>
             </div>
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-              Enforced
+            <span className="text-[11px] font-mono text-slate-400 bg-slate-800/60 px-2 py-0.5 rounded border border-slate-700">
+              Backend policy
             </span>
           </div>
         </div>

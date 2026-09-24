@@ -55,17 +55,26 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
+      const isBinary = file.type.startsWith('image/') || file.type.startsWith('video/');
+      let extractedText = '';
+      if (!isBinary && file.size < 5 * 1024 * 1024) {
+        try {
+          extractedText = await file.text();
+        } catch {
+          extractedText = '';
+        }
+      }
       onQuickStartUpload({
         name: file.name,
         type: file.name.endsWith('.pdf') ? 'PDF' : file.name.endsWith('.docx') ? 'DOCX' : 'TXT',
         size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        extractedText: `Uploaded file content from: ${file.name}. Initializing semantic document analysis...`
+        extractedText: extractedText.trim()
       });
       onNavigate('new_transformation');
     }
@@ -292,12 +301,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {/* No sample library — real uploads only */}
             <div>
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
-                <span>Sample library removed</span>
+                <span>No source uploaded yet</span>
                 <span className="text-[11px] text-slate-400 lowercase font-normal">upload your own source to begin</span>
               </div>
               <div className="p-6 rounded-xl bg-slate-900/60 border border-dashed border-slate-800 text-center">
                 <p className="text-xs text-slate-400">
-                  No preset documents. Drop a file above or paste text to start a real transformation.
+                  Drop a file above or paste text to start a real transformation.
                 </p>
               </div>
             </div>

@@ -25,6 +25,7 @@ import { SettingsView } from './components/pages/SettingsView';
 import { UckrPanel } from './components/uckr/UckrPanel';
 import { FirebaseProvider, useFirebase } from './context/FirebaseContext';
 import { generateDeliverables } from './services/aiService';
+import { AuthModal } from './components/auth/AuthModal';
 
 const DEFAULT_CONFIG: TransformationConfig = {
   targetAudience: 'General Public',
@@ -64,6 +65,8 @@ function AppContent() {
   const [deliverables, setDeliverables] = useState<DeliverablesState>({});
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [savedCloudIds, setSavedCloudIds] = useState<string[]>([]);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup'>('signin');
 
   // Projects come from Firestore only — no local mock projects
   const combinedProjects = cloudProjects;
@@ -89,7 +92,7 @@ function AppContent() {
       type: partial.type || 'TEXT',
       size: partial.size || '0 KB',
       status: 'ready',
-      uploadedAt: 'Just now',
+      uploadedAt: new Date().toISOString(),
       extractedText: partial.extractedText || ''
     });
     // Reset derived state — real analysis runs in the studio
@@ -173,9 +176,13 @@ function AppContent() {
       };
       if (projectRecord.analysis) {
         try {
-          await saveProjectToCloud(projectRecord);
-          setSavedCloudIds((prev) => [...prev, newProjectId]);
-          addToast('Synced to Firebase', 'Transformation saved to your Firestore database.', 'success');
+          const saved = await saveProjectToCloud(projectRecord);
+          if (saved) {
+            setSavedCloudIds((prev) => [...prev, newProjectId]);
+            addToast('Synced to Cloud', 'Transformation saved to your cloud workspace.', 'success');
+          } else {
+            console.warn('Auto cloud save skipped: persistence unavailable.');
+          }
         } catch (err) {
           console.error('Auto cloud save failed:', err);
         }
@@ -183,15 +190,12 @@ function AppContent() {
     }
   };
 
-  // Manual Save to Firebase
+  // Manual Save to Cloud
   const handleSaveToCloud = async () => {
     if (!user) {
-      addToast('Sign In Required', 'Please sign in with Google in the top bar to save to Firebase.', 'info');
-      try {
-        await signInWithGoogle();
-      } catch (err) {
-        return;
-      }
+      addToast('Sign In Required', 'Please sign in or create an account to save to the cloud.', 'info');
+      setAuthModalMode('signin');
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -221,10 +225,12 @@ function AppContent() {
       const success = await saveProjectToCloud(projectRecord);
       if (success) {
         setSavedCloudIds((prev) => [...prev, projectId]);
-        addToast('Saved to Firebase', 'Project and deliverables stored in Cloud Firestore.', 'success');
+        addToast('Saved to Cloud', 'Project and deliverables stored in your cloud workspace.', 'success');
+      } else {
+        addToast('Save Failed', 'Could not store the project. Check that the backend is running and you are signed in.', 'error');
       }
     } catch (err) {
-      addToast('Firebase Error', 'Failed to save to Firestore. Check permissions.', 'error');
+      addToast('Save Failed', 'Could not store the project. Check the backend connection or Firestore permissions.', 'error');
     }
   };
 
@@ -258,9 +264,9 @@ function AppContent() {
   // Project select — Firestore records only
   const handleSelectProject = (project: ProjectRecord) => {
     setCurrentProjectId(project.id);
-    setSource(project.source);
-    setConfig(project.config);
-    setSelectedOutputs(project.selectedOutputs);
+    setSource(project.source || null);
+    setConfig(project.config || DEFAULT_CONFIG);
+    setSelectedOutputs(project.selectedOutputs || []);
     setAnalysis(project.analysis || null);
     setUckr(project.uckr || null);
     setDeliverables(project.deliverables || {});
@@ -273,12 +279,12 @@ function AppContent() {
     if (user && cloudProjects.some((p) => p.id === projectId)) {
       try {
         await deleteProjectFromCloud(projectId);
-        addToast('Deleted from Firebase', 'Project removed from your Firestore database.', 'info');
+        addToast('Project Deleted', 'Project removed from your cloud workspace.', 'info');
       } catch (err) {
         addToast('Delete Failed', 'Could not delete project from Firestore.', 'error');
       }
     } else {
-      addToast('Sign In Required', 'Projects are stored in Firebase. Sign in to manage them.', 'info');
+      addToast('Sign In Required', 'Projects are stored in your cloud workspace. Sign in to manage them.', 'info');
     }
   };
 
@@ -305,6 +311,18 @@ function AppContent() {
           currentView={currentView}
           onNavigate={setCurrentView}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+          onOpenAuthModal={(mode) => {
+            setAuthModalMode(mode);
+            setIsAuthModalOpen(true);
+          }}
+        />
+
+        {/* Sign In & Sign Up Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          initialMode={authModalMode}
+          onSuccess={(msg) => addToast('Authentication', msg, 'success')}
         />
 
         {/* Dynamic Page Router */}

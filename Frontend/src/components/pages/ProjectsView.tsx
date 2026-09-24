@@ -39,9 +39,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
   const [typeFilter, setTypeFilter] = useState<string>('all');
 
   const filteredProjects = projects.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-                          p.description.toLowerCase().includes(search.toLowerCase()) ||
-                          p.source.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = (p.title || '').toLowerCase().includes(search.toLowerCase()) ||
+                          (p.description || '').toLowerCase().includes(search.toLowerCase()) ||
+                          (p.source?.name || '').toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === 'all' || p.source.type.toLowerCase() === typeFilter.toLowerCase();
     return matchesSearch && matchesType;
   });
@@ -128,7 +128,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
               <div className="flex items-center justify-between text-xs text-slate-400 mb-3">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[10px] uppercase font-bold bg-slate-800 px-2 py-0.5 rounded text-slate-300">
-                    {project.source.type}
+                    {project.source?.type || 'TEXT'}
                   </span>
                   <StatusBadge status={project.status || 'ready'} size="xs" />
                   {(project as any).userId && (
@@ -170,7 +170,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
                   Deliverables Generated:
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {project.selectedOutputs.map((out: string) => (
+                  {(project.selectedOutputs || []).map((out: string) => (
                     <span
                       key={out}
                       className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-300"
@@ -185,7 +185,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
 
             <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
               <span className="text-slate-400 font-mono text-[11px]">
-                Source: {project.source.name.slice(0, 22)}...
+                Source: {(project.source?.name || project.title || 'Untitled').slice(0, 22)}...
               </span>
               <span className="text-purple-400 font-semibold group-hover:translate-x-1 transition-transform flex items-center gap-1">
                 <span>Open Studio</span>

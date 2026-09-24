@@ -74,39 +74,46 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
     setSelectedExports(updated);
   };
 
-  const downloadFile = (item: ExportItem) => {
+  const downloadFile = (item: ExportItem): boolean => {
+    if (!deliverables) return false;
+
     let content = '';
     let mimeType = 'text/plain;charset=utf-8';
 
     if (item.id === 'linkedin') {
       content = deliverables?.linkedin 
         ? `${deliverables.linkedin.hook}\n\n${deliverables.linkedin.body}\n\n${deliverables.linkedin.callToAction}\n\n${deliverables.linkedin.hashtags.join(' ')}`
-        : 'Enterprise Intelligence LinkedIn Post';
+        : '';
     } else if (item.id === 'twitter') {
       content = deliverables?.twitter?.thread 
         ? deliverables.twitter.thread.map(t => `${t.index}. ${t.text}`).join('\n\n')
-        : (deliverables?.twitter?.singlePost || 'Enterprise Intelligence X Post');
+        : (deliverables?.twitter?.singlePost || '');
     } else if (item.id === 'advisory') {
       content = deliverables?.advisory
         ? `SECURITY ADVISORY: ${deliverables.advisory.title}\nSeverity: ${deliverables.advisory.severity}\n\nSituation:\n${deliverables.advisory.situation}\n\nImpact:\n${deliverables.advisory.threatImpact}`
-        : 'Security Advisory Document';
+        : '';
       mimeType = 'application/pdf';
     } else if (item.id === 'executive_summary') {
       content = deliverables?.executive_summary
         ? `EXECUTIVE SUMMARY\n\n${deliverables.executive_summary.executiveOverview}\n\nKey Findings:\n` +
           deliverables.executive_summary.keyFindings.map(f => `• ${f.title}: ${f.description}`).join('\n')
-        : 'Executive Summary Briefing';
+        : '';
       mimeType = 'application/pdf';
     } else if (item.id === 'presentation') {
-      content = JSON.stringify(deliverables?.presentation || { title: 'Presentation Deck' }, null, 2);
+      if (!deliverables?.presentation) return false;
+      content = JSON.stringify(deliverables.presentation, null, 2);
       mimeType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     } else if (item.id === 'infographic') {
-      content = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0f172a"/><text x="40" y="80" fill="#a855f7" font-size="24" font-weight="bold">UCKR Infographic Deliverable</text><text x="40" y="140" fill="#f8fafc" font-size="16">${deliverables?.infographic?.keyMessage || 'Key Insights'}</text></svg>`;
+      if (!deliverables?.infographic) return false;
+      content = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0f172a"/><text x="40" y="80" fill="#a855f7" font-size="24" font-weight="bold">UCKR Infographic Deliverable</text><text x="40" y="140" fill="#f8fafc" font-size="16">${deliverables.infographic.keyMessage}</text></svg>`;
       mimeType = 'image/svg+xml';
     } else if (item.id === 'video') {
-      content = JSON.stringify(deliverables?.video || { package: 'Full Video Production Package' }, null, 2);
+      if (!deliverables?.video) return false;
+      content = JSON.stringify(deliverables.video, null, 2);
       mimeType = 'application/zip';
     }
+
+    if (!content) return false;
 
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
@@ -115,6 +122,7 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
     a.download = item.filename;
     a.click();
     URL.revokeObjectURL(url);
+    return true;
   };
 
   const handleExportSelected = () => {
@@ -124,11 +132,19 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
       return;
     }
 
-    selectedList.forEach(item => {
-      downloadFile(item);
-    });
+    const exported = selectedList.filter((item) => downloadFile(item));
+    const skipped = selectedList.length - exported.length;
 
-    onShowToast('Export Complete', `Exported ${selectedList.length} files successfully.`, 'success');
+    if (exported.length === 0) {
+      onShowToast('Nothing To Export', 'The selected deliverables have not been generated yet. Run a transformation first.', 'error');
+      return;
+    }
+
+    onShowToast(
+      'Export Complete',
+      `Exported ${exported.length} file(s)${skipped > 0 ? ` — ${skipped} skipped (not generated yet)` : ''}.`,
+      skipped > 0 ? 'info' : 'success'
+    );
   };
 
   const selectedCount = Object.values(selectedExports).filter(Boolean).length;
