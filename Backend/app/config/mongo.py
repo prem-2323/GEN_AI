@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from pymongo import ASCENDING, MongoClient
+from pymongo import ASCENDING, DESCENDING, MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
@@ -142,7 +142,7 @@ def upsert_user_to_mongo(user_doc: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def ensure_core_indexes() -> None:
-    """Create ownership + lookup indexes for all `contentforge` collections.
+    """Create ownership + lookup indexes for all 11 `contentforge` collections + GridFS bucket.
 
     Every tenant-scoped document carries BOTH `firebaseUid` (spec name)
     and `userId` (legacy name) with the same value; indexes cover both.
@@ -151,16 +151,44 @@ def ensure_core_indexes() -> None:
         db = get_mongo_db()
         db["users"].create_index([("firebaseUid", ASCENDING)], name="users_firebaseUid_idx", background=True)
         db["users"].create_index([("userId", ASCENDING)], name="users_userId_idx", background=True)
-        for col in ("projects", "sources", "uckr", "deliverables", "validations", "jobs"):
+        
+        all_collections = (
+            "projects",
+            "sources",
+            "extracted_content",
+            "analysis",
+            "uckr",
+            "deliverables",
+            "validations",
+            "quality",
+            "exports",
+            "jobs",
+        )
+        for col in all_collections:
             db[col].create_index(
-                [("firebaseUid", ASCENDING), ("updatedAt", ASCENDING)],
-                name=f"{col}_owner_idx",
+                [("firebaseUid", ASCENDING)],
+                name=f"{col}_firebaseUid_idx",
                 background=True,
             )
-        db["projects"].create_index([("userId", ASCENDING)], name="projects_userId_idx", background=True)
+            db[col].create_index(
+                [("projectId", ASCENDING)],
+                name=f"{col}_projectId_idx",
+                background=True,
+            )
+        
         db["sources"].create_index(
             [("projectId", ASCENDING), ("firebaseUid", ASCENDING)],
             name="sources_project_owner_idx",
+            background=True,
+        )
+        db["extracted_content"].create_index(
+            [("sourceId", ASCENDING), ("firebaseUid", ASCENDING)],
+            name="extracted_content_source_idx",
+            background=True,
+        )
+        db["analysis"].create_index(
+            [("sourceId", ASCENDING), ("firebaseUid", ASCENDING)],
+            name="analysis_source_idx",
             background=True,
         )
         db["uckr"].create_index(
@@ -173,8 +201,24 @@ def ensure_core_indexes() -> None:
             name="deliverables_project_type_idx",
             background=True,
         )
+        db["quality"].create_index(
+            [("deliverableId", ASCENDING), ("firebaseUid", ASCENDING)],
+            name="quality_deliverable_idx",
+            background=True,
+        )
+        db["exports"].create_index(
+            [("deliverableId", ASCENDING), ("firebaseUid", ASCENDING)],
+            name="exports_deliverable_idx",
+            background=True,
+        )
+        # GridFS bucket files index
+        db["contentforge_files.files"].create_index(
+            [("metadata.firebaseUid", ASCENDING), ("uploadDate", DESCENDING)],
+            name="gridfs_owner_date_idx",
+            background=True,
+        )
         ensure_temp_ttl_index(db["temp"])
-        log.info("MongoDB core indexes verified (db=%s).", get_settings().mongodb_db_name)
+        log.info("MongoDB Phase 9 core indexes verified (db=%s).", get_settings().mongodb_db_name)
     except Exception as exc:
         log.warning("Could not verify MongoDB core indexes: %s", exc)
 

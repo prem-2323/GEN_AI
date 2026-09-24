@@ -137,8 +137,16 @@ def generate(
     content = _gen(dtype, uckr, config or {})
     _mark_used(uckr, dtype)
     now = utcnow_iso()
+    deliv_id = f"del-{uuid.uuid4().hex[:12]}"
+    used_facts = [
+        f.get("factId") or f.get("id")
+        for f in uckr.get("facts", [])[:5]
+        if f.get("factId") or f.get("id")
+    ]
     doc = {
-        "deliverableId": f"del-{uuid.uuid4().hex[:12]}",
+        "_id": deliv_id,
+        "id": deliv_id,
+        "deliverableId": deliv_id,
         "firebaseUid": uid,
         "userId": uid,
         "projectId": project_id,
@@ -146,22 +154,23 @@ def generate(
         "uckrVersion": uckr.get("version", 1),
         "type": dtype,
         "content": content,
+        "usedFactIds": used_facts,
         "configuration": config or {"audience": "executive", "tone": "professional",
-                                    "language": "English", "detailLevel": "medium"},
+                                     "language": "English", "detailLevel": "medium"},
         "status": "completed",
         "storagePath": None,
         "createdAt": now,
         "updatedAt": now,
     }
     col = get_mongo_db()["deliverables"]
-    col.insert_one({**doc})
+    col.update_one({"_id": deliv_id}, {"$set": doc}, upsert=True)
     # record grounding usage on the UCKR
     get_mongo_db()["uckr"].update_one(
         {"uckrId": uckr.get("uckrId")}, {"$set": {"facts": uckr.get("facts", [])}}
     )
-    doc.pop("_id", None)
+    res_doc = {**doc}
     log.info("deliverable generated project=%s type=%s uckrV=%s", project_id, dtype, doc["uckrVersion"])
-    return doc
+    return res_doc
 
 
 def generate_many(uid: str, project_id: str, types: list[str], config: Optional[dict] = None) -> list[dict]:

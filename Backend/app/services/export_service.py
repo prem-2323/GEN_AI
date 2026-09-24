@@ -104,12 +104,45 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
     else:
         data = _to_markdown(dtype, content if isinstance(content, dict) else {"text": content}).encode("utf-8")
 
-    rel = save_output(uid, doc["projectId"], f"{deliverable_id}.{fmt}", data)
+    file_id, rel = save_output(uid, doc["projectId"], f"{deliverable_id}.{fmt}", data, deliverable_id=deliverable_id, export_type=fmt)
+    
+    export_id = f"exp_{deliverable_id}_{fmt}"
+    mime_map = {
+        "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "pdf": "application/pdf",
+        "json": "application/json",
+        "md": "text/markdown",
+        "mp3": "audio/mpeg",
+        "mp4": "video/mp4",
+    }
+    export_doc = {
+        "_id": export_id,
+        "exportId": export_id,
+        "firebaseUid": uid,
+        "projectId": doc["projectId"],
+        "sourceId": doc.get("sourceId"),
+        "deliverableId": deliverable_id,
+        "fileId": file_id,
+        "type": fmt,
+        "filename": f"{deliverable_id}.{fmt}",
+        "mimeType": mime_map.get(fmt, "application/octet-stream"),
+        "fileSize": len(data),
+        "status": "completed",
+        "storagePath": rel,
+        "createdAt": utcnow_iso(),
+    }
+    db["exports"].update_one(
+        {"exportId": export_id, "$or": [{"firebaseUid": uid}, {"userId": uid}]},
+        {"$set": export_doc},
+        upsert=True,
+    )
+
     db["deliverables"].update_one(
         {"deliverableId": deliverable_id},
-        {"$set": {"storagePath": rel, "updatedAt": utcnow_iso(),
+        {"$set": {"storagePath": rel, "fileId": file_id, "updatedAt": utcnow_iso(),
                   f"exports.{fmt}": rel}},
     )
-    log.info("exported %s as %s -> %s", deliverable_id, fmt, rel)
+    log.info("exported %s as %s -> %s (gridfs_id=%s)", deliverable_id, fmt, rel, file_id)
     return {"ok": True, "deliverableId": deliverable_id, "format": fmt,
-            "storagePath": rel, "bytes": len(data)}
+            "storagePath": rel, "fileId": file_id, "bytes": len(data)}

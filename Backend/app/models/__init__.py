@@ -23,6 +23,17 @@ from .deliverable import (
     TransformationRequest,
     TransformResponse,
 )
+from .validation import (
+    CheckCategory,
+    CheckStatus,
+    OverallValidationStatus,
+    CheckItem,
+    DeliverableValidationResult,
+    ValidationScores,
+    ValidationRequest,
+    RegenerateRequest,
+    ValidationRecord,
+)
 from .analysis import (
     AnalysisRecord,
     TextAnalysis,

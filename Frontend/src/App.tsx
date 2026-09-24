@@ -130,11 +130,15 @@ function AppContent() {
     setSelectedOutputs([]);
   };
 
-  // Start Pipeline — requires a real source
-  const handleStartGeneration = () => {
-    if (!source) {
-      addToast('No Source', 'Upload or paste source content before generating.', 'error');
+  // Start Pipeline — requires a real source with text
+  const handleStartGeneration = (sourceOverride?: SourceFile | null) => {
+    const activeSource = sourceOverride || source;
+    if (!activeSource || !activeSource.extractedText?.trim()) {
+      addToast('No Source Content', 'Please upload or paste source text before generating.', 'error');
       return;
+    }
+    if (sourceOverride) {
+      setSource(sourceOverride);
     }
     if (selectedOutputs.length === 0) {
       addToast('No Outputs Selected', 'Please select at least one deliverable to generate.', 'error');
@@ -363,6 +367,7 @@ function AppContent() {
               uckr={uckr}
               onComplete={handlePipelineComplete}
               onError={handlePipelineError}
+              onBack={() => setCurrentView('new_transformation')}
             />
           )}
 

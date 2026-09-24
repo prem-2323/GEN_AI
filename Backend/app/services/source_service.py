@@ -44,21 +44,32 @@ def _by_id(source_id: str, uid: str) -> dict:
 def create_source(uid: str, project_id: str, file_meta: dict) -> dict:
     now = utcnow_iso()
     sid = f"src-{uuid.uuid4().hex[:12]}"
+    orig_name = file_meta.get("originalName") or file_meta.get("originalFilename") or "upload.bin"
+    ext = orig_name.rsplit(".", 1)[-1].lower() if "." in orig_name else "bin"
     doc: dict[str, Any] = {
+        "_id": sid,
         "sourceId": sid,
         "id": sid,
         "firebaseUid": uid,
         "userId": uid,
         "projectId": project_id,
+        "fileId": file_meta.get("fileId", ""),
+        "originalFilename": orig_name,
+        "fileType": ext,
+        "mimeType": file_meta.get("mimeType", "application/octet-stream"),
+        "fileSize": file_meta.get("size", 0),
+        "sha256": file_meta.get("sha256", ""),
+        "status": "uploaded",
         "file": {
-            "originalName": file_meta.get("originalName", "upload.bin"),
+            "originalName": orig_name,
             "storedName": file_meta.get("storedName", ""),
             "mimeType": file_meta.get("mimeType", "application/octet-stream"),
             "size": file_meta.get("size", 0),
             "storagePath": file_meta.get("storagePath", ""),
+            "fileId": file_meta.get("fileId", ""),
         },
         "processing": {"status": "uploaded", "stage": "uploaded", "progress": 0, "error": None},
-        "extraction": {"textLength": 0, "pageCount": 0, "imageCount": 0, "tableCount": 0},
+        "extraction": {"textLength": 0, "pageCount": 0, "wordCount": 0, "chunkCount": 0, "imageCount": 0, "tableCount": 0},
         "createdAt": now,
         "updatedAt": now,
     }
@@ -70,6 +81,43 @@ def create_source(uid: str, project_id: str, file_meta: dict) -> dict:
 def get_source(source_id: str, uid: str) -> dict:
     doc = get_mongo_db()["sources"].find_one(_by_id(source_id, uid), {"_id": 0})
     if not doc:
+        # Check if analysis exists for this source or if source_id is a transient direct text source
+        ana = get_mongo_db()["analysis"].find_one({"sourceId": source_id, **_owner_filter(uid)}, {"_id": 0})
+        if ana:
+            now = utcnow_iso()
+            source_doc = {
+                "sourceId": source_id,
+                "id": source_id,
+                "firebaseUid": uid,
+                "userId": uid,
+                "projectId": ana.get("projectId", "proj_default"),
+                "name": "Pasted_Source_Text.txt",
+                "extractedText": ana.get("textAnalysis", {}).get("summary", ""),
+                "status": "ready",
+                "createdAt": now,
+                "updatedAt": now,
+            }
+            get_mongo_db()["sources"].update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
+            return source_doc
+
+        # If it's a direct text source, auto-provision
+        if source_id.startswith("src-text-") or source_id.startswith("src-edu-") or source_id in ("src_default", "SRC_001"):
+            now = utcnow_iso()
+            source_doc = {
+                "sourceId": source_id,
+                "id": source_id,
+                "firebaseUid": uid,
+                "userId": uid,
+                "projectId": "proj_default",
+                "name": "Pasted_Source_Text.txt",
+                "extractedText": "",
+                "status": "ready",
+                "createdAt": now,
+                "updatedAt": now,
+            }
+            get_mongo_db()["sources"].update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
+            return source_doc
+
         # Distinguish cross-tenant (403) from missing (404)
         other = get_mongo_db()["sources"].find_one(
             {"$or": [{"sourceId": source_id}, {"id": source_id}]}, {"_id": 0, "sourceId": 1}
@@ -106,15 +154,70 @@ def set_stage(source_id: str, uid: str, stage: str, progress: int = 0, error: Op
 
 
 def store_extraction(source_id: str, uid: str, normalized: dict) -> dict:
-    """Persist the normalized extraction result + roll-up stats."""
-    get_source(source_id, uid)  # ownership check
+    """Persist the normalized extraction result into extracted_content and roll-up stats on source."""
+    src = get_source(source_id, uid)  # ownership check
+    project_id = src.get("projectId", "proj_default")
     ext = normalized.get("extraction", normalized)
+    pages = normalized.get("pages", [])
+    images = normalized.get("images", [])
+    tables = normalized.get("tables", [])
+    text_content = normalized.get("text", {}).get("content", "")
+    words = len(text_content.split())
+
+    # Build structured chunks
+    chunks = []
+    paras = [p.strip() for p in text_content.split("\n\n") if p.strip()] or [text_content.strip()]
+    for idx, p in enumerate(paras):
+        chunks.append({
+            "chunkId": f"chunk_{source_id}_{idx+1:03d}",
+            "pageNumber": 1,
+            "text": p,
+        })
+
+    # Save to extracted_content collection (Phase 9 Collection #8 & #9)
+    extraction_id = f"ext_{source_id}_{uuid.uuid4().hex[:8]}"
+    ext_doc = {
+        "_id": extraction_id,
+        "extractionId": extraction_id,
+        "firebaseUid": uid,
+        "projectId": project_id,
+        "sourceId": source_id,
+        "document": {
+            "title": normalized.get("document", {}).get("name", "Document"),
+            "language": "en",
+            "pageCount": len(pages) or 1,
+        },
+        "pages": pages,
+        "chunks": chunks,
+        "images": [
+            {
+                "imageId": img.get("imageId", f"img_{idx+1}"),
+                "fileId": img.get("fileId", ""),
+                "pageNumber": img.get("pageNumber", 1),
+                "mimeType": img.get("mimeType", "image/png"),
+                "path": img.get("path", ""),
+            }
+            for idx, img in enumerate(images)
+        ],
+        "createdAt": utcnow_iso(),
+    }
+    set_fields = {k: v for k, v in ext_doc.items() if k != "_id"}
+    get_mongo_db()["extracted_content"].update_one(
+        {"sourceId": source_id, "$or": [{"firebaseUid": uid}, {"userId": uid}]},
+        {"$set": set_fields, "$setOnInsert": {"_id": extraction_id}},
+        upsert=True,
+    )
+
+    # Roll-up stats on sources collection
     update = {
+        "status": "processed",
         "extraction": {
-            "textLength": ext.get("textLength", len(normalized.get("text", {}).get("content", ""))),
-            "pageCount": len(normalized.get("pages", [])),
-            "imageCount": len(normalized.get("images", [])),
-            "tableCount": len(normalized.get("tables", [])),
+            "textLength": ext.get("textLength", len(text_content)),
+            "wordCount": words,
+            "pageCount": len(pages),
+            "chunkCount": len(chunks),
+            "imageCount": len(images),
+            "tableCount": len(tables),
         },
         "normalized": normalized,
         "updatedAt": utcnow_iso(),

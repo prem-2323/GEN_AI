@@ -44,7 +44,7 @@ def _clean_json_str(raw: str) -> str:
 def _ollama_client():
     try:
         import ollama
-        return ollama.Client(host=get_settings().ollama_base_url, timeout=120)
+        return ollama.Client(host=get_settings().ollama_base_url, timeout=180)
     except Exception:
         return None
 
@@ -60,6 +60,7 @@ def _call_ollama(text: str, model_name: str) -> Optional[dict]:
                 {"role": "system", "content": QWEN_EXTRACTION_SYSTEM_PROMPT},
                 {"role": "user", "content": f"Document text to analyze:\n\n{text[:16000]}"},
             ],
+            format="json",
             options={"temperature": 0.1},
         )
         content = resp["message"]["content"]
@@ -277,3 +278,54 @@ def analyze_text_with_qwen(
         log.warning("Pydantic validation coerced with default model: %s", exc)
         safe_fallback = _deterministic_extractive_analysis(text)
         return TextAnalysis(**safe_fallback), "deterministic"
+
+
+def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict: Optional[int] = None) -> str:
+    """Send generation prompt to local Ollama Qwen model or Gemini fallback."""
+    settings = get_settings()
+    client = _ollama_client()
+    if client:
+        try:
+            resp = client.chat(
+                model=settings.text_model or settings.qwen_model,
+                messages=[
+                    {"role": "system", "content": "You are a professional AI transformation assistant. Respond directly without thinking tags."},
+                    {"role": "user", "content": prompt},
+                ],
+                options={"temperature": 0.3},
+            )
+            raw = resp["message"]["content"]
+            return re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+        except Exception as exc:
+            log.info("Ollama generate skipped (%s), trying fallback", exc)
+
+    if settings.gemini_api_key:
+        try:
+            from google import genai
+            g_client = genai.Client(api_key=settings.gemini_api_key)
+            resp = g_client.models.generate_content(
+                model=settings.gemini_model or "gemini-2.5-flash",
+                contents=prompt,
+            )
+            return (resp.text or "").strip()
+        except Exception as g_exc:
+            log.info("Gemini generate fallback skipped: %s", g_exc)
+
+    return prompt[:200]
+
+
+def generate_qwen_json(prompt: str, schema: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Generate structured JSON via Qwen or Gemini."""
+    raw = generate_with_qwen(prompt)
+    try:
+        cleaned = _clean_json_str(raw)
+        return json.loads(cleaned)
+    except Exception:
+        # Fallback extract JSON object
+        m = re.search(r"\{.*\}", raw, re.DOTALL)
+        if m:
+            try:
+                return json.loads(m.group(0))
+            except Exception:
+                pass
+    return {"content": raw}

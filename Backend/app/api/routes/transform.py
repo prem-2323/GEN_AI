@@ -23,34 +23,6 @@ from ...services.transformation.transformation_service import (
 router = APIRouter(tags=["transformations"])
 
 
-@router.post(
-    "/api/projects/{project_id}/transform",
-    response_model=TransformResponse,
-    status_code=status.HTTP_201_CREATED,
-    summary="Transform canonical UCKR into deliverables",
-)
-async def transform_project_uckr(
-    project_id: str,
-    payload: TransformationRequest,
-    user: Dict[str, Any] = Depends(get_current_user),
-):
-    """Transforms canonical UCKR knowledge base into requested communication deliverables."""
-    return run_transformation(project_id, payload, user)
-
-
-@router.get(
-    "/api/projects/{project_id}/deliverables",
-    summary="List all deliverables for a project",
-)
-async def list_deliverables(
-    project_id: str,
-    user: Dict[str, Any] = Depends(get_current_user),
-):
-    """Retrieves all generated deliverables belonging to a project."""
-    deliverables = get_project_deliverables(project_id, user)
-    return {"ok": True, "projectId": project_id, "deliverables": deliverables}
-
-
 @router.get(
     "/api/projects/{project_id}/deliverables/{deliverable_id}",
     summary="Get single deliverable by ID",

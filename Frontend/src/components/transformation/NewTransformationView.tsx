@@ -24,7 +24,9 @@ import {
   Zap,
   Info,
   SlidersHorizontal,
-  Bell
+  Bell,
+  BookOpen,
+  AlertTriangle
 } from 'lucide-react';
 import { 
   SourceFile, 
@@ -41,6 +43,8 @@ import {
 } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
 import { analyzeSourceContent, buildUckrKnowledge } from '../../services/aiService';
+import { backendApi, backendEnabled } from '../../services/backendService';
+import { SAMPLE_SOURCES, SampleSourceDoc } from '../../data/sampleSources';
 
 interface NewTransformationViewProps {
   source: SourceFile | null;
@@ -55,7 +59,7 @@ interface NewTransformationViewProps {
   onToggleOutput: (output: OutputType) => void;
   onSelectAllOutputs: () => void;
   onClearOutputs: () => void;
-  onStartGeneration: () => void;
+  onStartGeneration: (sourceOverride?: SourceFile | null) => void;
   onShowToast: (title: string, message: string, type?: 'success' | 'info' | 'error') => void;
 }
 
@@ -76,12 +80,15 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
   onShowToast
 }) => {
   const activeUckr = uckr;
-  const [inputTab, setInputTab] = useState<'upload' | 'paste' | 'context'>('upload');
+  const [inputTab, setInputTab] = useState<'upload' | 'paste' | 'samples' | 'context'>('upload');
   const [pasteContent, setPasteContent] = useState(source?.extractedText || '');
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [showSourcePreviewModal, setShowSourcePreviewModal] = useState(false);
   const [contextNotes, setContextNotes] = useState(config.customNotes || '');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
+
+  const analyzingSourceKeyRef = useRef<string | null>(null);
 
   // Sync textarea if source changes
   useEffect(() => {
@@ -92,8 +99,17 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
   // Run real AI analysis whenever a new source with text arrives and no analysis exists yet
   useEffect(() => {
-    if (!source?.extractedText?.trim() || analysis || isAnalyzing) return;
+    const text = source?.extractedText?.trim();
+    if (!text || analysis) {
+      analyzingSourceKeyRef.current = null;
+      return;
+    }
+    const sourceKey = `${source.id || 'src'}_${text.length}_${text.slice(0, 40)}`;
+    if (analyzingSourceKeyRef.current === sourceKey) return;
+
+    analyzingSourceKeyRef.current = sourceKey;
     let cancelled = false;
+
     const run = async () => {
       setIsAnalyzing(true);
       try {
@@ -116,9 +132,142 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
       }
     };
     run();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [source?.id]);
+  }, [source?.id, source?.extractedText, analysis]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const isPdf = file.name.toLowerCase().endsWith('.pdf');
+      const isDoc = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc');
+      const isImg = file.type.startsWith('image/');
+      const isVid = file.type.startsWith('video/');
+
+      const fileType = isPdf ? 'PDF' : isDoc ? 'DOCX' : isImg ? 'IMAGE' : isVid ? 'VIDEO' : 'TXT';
+
+      setIsExtracting(true);
+      let extractedText = '';
+      try {
+        if (!isPdf && !isDoc && !isImg && !isVid && file.size < 5 * 1024 * 1024) {
+          extractedText = await file.text();
+        } else if (backendEnabled) {
+          try {
+            const uploadRes = await backendApi.uploadSource('proj_default', file);
+            if (uploadRes && uploadRes.text?.content) {
+              extractedText = uploadRes.text.content;
+            }
+          } catch {
+            // fallback
+          }
+        }
+      } catch {
+        extractedText = '';
+      } finally {
+        setIsExtracting(false);
+      }
+
+      onUpdateAnalysis(null);
+      onUpdateUckr(null);
+
+      if (extractedText.trim()) {
+        setPasteContent(extractedText);
+        onUpdateSource({
+          id: `src-${Date.now()}`,
+          name: file.name,
+          type: fileType,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+          pages: undefined,
+          status: 'ready',
+          uploadedAt: new Date().toISOString(),
+          extractedText
+        });
+        onShowToast('Source Uploaded', `Successfully extracted text from "${file.name}".`, 'success');
+      } else {
+        onUpdateSource({
+          id: `src-${Date.now()}`,
+          name: file.name,
+          type: fileType,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+          pages: undefined,
+          status: 'pending',
+          uploadedAt: new Date().toISOString(),
+          extractedText: ''
+        });
+        onShowToast(
+          'Text Required',
+          `"${file.name}" was loaded as metadata. Please paste the document text or choose a sample report.`,
+          'info'
+        );
+      }
+    }
+  };
+
+  const handleApplyPaste = () => {
+    if (!pasteContent.trim()) return;
+    onUpdateAnalysis(null);
+    onUpdateUckr(null);
+    onUpdateSource({
+      id: `src-text-${Date.now()}`,
+      name: source?.name && source.name !== 'No source' ? source.name : 'Pasted_Source_Text.txt',
+      type: 'TEXT',
+      size: `${(pasteContent.length / 1024).toFixed(1)} KB`,
+      status: 'ready',
+      uploadedAt: new Date().toISOString(),
+      extractedText: pasteContent
+    });
+    onShowToast('Source Text Saved', 'Text ready for AI analysis and transformation.', 'success');
+  };
+
+  const handleLoadSample = (sample: SampleSourceDoc) => {
+    onUpdateAnalysis(null);
+    onUpdateUckr(null);
+    setPasteContent(sample.content);
+    onUpdateSource({
+      id: `sample-${sample.id}-${Date.now()}`,
+      name: sample.name,
+      type: sample.type,
+      size: sample.size,
+      status: 'ready',
+      uploadedAt: new Date().toISOString(),
+      extractedText: sample.content
+    });
+    onShowToast('Sample Loaded', `Loaded sample document "${sample.name}".`, 'success');
+  };
+
+  const handleClearSource = () => {
+    onUpdateSource(null);
+    onUpdateAnalysis(null);
+    onUpdateUckr(null);
+    setPasteContent('');
+  };
+
+  const handleGenerateClick = () => {
+    const textToUse = (pasteContent.trim() || source?.extractedText?.trim() || '').trim();
+    if (textToUse) {
+      const activeSource: SourceFile = {
+        id: source?.id || `src-text-${Date.now()}`,
+        name: source?.name && source.name !== 'No source' ? source.name : 'Pasted_Source_Text.txt',
+        type: source?.type || 'TEXT',
+        size: source?.size || `${(textToUse.length / 1024).toFixed(1)} KB`,
+        status: 'ready',
+        uploadedAt: source?.uploadedAt || new Date().toISOString(),
+        extractedText: textToUse
+      };
+      onUpdateSource(activeSource);
+      onStartGeneration(activeSource);
+      return;
+    }
+    // No source text anywhere
+    setInputTab('paste');
+    onShowToast(
+      'Source Text Required',
+      'Please paste source text or load a sample document before generating deliverables.',
+      'error'
+    );
+  };
 
   const outputCards: {
     id: OutputType;
@@ -238,67 +387,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     'Custom'
   ];
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const isPdf = file.name.toLowerCase().endsWith('.pdf');
-      const isDoc = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc');
-      const isImg = file.type.startsWith('image/');
-      const isVid = file.type.startsWith('video/');
-
-      const fileType = isPdf ? 'PDF' : isDoc ? 'DOCX' : isImg ? 'IMAGE' : isVid ? 'VIDEO' : 'TXT';
-
-      let extractedText = '';
-      try {
-        if (!isPdf && !isDoc && !isImg && !isVid && file.size < 5 * 1024 * 1024) {
-          extractedText = await file.text();
-        }
-      } catch {
-        extractedText = '';
-      }
-      if (!extractedText.trim()) {
-        onShowToast(
-          'Text Extraction Pending',
-          `"${file.name}" was added with metadata only — the browser cannot read ${fileType} content directly. Paste the text or wait for backend extraction.`,
-          'info'
-        );
-      }
-
-      onUpdateAnalysis(null);
-      onUpdateUckr(null);
-      onUpdateSource({
-        id: `src-${Date.now()}`,
-        name: file.name,
-        type: fileType,
-        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-        pages: undefined,
-        status: 'ready',
-        uploadedAt: new Date().toISOString(),
-        extractedText
-      });
-    }
-  };
-
-  const handleApplyPaste = () => {
-    if (!pasteContent.trim()) return;
-    onUpdateAnalysis(null);
-    onUpdateUckr(null);
-    onUpdateSource({
-      id: `src-text-${Date.now()}`,
-      name: 'Pasted_Source_Text.txt',
-      type: 'TEXT',
-      size: `${(pasteContent.length / 1024).toFixed(1)} KB`,
-      status: 'ready',
-      uploadedAt: new Date().toISOString(),
-      extractedText: pasteContent
-    });
-  };
-
-  const handleClearSource = () => {
-    onUpdateSource(null);
-    onUpdateAnalysis(null);
-    onUpdateUckr(null);
-  };
+  const hasSourceText = Boolean(source?.extractedText?.trim() || pasteContent.trim());
 
   return (
     <div className="space-y-10 pb-28">
@@ -337,7 +426,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
       {/* SECTION 1: SOURCE INGESTION */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <span className="w-7 h-7 rounded-full bg-purple-600/30 text-purple-300 text-xs font-mono font-bold flex items-center justify-center border border-purple-500/40">
               01
@@ -346,15 +435,15 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 SOURCE CONTENT
               </h2>
-              <p className="text-xs text-slate-400">Upload or select the source material to transform</p>
+              <p className="text-xs text-slate-400">Upload documents, paste text, or load a realistic sample report</p>
             </div>
           </div>
 
           {/* Input Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-slate-900/90 border border-slate-800 rounded-lg">
+          <div className="flex items-center gap-1 p-1 bg-slate-900/90 border border-slate-800 rounded-lg overflow-x-auto">
             <button
               onClick={() => setInputTab('upload')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                 inputTab === 'upload' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -362,15 +451,24 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
             </button>
             <button
               onClick={() => setInputTab('paste')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                 inputTab === 'paste' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               Paste Text
             </button>
             <button
+              onClick={() => setInputTab('samples')}
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                inputTab === 'samples' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3 h-3" />
+              <span>Sample Reports</span>
+            </button>
+            <button
               onClick={() => setInputTab('context')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                 inputTab === 'context' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -388,17 +486,24 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                 type="file"
                 onChange={handleFileUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                accept=".pdf,.docx,.doc,.txt,.jpg,.jpeg,.png,.mp4"
+                accept=".pdf,.docx,.doc,.txt,.md,.json,.csv,.log,.jpg,.jpeg,.png,.mp4"
               />
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2">
-                <UploadCloud className="w-5 h-5" />
+                {isExtracting ? (
+                  <RefreshCw className="w-5 h-5 animate-spin text-purple-400" />
+                ) : (
+                  <UploadCloud className="w-5 h-5" />
+                )}
               </div>
               <p className="text-sm font-semibold text-white">
-                Drop files here or click to browse
+                {isExtracting ? 'Extracting document text…' : 'Drop files here or click to browse'}
               </p>
               <p className="text-xs text-slate-400 mt-1">
-                PDF • DOCX • TXT • JPG • PNG • MP4
+                PDF • DOCX • TXT • MD • JSON • PNG • JPG
               </p>
+              <div className="mt-3 text-xs text-slate-500">
+                Or switch to <button type="button" onClick={() => setInputTab('samples')} className="text-purple-400 hover:underline inline-flex items-center gap-0.5">Sample Reports</button> for 1-click testing
+              </div>
             </div>
 
             {/* Currently Active Source Card */}
@@ -406,7 +511,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               {!source ? (
                 <div className="p-6 text-center space-y-2">
                   <p className="text-sm font-semibold text-white">No source selected</p>
-                  <p className="text-xs text-slate-400">Upload a file or paste text to begin. Real AI analysis runs automatically.</p>
+                  <p className="text-xs text-slate-400">Upload a file, paste text, or pick a sample report below.</p>
                   {isAnalyzing && <p className="text-xs text-purple-300 animate-pulse">Analyzing with Gemini…</p>}
                 </div>
               ) : (
@@ -436,11 +541,29 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-1.5">
-                  <StatusBadge status={source.status || 'ready'} size="xs" />
-                  {isAnalyzing && <span className="text-[11px] text-purple-300 animate-pulse">Analyzing…</span>}
-                  {!isAnalyzing && !analysis && <span className="text-[11px] text-amber-300">Analysis pending — check API key</span>}
-                  {!isAnalyzing && analysis && <span className="text-[11px] text-emerald-300">✓ Analyzed: {analysis.detectedTopic.slice(0, 40)}</span>}
+                <div className="mt-3 flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <StatusBadge status={source.status || 'ready'} size="xs" />
+                    {isAnalyzing && <span className="text-[11px] text-purple-300 animate-pulse">Analyzing…</span>}
+                    {!isAnalyzing && !source.extractedText?.trim() && (
+                      <span className="text-[11px] text-amber-400 flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        No text content detected
+                      </span>
+                    )}
+                    {!isAnalyzing && source.extractedText?.trim() && !analysis && (
+                      <span className="text-[11px] text-slate-400">Ready for analysis</span>
+                    )}
+                    {!isAnalyzing && analysis && (
+                      <span className="text-[11px] text-emerald-300">✓ Analyzed: {analysis.detectedTopic.slice(0, 40)}</span>
+                    )}
+                  </div>
+
+                  {!source.extractedText?.trim() && (
+                    <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 mt-1">
+                      This file provided metadata only. Switch to <strong>Paste Text</strong> or <strong>Sample Reports</strong> to add content.
+                    </div>
+                  )}
                 </div>
               </div>
               )}
@@ -473,21 +596,71 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               value={pasteContent}
               onChange={(e) => setPasteContent(e.target.value)}
               placeholder="Paste article, report, prompt, advisory, research paper or any source content..."
-              rows={6}
+              rows={7}
               className="w-full rounded-lg bg-slate-900 border border-slate-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 p-3.5 text-sm text-slate-200 focus:outline-none"
             />
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <span className="text-slate-400 font-mono">
                 {pasteContent.length} characters · {pasteContent.trim() ? pasteContent.trim().split(/\s+/).length : 0} words
               </span>
-              <button
-                onClick={handleApplyPaste}
-                disabled={!pasteContent.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-medium text-xs transition-colors cursor-pointer"
-              >
-                <span>Save & Parse Source</span>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleLoadSample(SAMPLE_SOURCES[0])}
+                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+                >
+                  Fill Sample Advisory
+                </button>
+                <button
+                  onClick={handleApplyPaste}
+                  disabled={!pasteContent.trim()}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-medium text-xs transition-colors cursor-pointer"
+                >
+                  <span>Save & Parse Source</span>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {inputTab === 'samples' && (
+          <div className="rounded-xl border border-slate-800 bg-[#0d121f] p-5 space-y-4">
+            <div>
+              <h3 className="text-sm font-bold text-white">Pre-Loaded Enterprise Industry Reports</h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Select any curated realistic document to instantly populate source text and test full multi-format AI generation.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+              {SAMPLE_SOURCES.map((sample) => (
+                <div
+                  key={sample.id}
+                  className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col justify-between hover:border-purple-500/50 hover:bg-slate-900 transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                        {sample.category}
+                      </span>
+                      <span className="text-[11px] font-mono text-slate-500">{sample.type}</span>
+                    </div>
+                    <h4 className="text-xs font-bold text-white line-clamp-1">{sample.name}</h4>
+                    <p className="text-[11px] text-slate-400 mt-1.5 line-clamp-3 leading-relaxed">
+                      {sample.summary}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleLoadSample(sample)}
+                    className="mt-4 w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 hover:border-purple-500 text-xs font-semibold transition-all cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Use this Sample</span>
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -725,13 +898,13 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
           </div>
           <span className="text-slate-600 hidden sm:inline">|</span>
           <span className="text-xs text-slate-400 hidden sm:inline">
-            Source: <strong className="text-slate-200 font-normal">{source?.name || 'No source selected'}</strong>
+            Source: <strong className="text-slate-200 font-normal">{source?.name || (pasteContent.trim() ? 'Pasted Text' : 'No source text')}</strong>
           </span>
         </div>
 
         <button
-          onClick={onStartGeneration}
-          disabled={!source || selectedOutputs.length === 0}
+          onClick={handleGenerateClick}
+          disabled={selectedOutputs.length === 0 || !hasSourceText}
           className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:via-indigo-500 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm shadow-lg shadow-purple-600/30 transition-all cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />

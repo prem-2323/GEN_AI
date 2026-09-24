@@ -92,6 +92,23 @@ def extract_pdf(
             except Exception as exc:
                 log.debug("pdf image extraction skipped (p%d): %s", idx + 1, exc)
     full = "\n\n".join(p["text"] for p in pages).strip()
+    
+    # PyMuPDF fallback for complex or unusual PDF text encodings
+    if not full:
+        try:
+            import pymupdf
+            with pymupdf.open(stream=file_bytes, filetype="pdf") as doc:
+                mu_pages = []
+                for idx, page in enumerate(doc):
+                    t = page.get_text("text").strip()
+                    mu_pages.append({"pageNumber": idx + 1, "text": t})
+                mu_full = "\n\n".join(p["text"] for p in mu_pages).strip()
+                if mu_full:
+                    pages = mu_pages
+                    full = mu_full
+        except Exception as mu_err:
+            log.debug("PyMuPDF fallback skipped: %s", mu_err)
+
     meta = reader.metadata
     return {
         "document": {"name": filename, "type": "pdf"},
@@ -188,7 +205,7 @@ def extract_normalized(
 
 
 def extract_content(
-    file_bytes: bytes, filename: str, mime_type: str = ""
+    file_bytes: bytes, filename: str, mime_type: str = "", **kwargs: Any
 ) -> dict[str, Any]:
     """Legacy lightweight shape (kept for GET /api/upload backward compat)."""
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "txt"

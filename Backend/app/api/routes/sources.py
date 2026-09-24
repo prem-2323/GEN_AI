@@ -10,10 +10,12 @@ from ...config.mongo import get_mongo_db
 from ...services.project_service import get_project
 from ...utils.helpers import utcnow_iso
 
-router = APIRouter(prefix="/api/projects/{project_id}/sources", tags=["sources"])
+from ...services.source_service import delete_source as service_delete_source, get_source as service_get_source
+
+router = APIRouter(tags=["sources"])
 
 
-@router.post("", status_code=201)
+@router.post("/api/projects/{project_id}/sources", status_code=201)
 async def create_source(
     project_id: str,
     payload: Dict[str, Any],
@@ -55,7 +57,7 @@ async def create_source(
     return source_doc
 
 
-@router.get("", response_model=List[Dict[str, Any]])
+@router.get("/api/projects/{project_id}/sources")
 async def list_sources(
     project_id: str,
     user: dict = Depends(get_current_user),
@@ -63,20 +65,39 @@ async def list_sources(
     """List sources attached to the project."""
     get_project(project_id, uid=user["uid"])
     mongo_db = get_mongo_db()
-    cursor = mongo_db["sources"].find({"projectId": project_id}, {"_id": 0})
-    return list(cursor)
+    cursor = mongo_db["sources"].find(
+        {"projectId": project_id, "$or": [{"firebaseUid": user["uid"]}, {"userId": user["uid"]}]},
+        {"_id": 0},
+    )
+    items = list(cursor)
+    return {"ok": True, "sources": items, "count": len(items)}
 
 
-@router.get("/{source_id}")
+@router.get("/api/projects/{project_id}/sources/{source_id}")
 async def get_source_by_id(
     project_id: str,
     source_id: str,
     user: dict = Depends(get_current_user),
 ):
-    """Get single source details."""
+    """Get single source details within a project."""
     get_project(project_id, uid=user["uid"])
-    mongo_db = get_mongo_db()
-    doc = mongo_db["sources"].find_one({"projectId": project_id, "id": source_id}, {"_id": 0})
-    if not doc:
-        raise HTTPException(status_code=404, detail="Source not found.")
-    return doc
+    return service_get_source(source_id, user["uid"])
+
+
+@router.get("/api/sources/{source_id}")
+async def get_source_standalone(
+    source_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Get single source details by sourceId (cross-tenant protected)."""
+    return service_get_source(source_id, user["uid"])
+
+
+@router.delete("/api/sources/{source_id}")
+async def delete_source_standalone(
+    source_id: str,
+    user: dict = Depends(get_current_user),
+):
+    """Delete a source by sourceId."""
+    service_delete_source(source_id, user["uid"])
+    return {"ok": True, "deleted": source_id}

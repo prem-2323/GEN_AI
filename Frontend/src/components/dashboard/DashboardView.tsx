@@ -23,6 +23,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { ViewState, SourceFile } from '../../types';
+import { SAMPLE_SOURCES } from '../../data/sampleSources';
 
 interface DashboardViewProps {
   onNavigate: (view: ViewState) => void;
@@ -270,12 +271,40 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Tab 1: Upload Files */}
         {activeTab === 'upload' && (
           <div className="space-y-5">
+            {/* Hidden file input for clicking upload box */}
+            <input
+              id="dashboard-file-input"
+              type="file"
+              className="hidden"
+              accept=".pdf,.docx,.doc,.txt,.md,.json,.csv,.log,.jpg,.jpeg,.png,.mp4"
+              onChange={async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const file = e.target.files[0];
+                  let extractedText = '';
+                  if (file.size < 5 * 1024 * 1024) {
+                    try {
+                      extractedText = await file.text();
+                    } catch {
+                      extractedText = '';
+                    }
+                  }
+                  onQuickStartUpload({
+                    name: file.name,
+                    type: file.name.endsWith('.pdf') ? 'PDF' : file.name.endsWith('.docx') ? 'DOCX' : 'TXT',
+                    size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+                    extractedText: extractedText.trim()
+                  });
+                  onNavigate('new_transformation');
+                }
+              }}
+            />
+
             <div
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() => onNavigate('new_transformation')}
+              onClick={() => document.getElementById('dashboard-file-input')?.click()}
               className={`
                 border-2 border-dashed rounded-xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200
                 ${dragActive 
@@ -291,23 +320,48 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 Drop files here or click to browse
               </p>
               <p className="text-xs text-slate-400 mt-1">
-                PDF • DOCX • TXT • JPG • PNG • MP4 • Up to 50 MB
+                PDF • DOCX • TXT • MD • JSON • PNG • JPG
               </p>
               <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700">
                 Browse Files
               </div>
             </div>
 
-            {/* No sample library — real uploads only */}
+            {/* Quick-start sample library */}
             <div>
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
-                <span>No source uploaded yet</span>
-                <span className="text-[11px] text-slate-400 lowercase font-normal">upload your own source to begin</span>
+                <span>Or start with a pre-loaded sample report</span>
+                <span className="text-[11px] text-purple-400 lowercase font-normal">1-click AI generation</span>
               </div>
-              <div className="p-6 rounded-xl bg-slate-900/60 border border-dashed border-slate-800 text-center">
-                <p className="text-xs text-slate-400">
-                  Drop a file above or paste text to start a real transformation.
-                </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {SAMPLE_SOURCES.map((sample) => (
+                  <div
+                    key={sample.id}
+                    onClick={() => {
+                      onQuickStartUpload({
+                        name: sample.name,
+                        type: sample.type,
+                        size: sample.size,
+                        extractedText: sample.content
+                      });
+                      onNavigate('new_transformation');
+                    }}
+                    className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] font-semibold text-purple-400 uppercase tracking-wider">{sample.category}</span>
+                        <span className="text-[10px] font-mono text-slate-500">{sample.type}</span>
+                      </div>
+                      <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-1">{sample.name}</h4>
+                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">{sample.summary}</p>
+                    </div>
+                    <div className="mt-3 text-[11px] text-purple-400 font-medium flex items-center gap-1">
+                      <span>Load into studio</span>
+                      <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

@@ -296,11 +296,65 @@
       ]
     },
     {
-      "name": "14 - Security: Cross-Tenant Denial (User B)",
+      "name": "14 - Phase 7: Consistency Validation against UCKR",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidA}}" }
+        ],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/sources/{{sourceId}}/validate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"uckrVersion\": 1\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Validation 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Scores calculated', () => { pm.expect(pm.response.json().scores.consistency).to.be.above(70); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 - Phase 7: Get Latest Validation Audit Report",
       "request": {
         "method": "GET",
-        "header": [{ "key": "X-User-Uid", "value": "{{uidB}}" }],
-        "url": "{{baseUrl}}/api/projects/{{projectId}}/deliverables"
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/sources/{{sourceId}}/validation"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Get Validation 200', () => pm.response.to.have.status(200));",
+              "pm.test('Validation report has results', () => { pm.expect(pm.response.json().results.length).to.be.above(0); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 - Security: Cross-Tenant Denial (User B)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidB}}" }
+        ],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/sources/{{sourceId}}/validate",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"uckrVersion\": 1\n}"
+        }
       },
       "event": [
         {
@@ -315,7 +369,7 @@
       ]
     },
     {
-      "name": "15 - Cleanup Project",
+      "name": "17 - Cleanup Project",
       "request": {
         "method": "DELETE",
         "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],

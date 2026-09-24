@@ -73,21 +73,47 @@ async def list_uckrs(project_id: str, user: dict = Depends(get_current_user)):
     return {"ok": True, "versions": uckr_service.list_uckrs(project_id, user["uid"])}
 
 
-# ---- Phase 5: transform routes are handled comprehensively in transform_router ----
-
-
-# ---- Phase 6: validate ----
-@router.post("/api/projects/{project_id}/validate")
-async def validate(project_id: str, user: dict = Depends(get_current_user)):
+# ---- Phase 5: transform ----
+@router.post("/api/projects/{project_id}/transform", status_code=201)
+async def transform_project(project_id: str, payload: dict[str, Any] = {},
+                            user: dict = Depends(get_current_user)):
     _check_pid(project_id)
-    return {"ok": True, "validation": validation_service.validate_project(user["uid"], project_id)}
+    types = payload.get("types") or payload.get("outputTypes") or [
+        "linkedin", "twitter", "advisory", "executive_summary",
+        "infographic", "presentation", "video"
+    ]
+    type_map = {"x": "twitter", "video_script": "video"}
+    uckr_v = payload.get("uckrVersion")
+    cfg = payload.get("config") or payload.get("configuration")
+    out = []
+    for t in types:
+        gen_type = type_map.get(t, t)
+        doc = transformation_service.generate(user["uid"], project_id, uckr_v, gen_type, cfg)
+        doc["type"] = t
+        out.append(doc)
+    return {"ok": True, "projectId": project_id, "deliverables": out, "count": len(out)}
+
+
+@router.get("/api/projects/{project_id}/deliverables")
+async def list_project_deliverables(project_id: str, user: dict = Depends(get_current_user)):
+    _check_pid(project_id)
+    items = transformation_service.list_deliverables(user["uid"], project_id)
+    return {"ok": True, "deliverables": items, "count": len(items)}
+
+
+# ---- Phase 6 & 7: validation ----
+@router.post("/api/projects/{project_id}/validate")
+async def validate_project_pipeline(project_id: str, user: dict = Depends(get_current_user)):
+    _check_pid(project_id)
+    val = validation_service.validate_project(user["uid"], project_id)
+    return {"ok": True, "validation": val}
 
 
 @router.get("/api/projects/{project_id}/validations")
-async def list_validations(project_id: str, user: dict = Depends(get_current_user)):
+async def list_project_validations(project_id: str, user: dict = Depends(get_current_user)):
     _check_pid(project_id)
-    return {"ok": True,
-            "validations": validation_service.list_validations(user["uid"], project_id)}
+    items = validation_service.list_validations(user["uid"], project_id)
+    return {"ok": True, "validations": items, "count": len(items)}
 
 
 # ---- Phase 7: jobs ----

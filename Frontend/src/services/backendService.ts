@@ -14,16 +14,22 @@ const BASE = (import.meta as unknown as { env?: Record<string, string | undefine
 export const backendEnabled = Boolean(BASE);
 
 async function headers(): Promise<HeadersInit> {
-  const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+  const token = auth.currentUser ? await auth.currentUser.getIdToken().catch(() => '') : '';
+  const uid = auth.currentUser?.uid || 'guest-user';
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    'X-User-Uid': uid,
   };
 }
 
 async function authHeaders(): Promise<HeadersInit> {
-  const token = auth.currentUser ? await auth.currentUser.getIdToken() : '';
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  const token = auth.currentUser ? await auth.currentUser.getIdToken().catch(() => '') : '';
+  const uid = auth.currentUser?.uid || 'guest-user';
+  return {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    'X-User-Uid': uid,
+  };
 }
 
 async function req(path: string, init?: RequestInit) {
@@ -67,10 +73,10 @@ export const backendApi = {
   listSources: (projectId: string) => req(`/api/projects/${projectId}/sources`),
   getSource: (sourceId: string) => req(`/api/sources/${sourceId}`),
   // Phase 3: AI Content Understanding (Qwen + Gemma)
-  startPhase3Analysis: (projectId: string, sourceId: string, forceRefresh: boolean = false) =>
+  startPhase3Analysis: (projectId: string, sourceId: string, forceRefresh: boolean = false, extractedText?: string) =>
     req(`/api/projects/${projectId}/sources/${sourceId}/analysis`, {
       method: 'POST',
-      body: JSON.stringify({ forceRefresh }),
+      body: JSON.stringify({ forceRefresh, extractedText }),
     }),
   getPhase3Analysis: (projectId: string, sourceId: string) =>
     req(`/api/projects/${projectId}/sources/${sourceId}/analysis`),

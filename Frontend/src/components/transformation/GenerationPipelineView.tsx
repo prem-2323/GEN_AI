@@ -27,6 +27,7 @@ interface GenerationPipelineViewProps {
   uckr?: UckrKnowledgeBase | null;
   onComplete: (results: PipelineResultPayload) => void;
   onError: (message: string) => void;
+  onBack?: () => void;
 }
 
 interface TelemetryLog {
@@ -54,7 +55,8 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
   analysis: initialAnalysis,
   uckr: initialUckr,
   onComplete,
-  onError
+  onError,
+  onBack
 }) => {
   const [progress, setProgress] = useState(4);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -166,16 +168,16 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
 
   const stageSubtitle =
     progress < 14 ? 'Reading and analyzing source document…' :
-    progress < 34 ? 'Running real AI semantic extraction…' :
-    progress < 56 ? 'Constructing UCKR knowledge base…' :
+    progress < 34 ? 'Running semantic extraction (Qwen 3 & Gemma 3)…' :
+    progress < 56 ? 'Constructing UCKR canonical knowledge base…' :
     progress < 64 ? 'Orchestrating deliverable blueprints…' :
-    progress < 92 ? 'Synthesizing deliverables with Gemini…' :
-    progress < 100 ? 'Validating outputs…' :
+    progress < 92 ? 'Synthesizing deliverables with AI engine…' :
+    progress < 100 ? 'Validating consistency and grounding…' :
     'Transformation pipeline complete!';
 
   const pipelineSteps = [
     { id: 'source_analysis', name: 'SOURCE ANALYSIS', done: progress >= 14, active: activeStepIndex === 0 && progress < 14, info: progress >= 14 ? `${totalPages} page(s) ingested` : `Reading ${sourceName}` },
-    { id: 'ai_understanding', name: 'AI UNDERSTANDING', done: progress >= 34, active: activeStepIndex === 1 && progress < 34, info: progress >= 34 ? 'Gemini analysis complete' : 'Analyzing with Gemini…' },
+    { id: 'ai_understanding', name: 'AI UNDERSTANDING', done: progress >= 34, active: activeStepIndex === 1 && progress < 34, info: progress >= 34 ? 'Qwen/Gemma analysis complete' : 'Analyzing with AI…' },
     { id: 'uckr_construction', name: 'UCKR CONSTRUCTION', done: progress >= 56, active: activeStepIndex === 2 && progress < 56, info: initialUckr ? 'Knowledge base ready' : progress >= 56 ? 'UCKR step finished' : 'Building knowledge base…' },
     { id: 'content_transformation', name: 'CONTENT TRANSFORMATION', done: progress >= 64, active: activeStepIndex === 3 && progress < 64, info: `Audience: ${effectiveConfig.targetAudience}` },
     { id: 'output_generation', name: 'OUTPUT GENERATION', done: progress >= 92, active: activeStepIndex === 4 && progress < 92, info: `${selectedOutputs.length} deliverables` },
@@ -192,7 +194,20 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Live Generation Pipeline</h1>
           <p className="text-sm font-medium text-slate-300">{stageSubtitle}</p>
-          {failed && <p className="text-xs text-rose-400 font-mono">{failed}</p>}
+          {failed && (
+            <div className="mt-3 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <span>{failed}</span>
+              {onBack && (
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs whitespace-nowrap transition-colors cursor-pointer shrink-0"
+                >
+                  Return to Studio
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="relative rounded-2xl border border-slate-800/90 bg-[#0d121f]/95 p-6 sm:p-8 shadow-2xl overflow-hidden">
@@ -252,7 +267,7 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
               </button>
               <div className="flex items-center gap-1.5 text-[11px] font-mono text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                <span>Gemini</span>
+                <span>Ollama / Qwen & Gemma</span>
               </div>
             </div>
             {showTelemetry && (
