@@ -163,11 +163,9 @@ def ensure_core_indexes() -> None:
             name="sources_project_owner_idx",
             background=True,
         )
-        for col in ("uckr", "deliverables", "validations", "jobs"):
-            db[col].create_index([("projectId", ASCENDING)], name=f"{col}_project_idx", background=True)
-        db["deliverables"].create_index(
-            [("projectId", ASCENDING), ("type", ASCENDING)],
-            name="deliverables_project_type_idx",
+        db["uckr"].create_index(
+            [("projectId", ASCENDING), ("sourceId", ASCENDING), ("version", DESCENDING)],
+            name="uckr_version_idx",
             background=True,
         )
         ensure_temp_ttl_index(db["temp"])

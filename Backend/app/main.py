@@ -26,9 +26,10 @@ from .api.routes.auth import router as auth_router
 from .api.routes.projects import router as projects_router
 from .api.routes.upload import router as upload_router
 from .api.routes.sources import router as sources_router
+from .api.routes.analysis import router as analysis_router
 from .api.routes.pipeline import router as pipeline_router
 from .api.routes.transform import router as transform_router
-from .api.routes.uckr import uckr_router, validation_router, temp_router
+from .api.routes.uckr import router as uckr_full_router, uckr_router, validation_router, temp_router
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("gen-transform")
@@ -84,8 +85,10 @@ app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(upload_router)
 app.include_router(sources_router)
+app.include_router(analysis_router)
 app.include_router(pipeline_router)
 app.include_router(transform_router)
+app.include_router(uckr_full_router)
 app.include_router(uckr_router)
 app.include_router(validation_router)
 app.include_router(temp_router)

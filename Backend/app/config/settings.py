@@ -37,10 +37,15 @@ class Settings(BaseSettings):
     max_upload_mb: int = 25
     allowed_upload_exts: str = "pdf,docx,txt,md,png,jpg,jpeg"
 
-    # AI models (Phase 3) — Ollama first, Gemini fallback, extractive fallback last
+    # AI models (Phase 3) — Router: Ollama Qwen/Gemma, Gemini Fallback, Deterministic Grounded Engine
+    ollama_enabled: bool = True
     ollama_base_url: str = "http://localhost:11434"
-    qwen_model: str = "qwen2.5:7b"
+    text_model: str = "qwen3:4b"
+    vision_model: str = "gemma3:4b"
+    qwen_model: str = "qwen3:4b"
     gemma_model: str = "gemma3:4b"
+    ai_fallback_enabled: bool = True
+    deterministic_extraction_enabled: bool = True
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
 

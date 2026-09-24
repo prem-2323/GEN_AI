@@ -66,10 +66,38 @@ export const backendApi = {
     uploadReq(`/api/projects/${projectId}/upload`, file),
   listSources: (projectId: string) => req(`/api/projects/${projectId}/sources`),
   getSource: (sourceId: string) => req(`/api/sources/${sourceId}`),
+  // Phase 3: AI Content Understanding (Qwen + Gemma)
+  startPhase3Analysis: (projectId: string, sourceId: string, forceRefresh: boolean = false) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/analysis`, {
+      method: 'POST',
+      body: JSON.stringify({ forceRefresh }),
+    }),
+  getPhase3Analysis: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/analysis`),
+  getPhase3Status: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/analysis/status`),
+  retryPhase3Analysis: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/analysis/retry`, { method: 'POST' }),
+
+  // Phase 4: Real UCKR Engine
+  buildUckr: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr`, { method: 'POST' }),
+  getSourceUckr: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr`),
+  getUckrValidation: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr/validation`),
+  rebuildUckr: (projectId: string, sourceId: string) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr/rebuild`, { method: 'POST' }),
+  getUckrVersion: (projectId: string, sourceId: string, version: number) =>
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr/${version}`),
+  listUckrVersions: (projectId: string, sourceId?: string) =>
+    req(`/api/projects/${projectId}/uckr/versions${sourceId ? `?sourceId=${sourceId}` : ''}`),
+
   // Phases 3-6: analyze -> UCKR -> transform -> validate
   analyzeSource: (projectId: string, sourceId: string) =>
-    req(`/api/projects/${projectId}/analyze`, { method: 'POST', body: JSON.stringify({ sourceId }) }),
-  getUckr: (projectId: string) => req(`/api/projects/${projectId}/uckr`),
+    req(`/api/projects/${projectId}/sources/${sourceId}/uckr`, { method: 'POST' }),
+  getUckr: (projectId: string, sourceId?: string) =>
+    req(`/api/projects/${projectId}/uckr${sourceId ? `?sourceId=${sourceId}` : ''}`),
   transform: (projectId: string, types: string[], config?: unknown) =>
     req(`/api/projects/${projectId}/transform`, { method: 'POST', body: JSON.stringify({ types, config }) }),
   listDeliverables: (projectId: string) => req(`/api/projects/${projectId}/deliverables`),

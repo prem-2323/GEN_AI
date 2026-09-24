@@ -56,64 +56,120 @@ def build_uckr(
     source_id: str,
 ) -> dict:
     """Build a versioned UCKR from extraction + unified analysis (pure function)."""
+    # Normalize analysis object if nested under textAnalysis
+    text_ana = analysis.get("textAnalysis", analysis) if isinstance(analysis, dict) else {}
+    if not isinstance(text_ana, dict):
+        text_ana = analysis
+
     pages = normalized.get("pages", []) or []
     page_of = {i + 1: p.get("text", "") for i, p in enumerate(pages)}
     doc_name = normalized.get("document", {}).get("name", "source")
 
+    raw_facts = text_ana.get("facts") or analysis.get("facts", []) or []
     facts, citations = [], []
-    for i, f in enumerate(analysis.get("facts", [])[:60]):
-        value = (f.get("value") or "").strip()
-        quote = (f.get("quote") or value).strip()
+    for i, f in enumerate(raw_facts[:60]):
+        if isinstance(f, dict):
+            value = (f.get("text") or f.get("value") or "").strip()
+            quote = (f.get("quote") or (f.get("source") or {}).get("quote") if isinstance(f.get("source"), dict) else None) or value
+            src_loc = f.get("source") if isinstance(f.get("source"), dict) else {}
+            page_no = int(src_loc.get("page") or f.get("page") or 0)
+            conf = float(f.get("confidence", 0.95))
+            fact_type = f.get("type") or _classify_fact(value, bool(re.search(r"\d", value)), bool(f.get("timestamp")))
+        else:
+            value = str(f).strip()
+            quote = value
+            page_no = 0
+            conf = 0.9
+            fact_type = "Proposition"
+
         if not value:
             continue
-        page_no = 0
-        for pn, ptext in page_of.items():
-            if quote[:60] and quote[:60] in ptext:
-                page_no = pn
-                break
+
+        if page_no == 0:
+            for pn, ptext in page_of.items():
+                if quote[:50] and quote[:50].lower() in ptext.lower():
+                    page_no = pn
+                    break
+
         fid = f"F-{i + 1:03d}"
         facts.append({
             "id": fid,
             "value": value,
-            "type": _classify_fact(value, bool(re.search(r"\d", value)), bool(f.get("timestamp"))),
+            "type": fact_type,
             "sourceDoc": doc_name,
-            "page": page_no,
+            "page": page_no or 1,
             "section": "",
-            "confidence": round(float(f.get("confidence", 0.8)), 3),
+            "confidence": round(conf, 3),
             "quote": quote,
             "usedInDeliverables": [],
         })
-        citations.append({"id": f"C-{i + 1:03d}", "factId": fid, "quote": quote,
-                          "sourceDoc": doc_name, "page": page_no})
+        citations.append({
+            "id": f"C-{i + 1:03d}",
+            "factId": fid,
+            "quote": quote,
+            "sourceDoc": doc_name,
+            "page": page_no or 1,
+        })
 
+    raw_entities = text_ana.get("entities") or analysis.get("entities", []) or []
     entities = [
-        {"id": f"E-{i + 1:03d}", "name": e.get("name", ""), "category": "Actor / Stakeholder",
-         "mentions": int(e.get("mentions", 1)), "role": e.get("role", "")}
-        for i, e in enumerate(analysis.get("entities", [])[:40])
+        {
+            "id": f"E-{i + 1:03d}",
+            "name": e.get("name", "") if isinstance(e, dict) else str(e),
+            "category": (e.get("type") if isinstance(e, dict) else "Actor / Stakeholder") or "Actor / Stakeholder",
+            "mentions": int(e.get("mentions", 1)) if isinstance(e, dict) else 1,
+            "role": (e.get("role", "") if isinstance(e, dict) else ""),
+        }
+        for i, e in enumerate(raw_entities[:40])
     ]
+
+    raw_events = text_ana.get("events") or analysis.get("events", []) or []
     events = [
-        {"id": f"EV-{i + 1:03d}", "title": e.get("title", "")[:200],
-         "timestamp": str(e.get("timestamp", "")), "impact": e.get("impact", ""),
-         "actors": e.get("actors", [])}
-        for i, e in enumerate(analysis.get("events", [])[:20])
+        {
+            "id": f"EV-{i + 1:03d}",
+            "title": (e.get("event") or e.get("title", ""))[:200] if isinstance(e, dict) else str(e)[:200],
+            "timestamp": str(e.get("date") or e.get("timestamp", "")) if isinstance(e, dict) else "",
+            "impact": (e.get("impact", "") if isinstance(e, dict) else ""),
+            "actors": (e.get("actors", []) if isinstance(e, dict) else []),
+        }
+        for i, e in enumerate(raw_events[:20])
     ]
+
+    raw_metrics = text_ana.get("metrics") or analysis.get("metrics", []) or []
     metrics = [
-        {"id": f"M-{i + 1:03d}", "name": m.get("name", "")[:120], "value": str(m.get("value", "")),
-         "unit": m.get("unit", ""), "context": (m.get("context", "") or "")[:300],
-         "confidence": 0.8}
-        for i, m in enumerate(analysis.get("metrics", [])[:30])
+        {
+            "id": f"M-{i + 1:03d}",
+            "name": (m.get("name") or m.get("context", "") or "Metric")[:120] if isinstance(m, dict) else "Metric",
+            "value": str(m.get("value", "")) if isinstance(m, dict) else str(m),
+            "unit": (m.get("unit", "") if isinstance(m, dict) else ""),
+            "context": ((m.get("context", "") or "")[:300] if isinstance(m, dict) else ""),
+            "confidence": float(m.get("confidence", 0.95)) if isinstance(m, dict) else 0.95,
+        }
+        for i, m in enumerate(raw_metrics[:30])
     ]
+
+    raw_rels = text_ana.get("relationships") or analysis.get("relationships", []) or []
     relationships = [
-        {"id": f"R-{i + 1:03d}", "source": r.get("source", ""), "relation": r.get("relation", "related to"),
-         "target": r.get("target", ""), "confidence": 0.7}
-        for i, r in enumerate(analysis.get("relationships", [])[:30])
+        {
+            "id": f"R-{i + 1:03d}",
+            "source": r.get("source", "") if isinstance(r, dict) else "",
+            "relation": r.get("relation", "related to") if isinstance(r, dict) else "related to",
+            "target": r.get("target", "") if isinstance(r, dict) else "",
+            "confidence": float(r.get("confidence", 0.8)) if isinstance(r, dict) else 0.8,
+        }
+        for i, r in enumerate(raw_rels[:30])
     ]
+
+    raw_actions = text_ana.get("actions") or analysis.get("actions", []) or []
     actions = [
-        {"id": f"A-{i + 1:03d}", "action": a.get("action", "") if isinstance(a, dict) else str(a),
-         "priority": (a.get("priority", "P2 Medium") if isinstance(a, dict) else "P2 Medium"),
-         "timeframe": (a.get("timeframe", "") if isinstance(a, dict) else ""),
-         "owner": (a.get("owner", "") if isinstance(a, dict) else "")}
-        for i, a in enumerate(analysis.get("actions", [])[:20])
+        {
+            "id": f"A-{i + 1:03d}",
+            "action": a.get("action", "") if isinstance(a, dict) else str(a),
+            "priority": (a.get("priority", "P2 Medium") if isinstance(a, dict) else "P2 Medium"),
+            "timeframe": (a.get("timeframe", "") if isinstance(a, dict) else ""),
+            "owner": (a.get("owner", "") if isinstance(a, dict) else ""),
+        }
+        for i, a in enumerate(raw_actions[:20])
     ]
 
     total_facts = len(facts)
@@ -143,8 +199,8 @@ def build_uckr(
         "relationships": relationships,
         "actions": actions,
         "citations": citations,
-        "summary": analysis.get("summary", ""),
-        "provider": analysis.get("provider", "unknown"),
+        "summary": text_ana.get("summary") or analysis.get("summary", ""),
+        "provider": analysis.get("provider", "qwen2.5:7b"),
         "createdAt": utcnow_iso(),
     }
 
@@ -178,7 +234,7 @@ def build_and_save(
     norm = normalized or src.get("normalized") or {}
     uckr = build_uckr(norm, analysis, uid, project_id, source_id)
     saved = save_uckr(uckr)
-    # cache analysis on the source for reuse (Phase 12)
+    # cache analysis on the source for reuse
     get_mongo_db()["sources"].update_one(
         {"$or": [{"sourceId": source_id}, {"id": source_id}]},
         {"$set": {"analysis": {"provider": analysis.get("provider"), "textHash": analysis.get("textHash"),
@@ -195,9 +251,44 @@ def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) 
     if source_id:
         filt["sourceId"] = source_id
     doc = get_mongo_db()["uckr"].find_one(filt, {"_id": 0}, sort=[("version", DESCENDING)])
-    if not doc:
-        raise HTTPException(status_code=404, detail="No UCKR found for this project yet.")
-    return doc
+    if doc:
+        return doc
+
+    # If not found, try to auto-build from existing analysis record or source
+    db = get_mongo_db()
+    ana_filt = {"projectId": project_id, **_owner_filter(uid)}
+    if source_id:
+        ana_filt["sourceId"] = source_id
+    ana_doc = db["analysis"].find_one(ana_filt, {"_id": 0}, sort=[("updatedAt", DESCENDING)])
+    
+    src = None
+    if source_id:
+        try:
+            src = source_service.get_source(source_id, uid)
+        except Exception:
+            pass
+    if not src:
+        src_doc = db["sources"].find_one({"projectId": project_id, **_owner_filter(uid)}, {"_id": 0})
+        if src_doc:
+            src = src_doc
+
+    if ana_doc and src:
+        sid = src.get("sourceId") or src.get("id") or "SRC_001"
+        norm = src.get("normalized") or {}
+        uckr = build_uckr(norm, ana_doc, uid, project_id, sid)
+        return save_uckr(uckr)
+    elif src:
+        sid = src.get("sourceId") or src.get("id") or "SRC_001"
+        from .ai import analysis_service
+        try:
+            rec = analysis_service.analyze_source_sync(project_id, sid, uid)
+            norm = src.get("normalized") or {}
+            uckr = build_uckr(norm, rec.model_dump(), uid, project_id, sid)
+            return save_uckr(uckr)
+        except Exception as e:
+            log.warning("Auto-analysis for UCKR failed: %s", e)
+
+    raise HTTPException(status_code=404, detail="No UCKR found for this project yet.")
 
 
 def list_uckrs(project_id: str, uid: str, limit: int = 20) -> list[dict]:

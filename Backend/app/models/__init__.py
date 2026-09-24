@@ -1,8 +1,36 @@
 """Models package."""
 from .project import ProjectCreate, ProjectUpdate, ProjectOut
 from .source import SourceFileModel
-from .uckr import UckrModel
+from .uckr import (
+    UckrModel,
+    UCKRRecord,
+    Fact,
+    Entity,
+    Event,
+    Metric,
+    Claim,
+    Action,
+    Relationship,
+    Topic,
+    Citation,
+    UCKRStatistics,
+    UCKRValidationResult,
+)
 from .deliverable import DeliverablesModel
+from .analysis import (
+    AnalysisRecord,
+    TextAnalysis,
+    VisualEvidence,
+    ExtractedFact,
+    ExtractedEntity,
+    ExtractedEvent,
+    ExtractedMetric,
+    ExtractedClaim,
+    ExtractedAction,
+    ExtractedTopic,
+    ExtractedRelationship,
+    SourceLocation,
+)
 
 __all__ = [
     "ProjectCreate",
@@ -10,5 +38,30 @@ __all__ = [
     "ProjectOut",
     "SourceFileModel",
     "UckrModel",
+    "UCKRRecord",
+    "Fact",
+    "Entity",
+    "Event",
+    "Metric",
+    "Claim",
+    "Action",
+    "Relationship",
+    "Topic",
+    "Citation",
+    "UCKRStatistics",
+    "UCKRValidationResult",
     "DeliverablesModel",
+    "AnalysisRecord",
+    "TextAnalysis",
+    "VisualEvidence",
+    "ExtractedFact",
+    "ExtractedEntity",
+    "ExtractedEvent",
+    "ExtractedMetric",
+    "ExtractedClaim",
+    "ExtractedAction",
+    "ExtractedTopic",
+    "ExtractedRelationship",
+    "SourceLocation",
 ]
+
