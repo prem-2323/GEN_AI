@@ -73,24 +73,7 @@ async def list_uckrs(project_id: str, user: dict = Depends(get_current_user)):
     return {"ok": True, "versions": uckr_service.list_uckrs(project_id, user["uid"])}
 
 
-# ---- Phase 5: transform ----
-@router.post("/api/projects/{project_id}/transform")
-async def transform(project_id: str, payload: dict[str, Any],
-                    user: dict = Depends(get_current_user)):
-    _check_pid(project_id)
-    types = (payload or {}).get("types") or (payload or {}).get("selectedOutputs") or []
-    if not types:
-        raise HTTPException(status_code=422, detail="types[] is required (max 7).")
-    made = transformation_service.generate_many(
-        user["uid"], project_id, list(types)[:7], (payload or {}).get("config"))
-    return {"ok": True, "count": len(made), "deliverables": made}
-
-
-@router.get("/api/projects/{project_id}/deliverables")
-async def list_deliverables(project_id: str, user: dict = Depends(get_current_user)):
-    _check_pid(project_id)
-    return {"ok": True,
-            "deliverables": transformation_service.list_deliverables(user["uid"], project_id)}
+# ---- Phase 5: transform routes are handled comprehensively in transform_router ----
 
 
 # ---- Phase 6: validate ----

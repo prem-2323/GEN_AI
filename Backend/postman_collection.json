@@ -249,11 +249,58 @@
       ]
     },
     {
-      "name": "12 - Security: Cross-Tenant Denial (User B)",
+      "name": "12 - Phase 6: Transform UCKR into 7 Deliverables",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Uid", "value": "{{uidA}}" }
+        ],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/transform",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceId\": \"{{sourceId}}\",\n  \"uckrVersion\": 1,\n  \"outputTypes\": [\n    \"linkedin\",\n    \"x\",\n    \"executive_summary\",\n    \"advisory\",\n    \"infographic\",\n    \"presentation\",\n    \"video_script\"\n  ],\n  \"configuration\": {\n    \"audience\": \"executive\",\n    \"tone\": \"professional\",\n    \"language\": \"English\",\n    \"detailLevel\": \"medium\",\n    \"objective\": \"awareness\"\n  }\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Transform 201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('7 deliverables generated', () => { pm.expect(pm.response.json().deliverables.length).to.eql(7); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Phase 6: List Project Deliverables",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/deliverables"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('List Deliverables 200', () => pm.response.to.have.status(200));",
+              "pm.test('Deliverables returned', () => { pm.expect(pm.response.json().deliverables.length).to.be.above(0); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 - Security: Cross-Tenant Denial (User B)",
       "request": {
         "method": "GET",
         "header": [{ "key": "X-User-Uid", "value": "{{uidB}}" }],
-        "url": "{{baseUrl}}/api/projects/{{projectId}}/sources/{{sourceId}}/uckr"
+        "url": "{{baseUrl}}/api/projects/{{projectId}}/deliverables"
       },
       "event": [
         {
@@ -268,7 +315,7 @@
       ]
     },
     {
-      "name": "13 - Cleanup Project",
+      "name": "15 - Cleanup Project",
       "request": {
         "method": "DELETE",
         "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }],

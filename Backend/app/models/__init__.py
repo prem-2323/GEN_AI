@@ -16,7 +16,13 @@ from .uckr import (
     UCKRStatistics,
     UCKRValidationResult,
 )
-from .deliverable import DeliverablesModel
+from .deliverable import (
+    DeliverablesModel,
+    DeliverableRecord,
+    TransformationConfig,
+    TransformationRequest,
+    TransformResponse,
+)
 from .analysis import (
     AnalysisRecord,
     TextAnalysis,

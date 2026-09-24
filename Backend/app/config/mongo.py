@@ -168,6 +168,11 @@ def ensure_core_indexes() -> None:
             name="uckr_version_idx",
             background=True,
         )
+        db["deliverables"].create_index(
+            [("projectId", ASCENDING), ("type", ASCENDING)],
+            name="deliverables_project_type_idx",
+            background=True,
+        )
         ensure_temp_ttl_index(db["temp"])
         log.info("MongoDB core indexes verified (db=%s).", get_settings().mongodb_db_name)
     except Exception as exc:
