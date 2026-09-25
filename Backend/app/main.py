@@ -40,6 +40,7 @@ from .api.routes.validation import router as consistency_validation_router
 from .api.routes.uckr import router as uckr_full_router, uckr_router, validation_router, temp_router
 from .api.routes.direct_text_routes import router as direct_text_router
 from .api.routes.export_routes import router as export_routes_router
+from .api.routes.doclink import router as doclink_full_router, doclink_router
 
 # Initialize centralized logging
 setup_logging()
@@ -108,3 +109,5 @@ app.include_router(validation_router)
 app.include_router(temp_router)
 app.include_router(direct_text_router)
 app.include_router(export_routes_router)
+app.include_router(doclink_full_router)
+app.include_router(doclink_router)

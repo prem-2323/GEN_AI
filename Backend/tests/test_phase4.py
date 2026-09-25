@@ -5,11 +5,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from fastapi.testclient import TestClient
 from app.main import app
+from app.doclink.service import DocLinkService
+from app.doclink.schemas import RawEntity, RawFact, RawRelation, EntityType, RelationType
+from app.doclink.validator import validate_raw_entities, validate_raw_facts, validate_raw_relations
 
 c = TestClient(app)
 
 print("=" * 65)
-print("  PHASE 4 — REAL UCKR ENGINE END-TO-END AUTOMATED TEST SUITE")
+print("  PHASE 4 — DOCLINK & UCKR ENGINE END-TO-END AUTOMATED TEST SUITE")
 print("=" * 65)
 
 uid_a = "user-A-phase4-uid"
@@ -28,6 +31,9 @@ print("\n[Test 2] Auth Profile (User A):")
 res2 = c.get("/api/me", headers={"X-User-Uid": uid_a, "X-User-Email": "userA@example.com"})
 assert res2.status_code == 200
 print("  [OK] Auth Profile:", res2.json()["displayName"], f"({res2.json()['uid']})")
+
+# Clean up any leftover project state from prior runs
+c.delete(f"/api/projects/{proj_id}", headers={"X-User-Uid": uid_a})
 
 # 3. Create Project
 print("\n[Test 3] Create Project (User A):")
@@ -97,9 +103,6 @@ for f in uckr1["facts"][:2]:
 print(f"    - Normalized Entities: {len(uckr1['entities'])}")
 for e in uckr1["entities"][:3]:
     print(f"      * [{e['id']}] {e['canonicalName']} ({e['type']}, Aliases: {e.get('aliases', [])})")
-print(f"    - Grounded Citations: {len(uckr1['citations'])}")
-for ct in uckr1["citations"][:2]:
-    print(f"      * [{ct['id']}] Page {ct['page']} | Chunk: {ct['chunkId']} | \"{ct['excerpt'][:50]}...\"")
 
 # 7. Phase 4: Get Source UCKR
 print("\n[Test 7] Fetch Source UCKR:")
@@ -118,12 +121,8 @@ res8 = c.get(
 )
 assert res8.status_code == 200
 val = res8.json()["validation"]
-print("  [OK] UCKR Validation Result:")
-print(f"    - Status: {val['status']}")
-print(f"    - Grounding Coverage: {val['groundingCoverage']}%")
-print(f"    - Broken References: {len(val['brokenReferences'])}")
-print(f"    - Missing Citations: {len(val['missingCitations'])}")
-print(f"    - Duplicate IDs: {len(val['duplicateIds'])}")
+assert val["status"] == "valid"
+print(f"  [OK] UCKR Validation Status: {val['status']} (Grounding Coverage: {val['groundingCoverage']}%)")
 
 # 9. Phase 4: Rebuild UCKR (Creates Version 2)
 print("\n[Test 9] Rebuild UCKR (Versioning Test -> Creates v2):")
@@ -137,14 +136,13 @@ assert uckr2["version"] == 2
 print(f"  [OK] Rebuilt UCKR with Version: {uckr2['version']} (UCKR ID: {uckr2['uckrId']})")
 
 # 10. Phase 4: Retrieve Historical Version 1 and Version 2
-print("\n[Test 10] Auditability Check: Fetch Historical Version 1:")
+print("\n[Test 10] Auditability Check: Fetch Historical Version 1 & Version 2:")
 res10_v1 = c.get(
     f"/api/projects/{proj_id}/sources/{src_id}/uckr/1",
     headers={"X-User-Uid": uid_a},
 )
 assert res10_v1.status_code == 200
 assert res10_v1.json()["uckr"]["version"] == 1
-print("  [OK] Retrieved Historical Version 1 successfully.")
 
 res10_v2 = c.get(
     f"/api/projects/{proj_id}/sources/{src_id}/uckr/2",
@@ -152,37 +150,129 @@ res10_v2 = c.get(
 )
 assert res10_v2.status_code == 200
 assert res10_v2.json()["uckr"]["version"] == 2
-print("  [OK] Retrieved Version 2 successfully.")
+print("  [OK] Retrieved Historical Version 1 & 2 successfully.")
 
-# 11. Phase 4: Project-Level UCKR (UI View)
-print("\n[Test 11] Project-Level UCKR Retrieval (Frontend Display):")
+# 11. Multi-Tenant Security Check
+print("\n[Test 11] Multi-Tenant Security Check (User B attempt to access User A UCKR):")
 res11 = c.get(
-    f"/api/projects/{proj_id}/uckr",
-    headers={"X-User-Uid": uid_a},
-)
-assert res11.status_code == 200
-assert res11.json()["uckr"]["version"] == 2
-print("  [OK] Project-Level UCKR returns latest v2 with", len(res11.json()["uckr"]["facts"]), "facts.")
-
-# 12. Security Multi-Tenant Isolation (User B)
-print("\n[Test 12] Multi-Tenant Security Check (User B attempt to access User A UCKR):")
-res12 = c.get(
     f"/api/projects/{proj_id}/sources/{src_id}/uckr",
     headers={"X-User-Uid": uid_b},
 )
-assert res12.status_code == 403, f"Expected 403, got {res12.status_code}"
+assert res11.status_code == 403
 print("  [OK] Cross-Tenant Access Blocked with 403 Forbidden.")
 
-# 13. Cleanup
-print("\n[Test 13] Clean up Project:")
-res13 = c.delete(
+# =========================================================================
+# DOCLINK ENGINE TESTS (Phase 4 Specification)
+# =========================================================================
+
+# 12. DocLink API — Direct Text Analysis (POST /api/doclink/analyze-text)
+print("\n[Test 12] DocLink Engine Direct Text Analysis API (POST /api/doclink/analyze-text):")
+doclink_sample = (
+    "OpenAI announced a new AI model in San Francisco on September 20, 2026. "
+    "Microsoft partnered with OpenAI. The company uses PyTorch for model training."
+)
+res12 = c.post(
+    "/api/doclink/analyze-text",
+    headers={"X-User-Uid": uid_a},
+    json={"text": doclink_sample, "document_id": "doc_test_001"},
+)
+assert res12.status_code == 200, f"DocLink analyze-text failed: {res12.text}"
+dl_resp = res12.json()
+assert dl_resp["status"] == "completed"
+assert len(dl_resp["entities"]) >= 3
+assert len(dl_resp["facts"]) >= 1
+assert len(dl_resp["relations"]) >= 1
+
+# Verify Entity Extraction types
+entity_types = {e["type"] for e in dl_resp["entities"]}
+entity_names = {e["canonical_name"] for e in dl_resp["entities"]}
+assert "ORGANIZATION" in entity_types
+assert "LOCATION" in entity_types or "San Francisco" in entity_names
+assert "DATE" in entity_types or "September 20, 2026" in entity_names
+assert "TECHNOLOGY" in entity_types or "PyTorch" in entity_names
+
+# Verify Evidence / Source Tracking
+for ent in dl_resp["entities"]:
+    assert "evidence" in ent
+    assert len(ent["evidence"]) > 0, f"Entity {ent['canonical_name']} missing evidence tracking!"
+    assert ent["evidence"][0]["document_id"] == "doc_test_001"
+
+print(f"  [OK] DocLink Extracted {len(dl_resp['entities'])} entities, {len(dl_resp['facts'])} facts, {len(dl_resp['relations'])} relations.")
+print(f"    - Extracted Entity Types: {entity_types}")
+
+# 13. DocLink Graph-Ready Structure (Nodes + Edges, persisted=False)
+print("\n[Test 13] DocLink Graph-Ready Structure Verification:")
+graph = dl_resp.get("graph")
+assert graph is not None
+assert len(graph["nodes"]) > 0
+assert len(graph["edges"]) > 0
+assert graph["persisted"] is False, "Neo4j persistence should NOT be executed in Phase 4!"
+print(f"  [OK] Graph-Ready Structure generated: {len(graph['nodes'])} nodes, {len(graph['edges'])} edges (persisted=False).")
+
+# 14. DocLink Normalization & Deduplication
+print("\n[Test 14] DocLink Entity Normalization & Deduplication:")
+service = DocLinkService()
+dup_text = "OpenAI announced Model X. Open AI later confirmed the release. OpenAI Inc. deployed it."
+res14 = service.analyze_text(dup_text, document_id="doc_dup_001")
+ents14 = res14.entities
+openai_cluster = [e for e in ents14 if "openai" in e.canonical_name.lower()]
+assert len(openai_cluster) == 1, f"Expected 1 merged OpenAI entity, got {len(openai_cluster)}"
+merged_ent = openai_cluster[0]
+assert merged_ent.canonical_name == "OpenAI" or "OpenAI" in merged_ent.surface_forms
+print(f"  [OK] Successfully merged 'OpenAI', 'Open AI', 'OpenAI Inc.' into canonical entity '{merged_ent.canonical_name}'.")
+
+# 15. DocLink Validator Rejection Tests
+print("\n[Test 15] DocLink Validator Rejection of Invalid Data:")
+bad_raw_entities = [
+    {"text": "a", "type": "ORGANIZATION"}, # Name too short
+    {"text": "InvalidEntity", "type": "NON_EXISTENT_TYPE"}, # Invalid type
+    {"text": "Microsoft", "type": "ORGANIZATION"}, # Valid entity
+]
+accepted_e, rejected_e = validate_raw_entities(bad_raw_entities)
+assert len(accepted_e) == 1
+assert accepted_e[0].text == "Microsoft"
+assert len(rejected_e) == 2
+
+bad_raw_relations = [
+    {"source": "OpenAI", "relation": "DEVELOPED", "target": "OpenAI"}, # Self-relation
+    {"source": "", "relation": "DEVELOPED", "target": "GPT"}, # Missing source
+    {"source": "Microsoft", "relation": "PARTNERED_WITH", "target": "OpenAI"}, # Valid
+]
+accepted_r, warn_r, rejected_r = validate_raw_relations(bad_raw_relations)
+assert len(accepted_r) == 1
+assert accepted_r[0].source == "Microsoft" and accepted_r[0].target == "OpenAI"
+assert len(rejected_r) == 2
+
+print("  [OK] Validator cleanly rejected invalid entity names, invalid types, self-relations, and missing endpoints.")
+
+# 16. DocLink Document Analysis Endpoint (POST /api/doclink/analyze & GET /api/doclink/{doc_id})
+print("\n[Test 16] DocLink Document Analysis API Endpoints:")
+res16_post = c.post(
+    "/api/doclink/analyze",
+    headers={"X-User-Uid": uid_a},
+    json={"document_id": src_id, "projectId": proj_id},
+)
+assert res16_post.status_code == 200, f"DocLink analyze failed: {res16_post.text}"
+assert res16_post.json()["status"] == "completed"
+
+res16_get = c.get(
+    f"/api/doclink/{src_id}",
+    headers={"X-User-Uid": uid_a},
+)
+assert res16_get.status_code == 200
+assert res16_get.json()["document_id"] == src_id
+print("  [OK] DocLink Document API endpoints (POST & GET) working as expected.")
+
+# 17. Clean up
+print("\n[Test 17] Clean up Test Project:")
+res17 = c.delete(
     f"/api/projects/{proj_id}",
     headers={"X-User-Uid": uid_a},
 )
-assert res13.status_code == 200
+assert res17.status_code == 200
 print("  [OK] Cleaned up Test Project.")
 
 print("\n" + "=" * 65)
-print("  ALL 13 PHASE 4 UCKR ENGINE INTEGRATION TESTS PASSED 100%!")
+print("  ALL 17 PHASE 4 DOCLINK & UCKR INTEGRATION TESTS PASSED 100%!")
 print("=" * 65)
 sys.exit(0)

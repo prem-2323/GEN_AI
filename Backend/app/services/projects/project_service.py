@@ -139,14 +139,18 @@ def update_project(pid: str, patch: dict, uid: str) -> dict:
 
 def delete_project(pid: str, uid: str) -> bool:
     """Delete project after ownership verification (cascades to pipeline data)."""
-    get_project(pid, uid)  # Will raise 404 or 403 if invalid
+    try:
+        get_project(pid, uid)
+    except HTTPException as exc:
+        if exc.status_code != 404:
+            raise
 
     repo = get_repository("projects")
     repo.delete_many({"$or": [{"id": pid}, {"projectId": pid}]})
 
     # Cascade: remove this owner's pipeline data for the project
     owner = {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
-    for col_name in ("sources", "uckr", "deliverables", "validations", "jobs", "extracted_content", "analysis", "quality", "exports"):
+    for col_name in ("sources", "uckr", "doclink", "deliverables", "validations", "jobs", "extracted_content", "analysis", "quality", "exports"):
         col_repo = get_repository(col_name)
         col_repo.delete_many({"$and": [{"projectId": pid}, owner]})
 
