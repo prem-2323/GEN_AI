@@ -92,3 +92,5 @@ class RAGQueryResponse(BaseModel):
     retrieval: RetrievalMetadata
     insufficient_evidence: bool = False
     query_analysis: Optional[QueryAnalysis] = None
+    optimization: Optional[Dict[str, Any]] = None
+

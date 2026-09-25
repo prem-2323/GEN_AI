@@ -194,9 +194,18 @@ class RAGService:
             reranked_candidates = fused_candidates[: req.top_k]
             rerank_ms = 0.0
 
+        # Step 5.5: Phase 8 Quantum / Hybrid Optimization Layer
+        from ..optimization.service import get_optimization_service
+        opt_service = get_optimization_service()
+        optimized_candidates, opt_metadata = opt_service.optimize_candidates(
+            query=clean_query,
+            candidates=reranked_candidates,
+            max_selected=req.top_k,
+        )
+
         # Step 6: Context Validation (Insufficient Evidence Audit)
         is_sufficient, validation_reason = self.validator.validate(
-            candidates=reranked_candidates,
+            candidates=optimized_candidates,
             min_retrieval_score=req.min_retrieval_score,
         )
 
@@ -225,13 +234,15 @@ class RAGService:
                 ),
                 insufficient_evidence=True,
                 query_analysis=analysis,
+                optimization=opt_metadata.model_dump(),
             )
 
         # Step 7: Context Building
         context_text, selected_candidates = self.context_builder.build_context(
             query=clean_query,
-            candidates=reranked_candidates,
+            candidates=optimized_candidates,
         )
+
 
         # Step 8: RAG Prompt Construction
         prompt_dict = self.prompt_builder.build_prompt(query=clean_query, context_text=context_text)
@@ -275,7 +286,9 @@ class RAGService:
             ),
             insufficient_evidence=False,
             query_analysis=analysis,
+            optimization=opt_metadata.model_dump(),
         )
+
 
 
 _RAG_SERVICE_INSTANCE: Optional[RAGService] = None

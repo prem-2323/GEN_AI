@@ -44,6 +44,8 @@ from .api.routes.doclink import router as doclink_full_router, doclink_router
 from .api.routes.graph import router as neo4j_health_router, graph_router
 from .api.routes.embeddings import router as embeddings_router
 from .api.routes.rag import router as rag_router
+from .api.routes.optimization import router as optimization_router
+
 
 
 # Initialize centralized logging
@@ -119,4 +121,6 @@ app.include_router(neo4j_health_router)
 app.include_router(graph_router)
 app.include_router(embeddings_router)
 app.include_router(rag_router)
+app.include_router(optimization_router)
+
 
