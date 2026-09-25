@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException
-from ..config.firebase import get_firestore_db
-from ..config.mongo import get_mongo_db
+from ...config.firebase import get_firestore_db
+from ...config.mongo import get_mongo_db
 
 log = logging.getLogger("gen-transform.project_service")
 
@@ -228,3 +228,34 @@ def delete_project(pid: str, uid: str) -> bool:
         log.warning("MongoDB delete failed: %s", exc)
 
     return True
+
+
+def get_project_workspace(pid: str, uid: str) -> dict:
+    """Retrieve the unified project workspace aggregating all persistence collections."""
+    proj = get_project(pid, uid)
+    mongo_db = get_mongo_db()
+    owner_filter = {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    
+    sources = list(mongo_db["sources"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    extracted = list(mongo_db["extracted_content"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    analysis = list(mongo_db["analysis"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    uckr = list(mongo_db["uckr"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    deliverables = list(mongo_db["deliverables"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    validations = list(mongo_db["validations"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    quality = list(mongo_db["quality"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    exports = list(mongo_db["exports"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    jobs = list(mongo_db["jobs"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+
+    return {
+        "project": proj,
+        "sources": sources,
+        "extracted_content": extracted,
+        "analysis": analysis,
+        "uckr": uckr,
+        "deliverables": deliverables,
+        "validations": validations,
+        "quality": quality,
+        "exports": exports,
+        "jobs": jobs,
+    }
+

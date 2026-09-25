@@ -5,11 +5,11 @@ import logging
 from typing import Any, Dict
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from ..auth import get_current_user
-from ...services.extraction_service import extract_content, extract_normalized
-from ...services.project_service import get_project
-from ...services.source_service import create_source, get_source, set_stage, store_extraction
-from ...services.storage_service import save_original, validate_upload
+from ...auth import get_current_user
+from ...services.extraction.extraction_service import extract_content, extract_normalized
+from ...services.projects.project_service import get_project
+from ...services.sources.source_service import create_source, get_source, set_stage, store_extraction
+from ...services.storage.storage_service import save_original, validate_upload
 import io
 
 log = logging.getLogger("gen-transform.upload")

@@ -22,9 +22,9 @@ from typing import Any, Optional
 from fastapi import HTTPException
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
-from . import source_service
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
+from ..sources import source_service
 
 log = logging.getLogger("gen-transform.uckr")
 
@@ -225,7 +225,7 @@ def build_and_save(
     uid: str, project_id: str, source_id: str, analysis: dict, normalized: Optional[dict] = None
 ) -> dict:
     """Ownership-checked entry: loads source, builds UCKR, persists, caches analysis."""
-    from .project_service import get_project  # ownership of project
+    from ..projects.project_service import get_project  # ownership of project
 
     get_project(project_id, uid)
     src = source_service.get_source(source_id, uid)
@@ -244,7 +244,7 @@ def build_and_save(
 
 
 def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) -> dict:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
@@ -279,7 +279,7 @@ def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) 
         return save_uckr(uckr)
     elif src:
         sid = src.get("sourceId") or src.get("id") or "SRC_001"
-        from .ai import analysis_service
+        from ..ai import analysis_service
         try:
             rec = analysis_service.analyze_source_sync(project_id, sid, uid)
             norm = src.get("normalized") or {}
@@ -292,7 +292,7 @@ def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) 
 
 
 def list_uckrs(project_id: str, uid: str, limit: int = 20) -> list[dict]:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     cur = get_mongo_db()["uckr"].find(
@@ -303,7 +303,7 @@ def list_uckrs(project_id: str, uid: str, limit: int = 20) -> list[dict]:
 
 # --- legacy shim (kept for old imports) ---
 def extract_uckr_from_text(text: str) -> dict:
-    from .ai_orchestrator import analyze_text
+    from ..ai.pipeline_orchestrator import analyze_text
 
     analysis = analyze_text(text or "")
     return build_uckr(

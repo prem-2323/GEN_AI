@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...services.uckr.uckr_builder import (
     build_and_save_uckr,
     get_latest_uckr_record,
@@ -12,7 +12,7 @@ from ...services.uckr.uckr_builder import (
     get_uckr_version,
     list_uckr_versions,
 )
-from ...services.validation_service import validate_deliverable
+from ...services.validation.validation_service import validate_deliverable
 from ...config.mongo import get_recent_temp_records, log_temp_timestamp
 from ...config.settings import get_settings
 from ...utils.helpers import is_valid_id

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...models.validation import RegenerateRequest, ValidationRecord, ValidationRequest
 from ...services.consistency import (
     get_latest_validation,

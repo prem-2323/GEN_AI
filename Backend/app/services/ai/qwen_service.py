@@ -41,16 +41,16 @@ def _clean_json_str(raw: str) -> str:
     return cleaned
 
 
-def _ollama_client():
+def _ollama_client(timeout: float = 12.0):
     try:
         import ollama
-        return ollama.Client(host=get_settings().ollama_base_url, timeout=180)
+        return ollama.Client(host=get_settings().ollama_base_url, timeout=timeout)
     except Exception:
         return None
 
 
-def _call_ollama(text: str, model_name: str) -> Optional[dict]:
-    client = _ollama_client()
+def _call_ollama(text: str, model_name: str, timeout: float = 12.0) -> Optional[dict]:
+    client = _ollama_client(timeout=timeout)
     if client is None:
         return None
     try:
@@ -108,19 +108,33 @@ def _deterministic_extractive_analysis(text: str) -> dict:
     seen_entities = set()
     seen_facts = set()
 
-    # 1. Paragraph-level facts & quotes
+    # 1. Paragraph-level atomic facts & quotes
     for p_idx, p in enumerate(paragraphs[:30], start=1):
-        sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", p) if len(s.strip()) > 15]
-        for s_idx, sent in enumerate(sentences[:3], start=1):
-            if sent not in seen_facts:
-                seen_facts.add(sent)
-                facts.append({
-                    "id": f"fact_{len(facts) + 1:03d}",
-                    "text": sent,
-                    "type": "Proposition",
-                    "confidence": 0.98,
-                    "source": {"page": max(1, p_idx // 4 + 1), "paragraph": p_idx, "quote": sent[:200]},
-                })
+        raw_sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", p) if len(s.strip()) > 10]
+        for sent in raw_sentences:
+            # Check for compound sentences with clauses
+            clauses = [c.strip() for c in re.split(r";|\band\s+(?=teachers|students|critical|creativity|communication|human)", sent, flags=re.I) if len(c.strip()) > 10]
+            atomic_items = clauses if len(clauses) > 1 else [sent]
+            for item in atomic_items:
+                if item not in seen_facts:
+                    seen_facts.add(item)
+                    f_type = "Proposition"
+                    if re.search(r"\b(risk|depend|over-relian|threat|vulnerab|loss|fail)\b", item, re.I):
+                        f_type = "Risk / Impact"
+                    elif re.search(r"\b(must|should|shall|need to|ensure|implement|preserve|maintain|remain)\b", item, re.I):
+                        f_type = "Action Mandate"
+                    elif re.search(r"\b(can|helps?|provides?|allows?|enables?|create|evaluate|identify)\b", item, re.I):
+                        f_type = "Capability"
+                    elif re.search(r"\b(benefit|save|improve|accessible|advantage)\b", item, re.I):
+                        f_type = "Benefit"
+                    
+                    facts.append({
+                        "id": f"fact_{len(facts) + 1:03d}",
+                        "text": item,
+                        "type": f_type,
+                        "confidence": 0.98,
+                        "source": {"page": max(1, p_idx // 4 + 1), "paragraph": p_idx, "quote": item[:200]},
+                    })
 
     # 2. Extract metrics / numbers
     for p_idx, p in enumerate(paragraphs[:30], start=1):
@@ -256,11 +270,9 @@ def analyze_text_with_qwen(
     provider = "deterministic"
 
     if settings.ollama_enabled:
-        for attempt in range(max_retries):
-            raw_dict = _call_ollama(text, model_to_use)
-            if raw_dict:
-                provider = "ollama"
-                break
+        raw_dict = _call_ollama(text, model_to_use)
+        if raw_dict:
+            provider = "ollama"
 
     if not raw_dict and settings.ai_fallback_enabled:
         raw_dict = _call_gemini(text)
@@ -283,7 +295,7 @@ def analyze_text_with_qwen(
 def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict: Optional[int] = None) -> str:
     """Send generation prompt to local Ollama Qwen model or Gemini fallback."""
     settings = get_settings()
-    client = _ollama_client()
+    client = _ollama_client(timeout=timeout or 8.0)
     if client:
         try:
             resp = client.chat(

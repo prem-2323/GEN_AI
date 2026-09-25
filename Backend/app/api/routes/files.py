@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
 from ...auth import get_current_user
-from ...services.gridfs_service import (
+from ...services.storage.gridfs_service import (
     download_gridfs_file,
     delete_gridfs_file,
     get_gridfs_file_doc,

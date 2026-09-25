@@ -12,9 +12,9 @@ from typing import Any
 
 from fastapi import HTTPException
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
-from .storage_service import save_output
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
+from ..storage.storage_service import save_output
 
 log = logging.getLogger("gen-transform.export")
 
@@ -80,7 +80,7 @@ def _to_pptx(dtype: str, content: dict) -> bytes:
 
 
 def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     fmt = fmt.lower()
     if fmt not in ("md", "json", "pptx"):

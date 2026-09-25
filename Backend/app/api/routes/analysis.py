@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...models.analysis import AnalysisRecord
 from ...services.ai.analysis_service import analyze_source, get_analysis, get_analysis_status
 

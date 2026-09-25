@@ -16,8 +16,8 @@ from typing import Any, Optional
 from fastapi import HTTPException
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
 
 log = logging.getLogger("gen-transform.sources")
 

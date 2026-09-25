@@ -4,9 +4,9 @@ from __future__ import annotations
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...models.project import ProjectCreate, ProjectUpdate, ProjectOut
-from ...services import project_service
+from ...services.projects import project_service
 from ...utils.helpers import is_valid_id
 
 router = APIRouter(tags=["projects"])
@@ -73,3 +73,45 @@ async def delete_project(project_id: str, user: dict = Depends(get_current_user)
     _validate_project_id(project_id)
     project_service.delete_project(project_id, uid=user["uid"])
     return {"ok": True, "deleted": project_id}
+
+
+@router.get("/api/projects/{project_id}/workspace")
+@router.get("/projects/{project_id}/workspace", include_in_schema=False)
+async def get_project_workspace(project_id: str, user: dict = Depends(get_current_user)):
+    """Retrieve full aggregated project workspace state (sources, UCKR, deliverables, validations, quality, exports)."""
+    _validate_project_id(project_id)
+    return project_service.get_project_workspace(project_id, uid=user["uid"])
+
+
+@router.get("/api/projects/{project_id}/files/{file_id}/download")
+@router.get("/projects/{project_id}/files/{file_id}/download", include_in_schema=False)
+async def download_project_file(
+    project_id: str,
+    file_id: str,
+    user: dict = Depends(get_current_user),
+    inline: bool = Query(False),
+):
+    """Download project-scoped file directly from MongoDB GridFS with tenant security."""
+    import io
+    from fastapi.responses import StreamingResponse
+    from ...services.storage.gridfs_service import download_gridfs_file
+
+    _validate_project_id(project_id)
+    # Verifies user owns the project first
+    project_service.get_project(project_id, uid=user["uid"])
+    
+    data_bytes, meta = download_gridfs_file(file_id, uid=user["uid"])
+    filename = meta.get("filename", "download.bin")
+    content_type = meta.get("contentType") or "application/octet-stream"
+    disposition = "inline" if inline else f'attachment; filename="{filename}"'
+
+    return StreamingResponse(
+        io.BytesIO(data_bytes),
+        media_type=content_type,
+        headers={
+            "Content-Disposition": disposition,
+            "Content-Length": str(len(data_bytes)),
+            "X-GridFS-File-ID": file_id,
+        },
+    )
+

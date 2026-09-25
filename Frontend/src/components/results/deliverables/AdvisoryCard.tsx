@@ -169,7 +169,7 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
         <div className="border-b border-slate-800/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              OPERATIONAL THREAT ADVISORY
+              {deliverable.domain ? `${deliverable.domain.toUpperCase()} POLICY & ADVISORY BRIEF` : 'STRATEGIC POLICY & ADVISORY BRIEF'}
             </div>
             <h2 className="text-base sm:text-lg font-bold text-white mt-1">
               {deliverable.title}
@@ -177,14 +177,14 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
           </div>
           <div className="text-xs text-slate-400 font-mono sm:text-right">
             <div>Issued: {deliverable.dateIssued}</div>
-            <div className="text-rose-400">Severity: {deliverable.severity}</div>
+            <div className="text-purple-400">Classification: {deliverable.severity}</div>
           </div>
         </div>
 
         {/* Situation */}
         <div className="space-y-1.5">
           <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-            1. Situation
+            1. Situation & Context
           </h4>
           <p className="text-slate-300 leading-relaxed bg-slate-900/50 p-3.5 rounded-lg border border-slate-800/60">
             {deliverable.situation}
@@ -194,7 +194,7 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
         {/* Key Information */}
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-            2. Key Information & Vulnerability Identifiers
+            2. Key Observations & Verified Findings
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {deliverable.keyInformation.map((item, idx) => (
@@ -208,10 +208,10 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
 
         {/* Threat Impact */}
         <div className="space-y-1.5">
-          <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wider">
-            3. Threat / Impact
+          <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+            3. Risk Analysis & Responsible Considerations
           </h4>
-          <div className="p-3.5 rounded-lg bg-rose-950/20 border border-rose-500/30 text-rose-200 text-xs sm:text-sm leading-relaxed">
+          <div className="p-3.5 rounded-lg bg-amber-950/20 border border-amber-500/30 text-amber-200 text-xs sm:text-sm leading-relaxed">
             {deliverable.threatImpact}
           </div>
         </div>
@@ -219,7 +219,7 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
         {/* Recommended Actions */}
         <div className="space-y-3">
           <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-            4. Recommended Actions
+            4. Recommended Governance & Guidance
           </h4>
           <div className="space-y-3">
             {deliverable.recommendedActions.map((phase, pIdx) => (
@@ -273,8 +273,9 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
           </button>
         </div>
 
-        <span className="text-xs text-slate-400 font-mono">
-          Security Classification: TLP:AMBER
+        <span className="text-xs text-slate-400 font-mono flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Governance: {deliverable.complianceReferences?.[0] || 'Standard Guidelines'}</span>
         </span>
       </div>
     </div>

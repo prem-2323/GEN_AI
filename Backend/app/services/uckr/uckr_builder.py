@@ -192,8 +192,8 @@ def build_and_save_uckr(
     force_rebuild: bool = False,
 ) -> dict:
     """Full lifecycle: loads source + analysis, builds UCKR, handles versioning, saves to MongoDB."""
-    from ..project_service import get_project
-    from ..source_service import get_source
+    from ..projects.project_service import get_project
+    from ..sources.source_service import get_source
     from ..ai import analysis_service
 
     # Ownership verification
@@ -247,7 +247,7 @@ def get_latest_uckr_record(
     source_id: Optional[str] = None,
 ) -> dict:
     """Retrieve latest valid UCKR or auto-build if source exists."""
-    from ..project_service import get_project
+    from ..projects.project_service import get_project
     get_project(project_id, uid)
 
     db = get_mongo_db()
@@ -278,7 +278,7 @@ def get_uckr_version(
     uid: str,
 ) -> dict:
     """Fetch specific version of UCKR for historical auditability."""
-    from ..project_service import get_project
+    from ..projects.project_service import get_project
     get_project(project_id, uid)
 
     db = get_mongo_db()
@@ -298,7 +298,7 @@ def list_uckr_versions(
     limit: int = 20,
 ) -> List[dict]:
     """List historical UCKR versions."""
-    from ..project_service import get_project
+    from ..projects.project_service import get_project
     get_project(project_id, uid)
 
     db = get_mongo_db()

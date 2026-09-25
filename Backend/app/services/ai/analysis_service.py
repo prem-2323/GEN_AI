@@ -10,7 +10,7 @@ from fastapi import HTTPException
 from ...config.mongo import get_mongo_db
 from ...models.analysis import AnalysisRecord
 from .orchestrator import orchestrate_source_analysis, compute_content_hash
-from ..project_service import get_project
+from ..projects.project_service import get_project
 
 log = logging.getLogger("gen-transform.analysis_service")
 
@@ -32,9 +32,30 @@ def analyze_source(
     project = get_project(project_id, uid=firebase_uid)
 
     # 2. Extract text from project source if not passed directly
+    mongo_db = get_mongo_db()
     if not extracted_text:
         source_obj = project.get("source") or project.get("sourceFile") or {}
-        extracted_text = source_obj.get("extractedText") or project.get("description") or project.get("title") or ""
+        extracted_text = source_obj.get("extractedText") or ""
+        
+        if not extracted_text:
+            # Query extracted_content collection
+            ext_doc = mongo_db["extracted_content"].find_one({"sourceId": source_id})
+            if ext_doc:
+                if ext_doc.get("text"):
+                    extracted_text = ext_doc["text"]
+                elif ext_doc.get("chunks"):
+                    extracted_text = "\n\n".join(c.get("text", "") for c in ext_doc.get("chunks", []))
+                elif ext_doc.get("pages"):
+                    extracted_text = "\n\n".join(p.get("text", "") for p in ext_doc.get("pages", []))
+                    
+        if not extracted_text:
+            # Check sources collection
+            src_doc = mongo_db["sources"].find_one({"$or": [{"sourceId": source_id}, {"id": source_id}]})
+            if src_doc:
+                extracted_text = src_doc.get("extractedText") or src_doc.get("text") or ""
+                
+        if not extracted_text:
+            extracted_text = project.get("description") or project.get("title") or ""
 
     if not extracted_text.strip():
         raise HTTPException(status_code=400, detail="Source contains no extracted text to analyze.")

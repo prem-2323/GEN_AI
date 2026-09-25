@@ -80,7 +80,7 @@ def extract_pdf(
                         raw = img.data
                     except Exception:
                         continue
-                    from . import storage_service as store
+                    from ..storage import storage_service as store
 
                     rel = store.save_extracted_image(uid, project_id, source_id, raw)
                     images.append({

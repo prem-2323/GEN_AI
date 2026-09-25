@@ -118,6 +118,8 @@ def check_date_consistency(uckr: Dict[str, Any], deliverable_text: str) -> List[
     deliv_dates = extract_all_dates_from_text(deliverable_text)
     deliv_iso_set = {iso for _, iso in deliv_dates}
 
+    uckr_iso_set = {u_iso for _, _, u_iso in uckr_dates}
+
     for src_id, u_raw, u_iso in uckr_dates:
         if u_iso in deliv_iso_set:
             checks.append(CheckItem(
@@ -140,5 +142,20 @@ def check_date_consistency(uckr: Dict[str, Any], deliverable_text: str) -> List[
                     status="contradiction",
                     message=f"Date contradiction: Expected {u_iso} ({u_raw}) but found {conflicts[0]}.",
                 ))
+
+    # Also detect any ungrounded conflicting date variants in deliverable text
+    for _, d_iso in deliv_dates:
+        if d_iso not in uckr_iso_set:
+            for src_id, u_raw, u_iso in uckr_dates:
+                if len(d_iso) >= 7 and len(u_iso) >= 7 and d_iso[:7] == u_iso[:7] and d_iso != u_iso:
+                    if not any(c.status == "contradiction" and c.category == "date" and c.found == d_iso for c in checks):
+                        checks.append(CheckItem(
+                            category="date",
+                            factId=src_id if "fact" in src_id else None,
+                            expected=u_iso,
+                            found=d_iso,
+                            status="contradiction",
+                            message=f"Date contradiction: Expected {u_iso} ({u_raw}) but found {d_iso}.",
+                        ))
 
     return checks

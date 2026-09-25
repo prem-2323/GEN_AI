@@ -46,7 +46,11 @@ Open: `http://127.0.0.1:8000/docs` (Swagger) · health: `GET /health` and
 ## 3. Tests
 
 ```powershell
-python test_phase2_14.py   # full pipeline: upload -> UCKR -> 7 outputs -> validate -> export -> jobs -> isolation
+python tests/test_phase2_14.py   # full pipeline: upload -> UCKR -> 7 outputs -> validate -> export -> jobs -> isolation
+# or run any specific test:
+python tests/test_phase3.py
+python tests/test_phase6.py
+pytest tests/
 ```
 
 Postman: import `postman_collection.json`. Requests `0-12` cover project CRUD

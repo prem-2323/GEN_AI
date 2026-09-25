@@ -17,18 +17,16 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
-from ..auth import get_current_user
-from ...services import (
-    ai_orchestrator,
-    export_service,
-    job_service,
-    search_service,
-    source_service,
-    transformation_service,
-    uckr_service,
-    validation_service,
-)
-from ...services.project_service import get_project
+from ...auth import get_current_user
+from ...services.ai import pipeline_orchestrator as ai_orchestrator
+from ...services.export import pipeline_export as export_service
+from ...services.jobs import job_service
+from ...services.projects.project_service import get_project
+from ...services.search import search_service
+from ...services.sources import source_service
+from ...services.transformation import pipeline_transformation as transformation_service
+from ...services.uckr import pipeline_uckr as uckr_service
+from ...services.validation import validation_service
 from ...utils.helpers import is_valid_id
 
 router = APIRouter(tags=["pipeline"])

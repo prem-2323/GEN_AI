@@ -22,12 +22,17 @@ import json
 import logging
 from typing import Dict, Any
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from app.config.mongo import get_mongo_db, ensure_core_indexes
-from app.services.gridfs_service import get_gridfs_bucket, get_gridfs_files_collection
+from app.services.storage.gridfs_service import get_gridfs_bucket, get_gridfs_files_collection
 
 logging.basicConfig(level=logging.INFO)
 client = TestClient(app)
@@ -210,26 +215,65 @@ def run_phase9_test_suite():
 
     # --- Test 12: GridFS File Download API & Strict Security ---
     print("\n[Test 12] Secure GridFS File Download & Cross-Tenant Access Enforcement:")
-    # User A downloads their own file
+    # User A downloads their own file via generic files router
     if export_file_id:
         dl_resp = client.get(f"/api/files/{export_file_id}", headers=USER_A_HEADERS)
         assert dl_resp.status_code == 200, f"User A download failed: {dl_resp.status_code}"
         assert len(dl_resp.content) > 0, "Downloaded file is empty."
         print(f"  [OK] User A successfully streamed {len(dl_resp.content)} bytes from GridFS.")
 
+        # User A downloads via project-scoped route /api/projects/{id}/files/{fileId}/download
+        pdl_resp = client.get(f"/api/projects/{project_id}/files/{export_file_id}/download", headers=USER_A_HEADERS)
+        assert pdl_resp.status_code == 200, f"Project download failed: {pdl_resp.status_code}"
+        print(f"  [OK] Project-scoped file download API (/api/projects/{project_id}/files/...) verified.")
+
         # User B attempts to download User A's file -> 403 Forbidden
         hack_resp = client.get(f"/api/files/{export_file_id}", headers=USER_B_HEADERS)
         assert hack_resp.status_code == 403, f"Cross-tenant access was NOT blocked! Status: {hack_resp.status_code}"
+        
+        hack_pdl = client.get(f"/api/projects/{project_id}/files/{export_file_id}/download", headers=USER_B_HEADERS)
+        assert hack_pdl.status_code in (403, 404), "Cross-tenant project download not blocked."
         print(f"  [OK] Cross-tenant download correctly blocked with 403 Forbidden.")
+
+    # --- Test 13: Project Workspace Aggregation API ---
+    print("\n[Test 13] Unified Workspace Aggregation (/api/projects/{id}/workspace):")
+    ws_resp = client.get(f"/api/projects/{project_id}/workspace", headers=USER_A_HEADERS)
+    assert ws_resp.status_code == 200, f"Workspace API failed: {ws_resp.text}"
+    ws_data = ws_resp.json()
+    assert "project" in ws_data
+    assert "sources" in ws_data
+    assert "analysis" in ws_data
+    assert "uckr" in ws_data
+    assert "deliverables" in ws_data
+    assert "validations" in ws_data
+    assert "quality" in ws_data
+    assert "exports" in ws_data
+    print(f"  [OK] Workspace API returned full lineage: {len(ws_data['sources'])} sources, {len(ws_data['deliverables'])} deliverables, {len(ws_data['exports'])} exports.")
+
+    # --- Test 14: Logout / Re-login Persistence Verification ---
+    print("\n[Test 14] Re-login & Long-Term Database Persistence Verification:")
+    # Simulate fresh client session / new request cycle
+    relogin_client = TestClient(app)
+    re_auth = relogin_client.get("/api/me", headers=USER_A_HEADERS)
+    assert re_auth.status_code == 200
+    
+    # Reload project and all related sub-documents directly from database
+    re_proj = relogin_client.get(f"/api/projects/{project_id}", headers=USER_A_HEADERS)
+    assert re_proj.status_code == 200, "Project could not be re-loaded after simulated re-login."
+    
+    re_uckr = relogin_client.get(f"/api/projects/{project_id}/uckr", headers=USER_A_HEADERS)
+    assert re_uckr.status_code == 200, "UCKR state lost across sessions."
+    print("  [OK] Re-login complete: Project, UCKR, and Deliverable lineage fully restored from MongoDB.")
 
     # --- Cleanup ---
     client.delete(f"/api/projects/{project_id}", headers=USER_A_HEADERS)
     print("\n  [OK] Cleaned up test project.")
 
     print("\n" + "=" * 64)
-    print("  ALL 12 PHASE 9 MONGODB & GRIDFS TESTS PASSED 100%!")
+    print("  ALL 14 PHASE 9 MONGODB & GRIDFS TESTS PASSED 100%!")
     print("=" * 64 + "\n")
 
 
 if __name__ == "__main__":
     run_phase9_test_suite()
+

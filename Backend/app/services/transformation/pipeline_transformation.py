@@ -13,9 +13,9 @@ from typing import Any, Optional
 from fastapi import HTTPException
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
-from . import uckr_service
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
+from ..uckr import pipeline_uckr as uckr_service
 
 log = logging.getLogger("gen-transform.transform")
 
@@ -121,7 +121,7 @@ def generate(
     uid: str, project_id: str, uckr_version: Optional[int], dtype: str, config: Optional[dict] = None
 ) -> dict:
     """Generate ONE deliverable from the project's UCKR and persist it."""
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     if dtype not in VALID_TYPES:
         raise HTTPException(status_code=422, detail=f"Unknown type. Valid: {list(VALID_TYPES)}.")
@@ -175,7 +175,7 @@ def generate(
 
 def generate_many(uid: str, project_id: str, types: list[str], config: Optional[dict] = None) -> list[dict]:
     """Generate all requested deliverables from the SAME UCKR version (Phase 5 fan-out)."""
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     uckr = get_mongo_db()["uckr"].find_one(
@@ -186,7 +186,7 @@ def generate_many(uid: str, project_id: str, types: list[str], config: Optional[
     out = [generate(uid, project_id, int(uckr.get("version", 1)), t, config) for t in types]
     # also update the project's embedded deliverables snapshot for the frontend
     try:
-        from .project_service import update_project
+        from ..projects.project_service import update_project
 
         snapshot = {d["type"]: d["content"] for d in out}
         update_project(project_id, {"deliverables": snapshot, "status": "completed"}, uid)
@@ -196,7 +196,7 @@ def generate_many(uid: str, project_id: str, types: list[str], config: Optional[
 
 
 def list_deliverables(uid: str, project_id: str) -> list[dict]:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     cur = get_mongo_db()["deliverables"].find(
@@ -210,7 +210,7 @@ def run_pipeline(source: dict, config: dict, selected_outputs: list) -> dict:
     text = (source or {}).get("extractedText", "") or (source or {}).get("text", {}).get("content", "")
     if not text.strip():
         return {"status": "failed", "error": "No source text provided.", "deliverables": {}}
-    analysis = __import__("app.services.ai_orchestrator", fromlist=["analyze_text"]).analyze_text(text)
+    analysis = __import__("app.services.ai.pipeline_orchestrator", fromlist=["analyze_text"]).analyze_text(text)
     uckr = uckr_service.build_uckr(
         {"pages": [{"pageNumber": 1, "text": text}], "document": {"name": (source or {}).get("name", "source")}},
         analysis, uid="legacy", project_id="legacy", source_id="legacy",

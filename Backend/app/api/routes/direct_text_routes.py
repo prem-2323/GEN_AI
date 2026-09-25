@@ -26,9 +26,9 @@ from ...models.text_schemas import (
     VideoAudioRequest,
 )
 from ...services.ai.qwen_service import generate_qwen_json
-from ...services.extraction_service import extract_content
-from ...services.pptx_generator import create_pptx_presentation
-from ...services.tts_service import (
+from ...services.extraction.extraction_service import extract_content
+from ...services.presentation.pptx_generator import create_pptx_presentation
+from ...services.audio.tts_service import (
     RECOMMENDED_VOICES,
     extract_video_script_narration,
     generate_audio,

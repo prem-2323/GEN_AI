@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...config.firebase import get_firestore_db
 from ...config.mongo import upsert_user_to_mongo
 from ...utils.helpers import utcnow_iso

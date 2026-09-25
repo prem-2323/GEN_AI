@@ -10,54 +10,59 @@ import {
   Video, 
   FileCheck2, 
   Check, 
-  CheckSquare, 
-  Square, 
   Package, 
-  Sparkles,
-  ExternalLink
+  Loader2,
+  HardDriveDownload,
+  CheckCircle2
 } from 'lucide-react';
 import { OutputType, DeliverablesState } from '../../types';
+import { exportApi } from '../../api/exportApi';
+import { ExportFormat } from '../../types/export';
 
 interface ExportItem {
   id: OutputType;
   filename: string;
-  format: string;
+  format: ExportFormat;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 }
 
 const EXPORT_ITEMS: ExportItem[] = [
-  { id: 'linkedin', filename: 'LinkedIn.txt', format: 'TXT', label: 'LinkedIn Post', icon: Linkedin, color: 'text-blue-400' },
-  { id: 'twitter', filename: 'X Thread.txt', format: 'TXT', label: 'X Thread', icon: Twitter, color: 'text-sky-400' },
-  { id: 'advisory', filename: 'Advisory.pdf', format: 'PDF', label: 'Advisory Brief', icon: ShieldAlert, color: 'text-rose-400' },
-  { id: 'executive_summary', filename: 'Summary.pdf', format: 'PDF', label: 'Executive Summary', icon: FileCheck2, color: 'text-emerald-400' },
-  { id: 'presentation', filename: 'Presentation.pptx', format: 'PPTX', label: 'Presentation Deck', icon: Presentation, color: 'text-indigo-400' },
-  { id: 'infographic', filename: 'Infographic.svg', format: 'SVG', label: 'Infographic Package', icon: BarChart3, color: 'text-amber-400' },
-  { id: 'video', filename: 'Video Package.zip', format: 'ZIP', label: 'Video Production Package', icon: Video, color: 'text-purple-400' },
+  { id: 'presentation', filename: 'Presentation.pptx', format: 'pptx', label: 'Presentation Deck (PPTX)', icon: Presentation, color: 'text-indigo-400' },
+  { id: 'executive_summary', filename: 'Executive_Summary.docx', format: 'docx', label: 'Executive Summary (DOCX)', icon: FileCheck2, color: 'text-emerald-400' },
+  { id: 'advisory', filename: 'Advisory.pdf', format: 'pdf', label: 'Advisory Brief (PDF)', icon: ShieldAlert, color: 'text-rose-400' },
+  { id: 'linkedin', filename: 'LinkedIn.txt', format: 'txt', label: 'LinkedIn Post (TXT)', icon: Linkedin, color: 'text-blue-400' },
+  { id: 'twitter', filename: 'X_Thread.txt', format: 'txt', label: 'X Thread (TXT)', icon: Twitter, color: 'text-sky-400' },
+  { id: 'video', filename: 'Narration.mp3', format: 'mp3', label: 'Voiceover Audio (MP3)', icon: Video, color: 'text-purple-400' },
+  { id: 'infographic', filename: 'Infographic.svg', format: 'txt', label: 'Infographic Spec (SVG)', icon: BarChart3, color: 'text-amber-400' },
 ];
 
 interface ExportCenterProps {
+  projectId?: string;
   deliverables?: DeliverablesState;
   onShowToast: (title: string, message: string, type?: 'success' | 'info' | 'error') => void;
   onExportAll: () => void;
 }
 
 export const ExportCenter: React.FC<ExportCenterProps> = ({
+  projectId,
   deliverables,
   onShowToast,
   onExportAll
 }) => {
-  // All checked by default as requested: ☑ LinkedIn.txt, ☑ X Thread.txt, etc.
   const [selectedExports, setSelectedExports] = useState<Record<string, boolean>>({
-    'LinkedIn.txt': true,
-    'X Thread.txt': true,
-    'Advisory.pdf': true,
-    'Summary.pdf': true,
     'Presentation.pptx': true,
+    'Executive_Summary.docx': true,
+    'Advisory.pdf': true,
+    'LinkedIn.txt': true,
+    'X_Thread.txt': true,
+    'Narration.mp3': true,
     'Infographic.svg': true,
-    'Video Package.zip': true,
   });
+
+  const [exportingMap, setExportingMap] = useState<Record<string, boolean>>({});
+  const [downloadedMap, setDownloadedMap] = useState<Record<string, boolean>>({});
 
   const toggleItem = (filename: string) => {
     setSelectedExports(prev => ({
@@ -74,7 +79,7 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
     setSelectedExports(updated);
   };
 
-  const downloadFile = (item: ExportItem): boolean => {
+  const downloadFileDirect = (item: ExportItem): boolean => {
     if (!deliverables) return false;
 
     let content = '';
@@ -92,17 +97,14 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
       content = deliverables?.advisory
         ? `SECURITY ADVISORY: ${deliverables.advisory.title}\nSeverity: ${deliverables.advisory.severity}\n\nSituation:\n${deliverables.advisory.situation}\n\nImpact:\n${deliverables.advisory.threatImpact}`
         : '';
-      mimeType = 'application/pdf';
     } else if (item.id === 'executive_summary') {
       content = deliverables?.executive_summary
         ? `EXECUTIVE SUMMARY\n\n${deliverables.executive_summary.executiveOverview}\n\nKey Findings:\n` +
           deliverables.executive_summary.keyFindings.map(f => `• ${f.title}: ${f.description}`).join('\n')
         : '';
-      mimeType = 'application/pdf';
     } else if (item.id === 'presentation') {
       if (!deliverables?.presentation) return false;
       content = JSON.stringify(deliverables.presentation, null, 2);
-      mimeType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
     } else if (item.id === 'infographic') {
       if (!deliverables?.infographic) return false;
       content = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0f172a"/><text x="40" y="80" fill="#a855f7" font-size="24" font-weight="bold">UCKR Infographic Deliverable</text><text x="40" y="140" fill="#f8fafc" font-size="16">${deliverables.infographic.keyMessage}</text></svg>`;
@@ -110,7 +112,6 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
     } else if (item.id === 'video') {
       if (!deliverables?.video) return false;
       content = JSON.stringify(deliverables.video, null, 2);
-      mimeType = 'application/zip';
     }
 
     if (!content) return false;
@@ -120,31 +121,73 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
     const a = document.createElement('a');
     a.href = url;
     a.download = item.filename;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
     return true;
   };
 
-  const handleExportSelected = () => {
+  const handleExportItem = async (item: ExportItem) => {
+    if (!deliverables || !(deliverables as any)[item.id]) {
+      onShowToast('Deliverable Not Found', `Please generate ${item.label} first.`, 'error');
+      return;
+    }
+
+    setExportingMap(prev => ({ ...prev, [item.filename]: true }));
+
+    // Try backend GridFS export first if projectId is present
+    if (projectId) {
+      try {
+        const deliverableId = `del-${item.id}`;
+        const exportRes = await exportApi.exportDeliverable(projectId, deliverableId, {
+          format: item.format,
+          require_approval: false,
+          custom_title: item.filename.replace(/\.[^/.]+$/, '')
+        });
+
+        if (exportRes.ok && exportRes.export) {
+          const exportId = exportRes.export.exportId || exportRes.export.id || '';
+          const { blob, filename } = await exportApi.downloadExportBlob(projectId, exportId);
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename || item.filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          setDownloadedMap(prev => ({ ...prev, [item.filename]: true }));
+          onShowToast('GridFS Export Ready', `Downloaded official ${item.format.toUpperCase()} from MongoDB GridFS.`, 'success');
+          return;
+        }
+      } catch (err: any) {
+        console.warn('Backend GridFS export fallback to direct client download:', err);
+      } finally {
+        setExportingMap(prev => ({ ...prev, [item.filename]: false }));
+      }
+    }
+
+    // Direct client-side file synthesis fallback
+    const ok = downloadFileDirect(item);
+    setExportingMap(prev => ({ ...prev, [item.filename]: false }));
+    if (ok) {
+      setDownloadedMap(prev => ({ ...prev, [item.filename]: true }));
+      onShowToast('Downloaded', `Saved ${item.filename} to your device.`, 'success');
+    }
+  };
+
+  const handleExportSelected = async () => {
     const selectedList = EXPORT_ITEMS.filter(item => selectedExports[item.filename]);
     if (selectedList.length === 0) {
       onShowToast('No Files Selected', 'Please check at least one deliverable to export.', 'info');
       return;
     }
 
-    const exported = selectedList.filter((item) => downloadFile(item));
-    const skipped = selectedList.length - exported.length;
-
-    if (exported.length === 0) {
-      onShowToast('Nothing To Export', 'The selected deliverables have not been generated yet. Run a transformation first.', 'error');
-      return;
+    for (const item of selectedList) {
+      await handleExportItem(item);
     }
-
-    onShowToast(
-      'Export Complete',
-      `Exported ${exported.length} file(s)${skipped > 0 ? ` — ${skipped} skipped (not generated yet)` : ''}.`,
-      skipped > 0 ? 'info' : 'success'
-    );
   };
 
   const selectedCount = Object.values(selectedExports).filter(Boolean).length;
@@ -156,14 +199,15 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-white tracking-tight uppercase">
-              EXPORT
+              EXPORTS & GRIDFS DELIVERY
             </h3>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">
-              CENTRAL DOWNLOAD HUB
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+              <HardDriveDownload className="w-3 h-3" />
+              <span>MongoDB GridFS Connected</span>
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Download individual artifacts or batch export full multi-channel packages
+            Download PPTX decks, Word DOCX summaries, ReportLab PDFs, Edge TTS audio files, or batch packages.
           </p>
         </div>
 
@@ -187,12 +231,14 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
       {/* Checklist Grid */}
       <div className="space-y-2.5">
         <div className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider mb-2">
-          Download:
+          Deliverable Exports:
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {EXPORT_ITEMS.map((item) => {
             const isChecked = !!selectedExports[item.filename];
+            const isExporting = !!exportingMap[item.filename];
+            const isDownloaded = !!downloadedMap[item.filename];
             const Icon = item.icon;
 
             return (
@@ -212,12 +258,32 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
                     {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                   </div>
                   <Icon className={`w-4 h-4 ${item.color} shrink-0`} />
-                  <span className="font-mono text-xs font-semibold truncate">{item.filename}</span>
+                  <div className="min-w-0">
+                    <div className="font-mono text-xs font-semibold truncate">{item.filename}</div>
+                    <div className="text-[10px] text-slate-400 truncate">{item.label}</div>
+                  </div>
                 </div>
 
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 text-slate-400 border border-slate-800">
-                  {item.format}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleExportItem(item);
+                    }}
+                    disabled={isExporting}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono flex items-center gap-1 border border-slate-700 hover:text-white transition-colors"
+                  >
+                    {isExporting ? (
+                      <Loader2 className="w-3 h-3 animate-spin text-purple-400" />
+                    ) : isDownloaded ? (
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                    ) : (
+                      <Download className="w-3 h-3 text-purple-400" />
+                    )}
+                    <span className="uppercase text-[10px]">{isExporting ? 'Building' : 'Get'}</span>
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -245,7 +311,7 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold transition-all cursor-pointer"
           >
             <Package className="w-3.5 h-3.5 text-purple-400" />
-            <span>[ Export All ]</span>
+            <span>[ Export Full Bundle ]</span>
           </button>
         </div>
       </div>

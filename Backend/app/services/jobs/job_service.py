@@ -18,8 +18,8 @@ from typing import Any, Optional
 from fastapi import HTTPException
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
 
 log = logging.getLogger("gen-transform.jobs")
 
@@ -34,8 +34,8 @@ def _owner_filter(uid: str) -> dict:
 
 def create_job(uid: str, project_id: str, source_id: str, job_type: str = "full_transformation",
                params: Optional[dict] = None) -> dict:
-    from .project_service import get_project
-    from . import source_service
+    from ..projects.project_service import get_project
+    from ..sources import source_service
 
     get_project(project_id, uid)
     src = source_service.get_source(source_id, uid)
@@ -80,7 +80,7 @@ def get_job(job_id: str, uid: str) -> dict:
 
 
 def list_jobs(uid: str, project_id: str, limit: int = 20) -> list[dict]:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     cur = get_mongo_db()["jobs"].find(
@@ -91,9 +91,12 @@ def list_jobs(uid: str, project_id: str, limit: int = 20) -> list[dict]:
 
 def run_full_transformation(job_id: str, uid: str) -> None:
     """Background worker: extraction -> AI -> UCKR -> outputs -> validation."""
-    from . import source_service, ai_orchestrator, uckr_service
-    from . import transformation_service, validation_service
-    from .storage_service import absolute_storage_path
+    from ..sources import source_service
+    from ..ai import pipeline_orchestrator as ai_orchestrator
+    from ..uckr import pipeline_uckr as uckr_service
+    from ..transformation import pipeline_transformation as transformation_service
+    from ..validation import validation_service
+    from ..storage.storage_service import absolute_storage_path
 
     db = get_mongo_db()
     try:
@@ -113,7 +116,7 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         raw = absolute_storage_path(rel).read_bytes() if rel else b""
         ext = ((src.get("file") or {}).get("originalName", "").rsplit(".", 1) + ["txt"])[-1].lower()
 
-        from .extraction_service import extract_normalized
+        from ..extraction.extraction_service import extract_normalized
 
         normalized = extract_normalized(raw, (src.get("file") or {}).get("originalName", "source"),
                                         ext, uid, project_id, source_id, persist_images=True)
@@ -164,7 +167,7 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         try:
             job = db["jobs"].find_one({"jobId": job_id}, {"projectId": 1, "sourceId": 1})
             if job:
-                from . import source_service as _ss
+                from ..sources import source_service as _ss
 
                 try:
                     _ss.set_stage(job["sourceId"], uid, "failed", error=str(exc)[:500])

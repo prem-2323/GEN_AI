@@ -23,7 +23,7 @@ import logging
 import re
 from typing import Any, Optional
 
-from ..config.settings import get_settings
+from ...config.settings import get_settings
 
 log = logging.getLogger("gen-transform.ai")
 
@@ -43,18 +43,18 @@ def text_hash(text: str) -> str:
 # ------------------------------------------------------------------
 # Provider 1: Ollama (Qwen for text, Gemma for vision)
 # ------------------------------------------------------------------
-def _ollama_client():
+def _ollama_client(timeout: float = 12.0):
     try:
         import ollama
 
-        return ollama.Client(host=get_settings().ollama_base_url, timeout=120)
+        return ollama.Client(host=get_settings().ollama_base_url, timeout=timeout)
     except Exception as exc:
         log.debug("ollama client unavailable: %s", exc)
         return None
 
 
 def _ollama_text_analysis(text: str) -> Optional[dict]:
-    client = _ollama_client()
+    client = _ollama_client(timeout=12.0)
     if client is None:
         return None
     settings = get_settings()

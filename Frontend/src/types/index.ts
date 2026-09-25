@@ -160,6 +160,25 @@ export interface UckrSourceRef {
 }
 
 export interface UckrKnowledgeBase {
+  id?: string;
+  uckrId?: string;
+  projectId?: string;
+  sourceId?: string;
+  version?: number;
+  status?: string;
+  statistics?: {
+    totalFacts: number;
+    totalEntities: number;
+    totalEvents: number;
+    totalMetrics: number;
+    totalClaims?: number;
+    totalActions: number;
+    totalSources: number;
+    totalRelationships: number;
+    coverage: number;
+    grounding: number;
+    readiness: string | number;
+  };
   stats: {
     totalFacts: number;
     totalEntities: number;
@@ -176,9 +195,12 @@ export interface UckrKnowledgeBase {
   entities: UckrEntity[];
   events: UckrEvent[];
   metrics: UckrMetric[];
+  claims?: any[];
   relationships: UckrRelationship[];
   actions: UckrAction[];
   sources: UckrSourceRef[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface TransformationConfig {
@@ -219,6 +241,7 @@ export interface TwitterDeliverable {
 export interface AdvisoryDeliverable {
   advisoryId: string;
   title: string;
+  domain?: 'education' | 'cybersecurity' | 'healthcare' | 'finance' | 'technology' | 'general' | string;
   severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'INFORMATIONAL';
   dateIssued: string;
   situation: string;
@@ -229,6 +252,18 @@ export interface AdvisoryDeliverable {
     steps: string[];
   }[];
   complianceReferences: string[];
+}
+
+export interface DeliverableValidationResult {
+  outputType: OutputType;
+  status: 'verified' | 'needs_review' | 'failed';
+  groundingScore: number;
+  supportedClaimsCount: number;
+  unsupportedClaims: string[];
+  unsupportedMetrics: string[];
+  metricsConsistent: boolean;
+  factsConsistent: boolean;
+  entitiesConsistent: boolean;
 }
 
 export interface ExecutiveSummaryDeliverable {
@@ -310,7 +345,10 @@ export interface TransformationDeliverables {
 
 export interface TransformationProject {
   id: string;
+  projectId?: string;
   userId?: string;
+  name?: string;
+  projectName?: string;
   title: string;
   description: string;
   source: SourceFile;

@@ -5,12 +5,12 @@ import uuid
 from typing import Any, Dict, List
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...config.mongo import get_mongo_db
-from ...services.project_service import get_project
+from ...services.projects.project_service import get_project
 from ...utils.helpers import utcnow_iso
 
-from ...services.source_service import delete_source as service_delete_source, get_source as service_get_source
+from ...services.sources.source_service import delete_source as service_delete_source, get_source as service_get_source
 
 router = APIRouter(tags=["sources"])
 

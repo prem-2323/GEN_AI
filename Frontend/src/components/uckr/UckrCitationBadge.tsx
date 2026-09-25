@@ -1,31 +1,51 @@
 import React, { useState } from 'react';
-import { Database, Eye, ShieldCheck, ChevronDown, ChevronUp } from 'lucide-react';
-import { UckrFact, OutputType } from '../../types';
+import { Database, Eye, ShieldCheck, AlertTriangle, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { UckrFact, OutputType, DeliverableValidationResult } from '../../types';
 import { SourceGroundingModal } from './SourceGroundingModal';
 
 interface UckrCitationBadgeProps {
   deliverableType: OutputType;
   facts: UckrFact[];
+  validation?: DeliverableValidationResult | null;
 }
 
-export const UckrCitationBadge: React.FC<UckrCitationBadgeProps> = ({ deliverableType, facts }) => {
+export const UckrCitationBadge: React.FC<UckrCitationBadgeProps> = ({ deliverableType, facts, validation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeFact, setActiveFact] = useState<UckrFact | null>(null);
 
   // Filter facts used in this deliverable (or top relevant)
-  const relevantFacts = facts.filter(f => f.usedInDeliverables?.includes(deliverableType));
-  const displayFacts = relevantFacts.length > 0 ? relevantFacts : facts.slice(0, 4);
+  const relevantFacts = facts.filter((f) => f.usedInDeliverables?.includes(deliverableType));
+  const displayFacts = relevantFacts.length > 0 ? relevantFacts : facts;
+
+  const status = validation?.status || 'verified';
+  const unsupportedList = [
+    ...(validation?.unsupportedMetrics || []),
+    ...(validation?.unsupportedClaims || []),
+  ];
 
   return (
-    <div className="rounded-xl bg-purple-950/20 border border-purple-500/25 p-3 space-y-2 my-2">
+    <div className="rounded-xl bg-purple-950/20 border border-purple-500/25 p-3 space-y-2.5 my-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-            <ShieldCheck className="w-3 h-3 text-emerald-400" />
-            <span>✓ UCKR Verified</span>
-          </span>
+          {status === 'verified' ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <ShieldCheck className="w-3 h-3 text-emerald-400" />
+              <span>✓ UCKR Verified</span>
+            </span>
+          ) : status === 'needs_review' ? (
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+              <AlertTriangle className="w-3 h-3 text-amber-400" />
+              <span>⚠ Review Required ({unsupportedList.length} warning{unsupportedList.length > 1 ? 's' : ''})</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
+              <XCircle className="w-3 h-3 text-rose-400" />
+              <span>✕ Validation Failed</span>
+            </span>
+          )}
+
           <span className="text-[11px] text-slate-400 font-mono">
-            Powered by {displayFacts.length} verified facts
+            Grounding: {validation?.groundingScore ?? 100}% · {displayFacts.length} verified facts
           </span>
         </div>
 
@@ -39,9 +59,24 @@ export const UckrCitationBadge: React.FC<UckrCitationBadgeProps> = ({ deliverabl
         </button>
       </div>
 
+      {/* Unsupported Claims Banner if any */}
+      {unsupportedList.length > 0 && (
+        <div className="p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 space-y-1">
+          <div className="font-semibold flex items-center gap-1.5 text-amber-300">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+            <span>Unsupported claims or metrics detected:</span>
+          </div>
+          <ul className="list-disc pl-5 space-y-0.5 text-[11px]">
+            {unsupportedList.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Citations Pill Bar */}
       <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-        {displayFacts.slice(0, isExpanded ? displayFacts.length : 3).map((fact) => (
+        {displayFacts.slice(0, isExpanded ? displayFacts.length : 4).map((fact) => (
           <button
             key={fact.id}
             onClick={() => setActiveFact(fact)}
@@ -54,12 +89,12 @@ export const UckrCitationBadge: React.FC<UckrCitationBadgeProps> = ({ deliverabl
           </button>
         ))}
 
-        {!isExpanded && displayFacts.length > 3 && (
+        {!isExpanded && displayFacts.length > 4 && (
           <button
             onClick={() => setIsExpanded(true)}
             className="text-[11px] text-purple-400 hover:text-purple-300 font-mono underline ml-1 cursor-pointer"
           >
-            +{displayFacts.length - 3} more facts
+            +{displayFacts.length - 4} more facts
           </button>
         )}
       </div>

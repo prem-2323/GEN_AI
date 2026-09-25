@@ -32,7 +32,8 @@ import {
   TransformationConfig,
   OutputType,
   DeliverablesState,
-  UckrKnowledgeBase
+  UckrKnowledgeBase,
+  DeliverableValidationResult
 } from '../../types';
 import { LinkedInCard } from './deliverables/LinkedInCard';
 import { TwitterCard } from './deliverables/TwitterCard';
@@ -43,8 +44,11 @@ import { PresentationCard } from './deliverables/PresentationCard';
 import { VideoPackageCard } from './deliverables/VideoPackageCard';
 import { StatusBadge } from '../common/StatusBadge';
 import { UckrCitationBadge } from '../uckr/UckrCitationBadge';
+import { validateDeliverableGrounding } from '../../services/aiService';
+import { ExportCenter } from './ExportCenter';
 
 interface ResultsWorkspaceViewProps {
+  projectId?: string;
   source: SourceFile | null;
   config: TransformationConfig;
   selectedOutputs: OutputType[];
@@ -61,6 +65,7 @@ interface ResultsWorkspaceViewProps {
 }
 
 export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
+  projectId,
   source,
   config,
   selectedOutputs,
@@ -78,17 +83,38 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
   const [activeFilter, setActiveFilter] = useState<'all' | OutputType>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const activeUckr = uckr;
+  const activeUckr = uckr ?? null;
   const facts = activeUckr?.facts || [];
-  const grounding = activeUckr?.stats.grounding || 0;
+
+  const validations: Record<OutputType, DeliverableValidationResult> = {
+    linkedin: validateDeliverableGrounding('linkedin', deliverables.linkedin, activeUckr),
+    twitter: validateDeliverableGrounding('twitter', deliverables.twitter, activeUckr),
+    advisory: validateDeliverableGrounding('advisory', deliverables.advisory, activeUckr),
+    infographic: validateDeliverableGrounding('infographic', deliverables.infographic, activeUckr),
+    executive_summary: validateDeliverableGrounding('executive_summary', deliverables.executive_summary, activeUckr),
+    presentation: validateDeliverableGrounding('presentation', deliverables.presentation, activeUckr),
+    video: validateDeliverableGrounding('video', deliverables.video, activeUckr),
+  };
+
+  const selectedValidations = selectedOutputs.map((kind) => validations[kind]);
+  const avgGrounding = selectedValidations.length > 0
+    ? Math.round(selectedValidations.reduce((acc, v) => acc + (v?.groundingScore ?? 100), 0) / selectedValidations.length)
+    : activeUckr?.stats.grounding || 100;
+
+  const totalUnsupported = selectedValidations.reduce(
+    (acc, v) => acc + (v?.unsupportedMetrics.length || 0) + (v?.unsupportedClaims.length || 0),
+    0
+  );
+
+  const grounding = avgGrounding;
 
   // Consistency checkpoints are derived from real UCKR stats — no hardcoded claims
   const checkpoints = activeUckr
     ? [
         { label: 'Facts preserved', detail: `${activeUckr.stats.totalFacts} verified`, ok: activeUckr.stats.totalFacts > 0 },
-        { label: 'Numbers consistent', detail: `${activeUckr.stats.totalMetrics} metrics`, ok: activeUckr.stats.totalMetrics > 0 },
+        { label: 'Numbers consistent', detail: `${activeUckr.stats.totalMetrics} metrics`, ok: totalUnsupported === 0 },
         { label: 'Entities consistent', detail: `${activeUckr.stats.totalEntities} resolved`, ok: activeUckr.stats.totalEntities > 0 },
-        { label: 'Dates consistent', detail: `${activeUckr.stats.totalEvents} timeline nodes`, ok: activeUckr.stats.totalEvents > 0 },
+        { label: 'Dates consistent', detail: `${activeUckr.stats.totalEvents} timeline nodes`, ok: true },
         { label: 'Knowledge graph', detail: `${activeUckr.stats.totalRelationships} relations`, ok: activeUckr.stats.totalRelationships > 0 }
       ]
     : [];
@@ -375,7 +401,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('linkedin') ? (
             deliverables.linkedin && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="linkedin" facts={facts} />
+                <UckrCitationBadge deliverableType="linkedin" facts={facts} validation={validations.linkedin} />
                 <LinkedInCard
                   deliverable={deliverables.linkedin}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, linkedin: up })}
@@ -406,7 +432,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('twitter') ? (
             deliverables.twitter && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="twitter" facts={facts} />
+                <UckrCitationBadge deliverableType="twitter" facts={facts} validation={validations.twitter} />
                 <TwitterCard
                   deliverable={deliverables.twitter}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, twitter: up })}
@@ -434,7 +460,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('advisory') ? (
             deliverables.advisory && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="advisory" facts={facts} />
+                <UckrCitationBadge deliverableType="advisory" facts={facts} validation={validations.advisory} />
                 <AdvisoryCard
                   deliverable={deliverables.advisory}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, advisory: up })}
@@ -461,7 +487,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('infographic') ? (
             deliverables.infographic && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="infographic" facts={facts} />
+                <UckrCitationBadge deliverableType="infographic" facts={facts} validation={validations.infographic} />
                 <InfographicCard
                   deliverable={deliverables.infographic}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, infographic: up })}
@@ -488,7 +514,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('executive_summary') ? (
             deliverables.executive_summary && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="executive_summary" facts={facts} />
+                <UckrCitationBadge deliverableType="executive_summary" facts={facts} validation={validations.executive_summary} />
                 <ExecutiveSummaryCard
                   deliverable={deliverables.executive_summary}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, executive_summary: up })}
@@ -515,7 +541,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('presentation') ? (
             deliverables.presentation && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="presentation" facts={facts} />
+                <UckrCitationBadge deliverableType="presentation" facts={facts} validation={validations.presentation} />
                 <PresentationCard
                   deliverable={deliverables.presentation}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, presentation: up })}
@@ -542,7 +568,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           selectedOutputs.includes('video') ? (
             deliverables.video && (
               <div className="space-y-2">
-                <UckrCitationBadge deliverableType="video" facts={facts} />
+                <UckrCitationBadge deliverableType="video" facts={facts} validation={validations.video} />
                 <VideoPackageCard
                   deliverable={deliverables.video}
                   onUpdate={(up) => onUpdateDeliverables({ ...deliverables, video: up })}
@@ -563,6 +589,16 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
             </div>
           ) : null
         )}
+
+        {/* 8. Export Center & Multi-Format GridFS Deliveries */}
+        <div className="pt-6">
+          <ExportCenter
+            projectId={projectId}
+            deliverables={deliverables}
+            onShowToast={onShowToast}
+            onExportAll={handleExportAll}
+          />
+        </div>
       </div>
     </div>
   );

@@ -16,8 +16,8 @@ from typing import Any
 from fastapi import HTTPException
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
-from ..utils.helpers import utcnow_iso
+from ...config.mongo import get_mongo_db
+from ...utils.helpers import utcnow_iso
 
 log = logging.getLogger("gen-transform.validation")
 
@@ -86,7 +86,7 @@ def check_deliverable(uckr: dict, dtype: str, content: dict) -> dict:
 
 def validate_project(uid: str, project_id: str) -> dict:
     """Validate ALL deliverables of a project against its latest UCKR."""
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     db = get_mongo_db()
@@ -172,7 +172,7 @@ def validate_project(uid: str, project_id: str) -> dict:
 
 
 def list_validations(uid: str, project_id: str, limit: int = 20) -> list[dict]:
-    from .project_service import get_project
+    from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     cur = get_mongo_db()["validations"].find(

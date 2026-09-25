@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 from fastapi import APIRouter, Depends, HTTPException, status
-from ..auth import get_current_user
+from ...auth import get_current_user
 from ...models.deliverable import TransformationRequest, TransformResponse
 from ...services.transformation.transformation_service import (
     transform_content as run_transformation,

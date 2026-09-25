@@ -19,12 +19,12 @@ import uuid
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from fastapi.testclient import TestClient
 from app.main import app
-from app.services.pptx_generator import create_pptx_presentation
-from app.services.tts_service import generate_audio
+from app.services.presentation.pptx_generator import create_pptx_presentation
+from app.services.audio.tts_service import generate_audio
 
 client = TestClient(app)
 

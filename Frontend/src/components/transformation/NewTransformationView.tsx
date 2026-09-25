@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   UploadCloud, 
   FileText, 
@@ -99,12 +99,13 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
   // Run real AI analysis whenever a new source with text arrives and no analysis exists yet
   useEffect(() => {
-    const text = source?.extractedText?.trim();
-    if (!text || analysis) {
+    const currentSource = source;
+    const text = currentSource?.extractedText?.trim();
+    if (!currentSource || !text || analysis) {
       analyzingSourceKeyRef.current = null;
       return;
     }
-    const sourceKey = `${source.id || 'src'}_${text.length}_${text.slice(0, 40)}`;
+    const sourceKey = `${currentSource.id || 'src'}_${text.length}_${text.slice(0, 40)}`;
     if (analyzingSourceKeyRef.current === sourceKey) return;
 
     analyzingSourceKeyRef.current = sourceKey;
@@ -113,11 +114,11 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     const run = async () => {
       setIsAnalyzing(true);
       try {
-        const fresh = await analyzeSourceContent(source);
+        const fresh = await analyzeSourceContent(currentSource);
         if (cancelled) return;
         onUpdateAnalysis(fresh);
         try {
-          const knowledge = await buildUckrKnowledge(source, fresh);
+          const knowledge = await buildUckrKnowledge(currentSource, fresh);
           if (!cancelled) onUpdateUckr(knowledge);
         } catch {
           // UCKR is optional — analysis alone unblocks configuration

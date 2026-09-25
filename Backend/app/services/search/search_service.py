@@ -9,7 +9,7 @@ from typing import Optional
 
 from pymongo import DESCENDING
 
-from ..config.mongo import get_mongo_db
+from ...config.mongo import get_mongo_db
 
 
 def _owner_filter(uid: str) -> dict:
@@ -42,8 +42,8 @@ def search(uid: str, q: str, kind: str = "all", limit: int = 20) -> dict:
 
 def project_overview(uid: str, project_id: str) -> dict:
     """Phase 9 bundle: project + sources + latest UCKR + deliverables + validations + jobs."""
-    from .project_service import get_project
-    from . import source_service
+    from ..projects.project_service import get_project
+    from ..sources import source_service
 
     project = get_project(project_id, uid)
     db = get_mongo_db()

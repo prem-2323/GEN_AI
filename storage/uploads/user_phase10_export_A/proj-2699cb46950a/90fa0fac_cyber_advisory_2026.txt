@@ -1,0 +1,2 @@
+NATIONAL CYBERSECURITY INCIDENT ADVISORY - SEPTEMBER 2026
+Threat Actor Group Alpha launched targeted ransomware campaigns exploiting CVE-2026-9011. Over 40 enterprise cloud nodes were compromised across financial sectors. Mandatory Remediation: All organizations must enforce Multi-Factor Authentication and apply Patch v4.2.

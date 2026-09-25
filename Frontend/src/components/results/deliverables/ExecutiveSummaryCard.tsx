@@ -201,9 +201,14 @@ export const ExecutiveSummaryCard: React.FC<ExecutiveSummaryCardProps> = ({
 
         {/* Key Findings with Metrics */}
         <div className="space-y-3">
-          <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-            Key Findings
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-purple-400 uppercase tracking-wider">
+              Key Findings
+            </h4>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              SOURCE-DERIVED FACTS
+            </span>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {deliverable.keyFindings.map((finding, idx) => (
               <div key={idx} className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-start gap-3">
@@ -224,7 +229,7 @@ export const ExecutiveSummaryCard: React.FC<ExecutiveSummaryCardProps> = ({
         {/* Business & Technical Implications */}
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-            Implications
+            Risk & Operational Considerations
           </h4>
           <ul className="space-y-1.5 pl-4 list-disc text-xs sm:text-sm text-slate-300">
             {deliverable.implications.map((imp, idx) => (
@@ -235,9 +240,14 @@ export const ExecutiveSummaryCard: React.FC<ExecutiveSummaryCardProps> = ({
 
         {/* Recommended Strategic Actions */}
         <div className="space-y-2.5 pt-2 border-t border-slate-800/60">
-          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-            Recommended Actions
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+              Recommended Governance & Actions
+            </h4>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              AI INTERPRETATION & GUIDANCE
+            </span>
+          </div>
           <div className="space-y-2">
             {deliverable.strategicActions.map((action, idx) => (
               <div key={idx} className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/20 text-emerald-200 text-xs flex items-center gap-2.5">
