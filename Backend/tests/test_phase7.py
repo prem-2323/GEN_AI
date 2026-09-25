@@ -27,7 +27,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.main import app
-from app.storage.repository import JSONDocumentRepository
+from app.storage.repository import get_repository
 
 client = TestClient(app)
 
@@ -158,9 +158,9 @@ def run_tests():
     assert val_report.get("overallStatus") in ("PASS", "WARNING")
     assert scores.get("consistency", 0) >= 80.0
 
-    deliv_repo = JSONDocumentRepository("deliverables")
+    deliv_repo = get_repository("deliverables")
     advisory_id = deliv_map["advisory"]
-    # Corrupt advisory in DB to introduce 420 number mismatch
+    # Corrupt advisory in repository to introduce 420 number mismatch
     deliv_repo.update_one(
         {"$or": [{"id": advisory_id}, {"deliverableId": advisory_id}]},
         {"$set": {"content.observations": ["The campaign targeted 420 employees in the finance department."]}}
@@ -179,11 +179,10 @@ def run_tests():
     print(f"  [OK] Detected Contradiction: Expected {num_contradictions[0].get('expected')} but found {num_contradictions[0].get('found')}\n")
 
     # 10. Contradiction Detection — Date Mismatch (15 August -> 16 August)
-    if db is not None:
-        db.deliverables.update_one(
-            {"_id": advisory_id},
-            {"$set": {"content.observations": ["Incident occurred on 16 August 2026 affecting systems."]}}
-        )
+    deliv_repo.update_one(
+        {"$or": [{"id": advisory_id}, {"deliverableId": advisory_id}]},
+        {"$set": {"content.observations": ["Incident occurred on 16 August 2026 affecting systems."]}}
+    )
 
     res = client.post(
         f"/api/projects/{PROJECT_ID}/deliverables/{advisory_id}/validate",
@@ -199,11 +198,10 @@ def run_tests():
 
     # 11. Unsupported Claim Detection — Ungrounded Currency Figure (₹5 crore)
     linkedin_id = deliv_map["linkedin"]
-    if db is not None:
-        db.deliverables.update_one(
-            {"_id": linkedin_id},
-            {"$set": {"content.body": "The phishing campaign caused ₹5 crore in financial losses across operations."}}
-        )
+    deliv_repo.update_one(
+        {"$or": [{"id": linkedin_id}, {"deliverableId": linkedin_id}]},
+        {"$set": {"content.body": "The phishing campaign caused ₹5 crore in financial losses across operations."}}
+    )
 
     res = client.post(
         f"/api/projects/{PROJECT_ID}/deliverables/{linkedin_id}/validate",

@@ -1,4 +1,4 @@
-"""Upload API routes for projects and standalone documents."""
+"""Upload API routes for projects and standalone documents (Phase 3 Ingestion)."""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
@@ -19,7 +19,7 @@ async def upload_project_source(
     file: UploadFile = File(...),
     user: dict = Depends(get_current_user),
 ):
-    """Upload a source document to a project and run extraction."""
+    """Upload a source document to a project and run Phase 3 Ingestion & Extraction."""
     uid = user["uid"]
     filename = file.filename or "upload.bin"
     contents = await file.read()
@@ -44,16 +44,29 @@ async def upload_source(
     file: UploadFile = File(...),
     user: dict = Depends(get_current_user),
 ):
-    """Standalone lightweight source upload & extraction endpoint."""
+    """Standalone source upload & Phase 3 Ingestion/Extraction endpoint."""
     filename = file.filename or "source.txt"
     contents = await file.read()
 
     try:
-        return ingestion_service.process_standalone_upload(
+        doc = ingestion_service.process_document_ingestion(
             filename=filename,
             content_bytes=contents,
             content_type=file.content_type or "",
+            uid=user["uid"],
         )
+        return {
+            "ok": True,
+            "documentId": doc.documentId,
+            "filename": doc.filename,
+            "fileType": doc.fileType,
+            "mimeType": doc.mimeType,
+            "sizeBytes": doc.sizeBytes,
+            "status": "processed",
+            "extractionStatus": doc.extractionStatus,
+            "storagePath": f"documents/{doc.documentId}/original/{doc.filename}",
+            "extracted": doc.model_dump(by_alias=True),
+        }
     except AppException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
     except Exception as exc:

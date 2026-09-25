@@ -20,11 +20,9 @@ from ...services.consistency import (
     validate_single_deliverable,
 )
 from ...services.transformation.transformation_service import get_single_deliverable
-from ...storage.repository import JSONDocumentRepository
+from ...storage.repository import get_repository
 
 router = APIRouter(tags=["consistency_validation"])
-
-uckr_repo = JSONDocumentRepository("uckr")
 
 
 @router.post(
@@ -71,7 +69,14 @@ async def validate_individual_deliverable(
     source_id = deliv.get("sourceId")
     uckr_version = deliv.get("uckrVersion", 1)
 
-    uckr_doc = uckr_repo.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version})
+    uckr_repo = get_repository("uckr")
+    uckr_doc = None
+    if source_id:
+        uckr_doc = uckr_repo.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version})
+        if not uckr_doc:
+            uckr_doc = uckr_repo.find_one({"projectId": project_id, "sourceId": source_id}, sort=[("version", -1)])
+    if not uckr_doc:
+        uckr_doc = uckr_repo.find_one({"projectId": project_id}, sort=[("version", -1)])
 
     if not uckr_doc:
         raise HTTPException(status_code=404, detail="Canonical UCKR document not found.")
