@@ -64,6 +64,7 @@ export type CoreSystemStatus = 'ready' | 'verified' | 'processing' | 'active' | 
 
 export interface SourceFile {
   id: string;
+  projectId?: string;
   name: string;
   type: 'PDF' | 'DOCX' | 'TXT' | 'IMAGE' | 'VIDEO' | 'TEXT';
   size: string;

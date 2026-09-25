@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...storage import get_storage
 
 router = APIRouter(prefix="/api/files", tags=["Files Storage"])
@@ -27,7 +27,7 @@ def _extract_uid(user: Any) -> str:
 @router.get("/{file_id}")
 async def download_file(
     file_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
     inline: bool = Query(False, description="View inline in browser rather than attachment download"),
 ):
     """Stream raw file binary from file storage with tenant ownership check."""
@@ -58,7 +58,7 @@ async def download_file(
 @router.get("/{file_id}/meta")
 async def get_file_metadata(
     file_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Get metadata for a specific stored file."""
     uid = _extract_uid(user)
@@ -74,7 +74,7 @@ async def get_file_metadata(
 @router.delete("/{file_id}")
 async def delete_file(
     file_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Delete a file from storage."""
     uid = _extract_uid(user)
@@ -93,7 +93,7 @@ async def delete_file(
 async def list_user_files(
     project_id: Optional[str] = Query(None, description="Filter by project ID"),
     file_type: Optional[str] = Query(None, description="Filter by fileType: source, extracted_image, export"),
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """List all stored files owned by the authenticated user."""
     uid = _extract_uid(user)

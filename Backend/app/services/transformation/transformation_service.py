@@ -116,7 +116,7 @@ def generate_single_deliverable(
         "deliverableId": deliverable_id,
         "id": deliverable_id,
         "userId": user_uid,
-        "firebaseUid": user_uid,
+        "userId": user_uid,
         "projectId": project_id,
         "sourceId": source_id,
         "uckrId": uckr_id_str,

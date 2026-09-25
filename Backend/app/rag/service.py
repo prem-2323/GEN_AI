@@ -48,13 +48,7 @@ class RAGGenerationEngine:
             latency_ms = round((time.time() - t_start) * 1000, 2)
             return answer, latency_ms
 
-        # 2. Try Gemini API
-        answer = self._call_gemini(prompt, settings)
-        if answer:
-            latency_ms = round((time.time() - t_start) * 1000, 2)
-            return answer, latency_ms
-
-        # 3. Grounded Extractive Fallback Engine
+        # 2. Grounded Extractive Fallback Engine
         answer = self._generate_grounded_fallback(candidates)
         latency_ms = round((time.time() - t_start) * 1000, 2)
         return answer, latency_ms

@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 import { ConsistencyValidationReport, DeliverableValidationResult } from '../types/validation';
 
 export const validationApi = {
@@ -7,7 +7,7 @@ export const validationApi = {
     sourceId: string,
     payload?: any
   ): Promise<ConsistencyValidationReport> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/validate`, {
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/validate`, {
       method: 'POST',
       body: JSON.stringify(payload || {}),
     });
@@ -17,14 +17,14 @@ export const validationApi = {
     projectId: string,
     sourceId: string
   ): Promise<ConsistencyValidationReport> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/validation`);
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/validation`);
   },
 
   validateDeliverable: async (
     projectId: string,
     deliverableId: string
   ): Promise<{ ok: boolean; result: DeliverableValidationResult }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/validate`, {
+    return workspaceFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/validate`, {
       method: 'POST',
     });
   },
@@ -34,7 +34,7 @@ export const validationApi = {
     deliverableId: string,
     payload?: any
   ): Promise<any> => {
-    return authenticatedFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/regenerate`, {
+    return workspaceFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/regenerate`, {
       method: 'POST',
       body: JSON.stringify(payload || {}),
     });
@@ -43,7 +43,7 @@ export const validationApi = {
   validateProject: async (
     projectId: string
   ): Promise<{ ok: boolean; validation: any }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/validate`, {
+    return workspaceFetch(`/api/projects/${projectId}/validate`, {
       method: 'POST',
     });
   },

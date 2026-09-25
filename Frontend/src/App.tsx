@@ -23,9 +23,8 @@ import { AgentsView } from './components/pages/AgentsView';
 import { McpView } from './components/pages/McpView';
 import { SettingsView } from './components/pages/SettingsView';
 import { UckrPanel } from './components/uckr/UckrPanel';
-import { FirebaseProvider, useFirebase } from './context/FirebaseContext';
+import { WorkspaceProvider, useWorkspace } from './context/WorkspaceContext';
 import { generateDeliverables } from './services/aiService';
-import { AuthModal } from './components/auth/AuthModal';
 
 const DEFAULT_CONFIG: TransformationConfig = {
   targetAudience: 'General Public',
@@ -44,13 +43,11 @@ export interface PipelineResults {
 
 function AppContent() {
   const {
-    user,
-    cloudProjects,
+    projects,
     isSyncing,
-    saveProjectToCloud,
-    deleteProjectFromCloud,
-    signInWithGoogle
-  } = useFirebase();
+    saveProject,
+    deleteProject
+  } = useWorkspace();
 
   const [currentView, setCurrentView] = useState<ViewState>('dashboard');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -64,12 +61,9 @@ function AppContent() {
   const [selectedOutputs, setSelectedOutputs] = useState<OutputType[]>([]);
   const [deliverables, setDeliverables] = useState<DeliverablesState>({});
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
-  const [savedCloudIds, setSavedCloudIds] = useState<string[]>([]);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup'>('signin');
+  const [savedProjectIds, setSavedProjectIds] = useState<string[]>([]);
 
-  // Projects come from Firestore only — no local mock projects
-  const combinedProjects = cloudProjects;
+  const combinedProjects = projects;
 
   const addToast = (title: string, message: string, type: 'success' | 'info' | 'error' = 'info') => {
     const id = `toast-${Date.now()}-${Math.random()}`;
@@ -160,12 +154,11 @@ function AppContent() {
     setCurrentView('results');
     addToast('Deliverables Ready', `Synthesized ${selectedOutputs.length} deliverables from ${source?.name || 'source'}.`, 'success');
 
-    // If user is logged into Firebase, automatically persist the transformation
-    if (user && source) {
+    if (source) {
       const newProjectId = currentProjectId || `proj-${Date.now()}`;
       const projectRecord: TransformationProject = {
         id: newProjectId,
-        userId: user.uid,
+        userId: 'local-workspace',
         title: source.name.replace(/\.[^/.]+$/, '') || 'Untitled Transformation',
         description: `${config.targetAudience} · ${config.tone} · ${selectedOutputs.length} deliverables`,
         source,
@@ -180,12 +173,12 @@ function AppContent() {
       };
       if (projectRecord.analysis) {
         try {
-          const saved = await saveProjectToCloud(projectRecord);
+          const saved = await saveProject(projectRecord);
           if (saved) {
-            setSavedCloudIds((prev) => [...prev, newProjectId]);
-            addToast('Synced to Cloud', 'Transformation saved to your cloud workspace.', 'success');
+            setSavedProjectIds((prev) => [...new Set([...prev, newProjectId])]);
+            addToast('Project Saved', 'Transformation saved to the local workspace.', 'success');
           } else {
-            console.warn('Auto cloud save skipped: persistence unavailable.');
+            console.warn('Automatic project save failed.');
           }
         } catch (err) {
           console.error('Auto cloud save failed:', err);
@@ -194,15 +187,8 @@ function AppContent() {
     }
   };
 
-  // Manual Save to Cloud
-  const handleSaveToCloud = async () => {
-    if (!user) {
-      addToast('Sign In Required', 'Please sign in or create an account to save to the cloud.', 'info');
-      setAuthModalMode('signin');
-      setIsAuthModalOpen(true);
-      return;
-    }
-
+  // Save the current project to the local workspace.
+  const handleSaveToWorkspace = async () => {
     if (!source || !analysis) {
       addToast('Nothing To Save', 'Upload a source and run generation before saving.', 'error');
       return;
@@ -211,7 +197,7 @@ function AppContent() {
     const projectId = currentProjectId || `proj-${Date.now()}`;
     const projectRecord: TransformationProject = {
       id: projectId,
-      userId: user.uid,
+      userId: 'local-workspace',
       title: source.name.replace(/\.[^/.]+$/, '') || 'Untitled Transformation',
       description: `${config.targetAudience} · ${config.tone} · ${selectedOutputs.length} deliverables`,
       source,
@@ -226,15 +212,15 @@ function AppContent() {
     };
 
     try {
-      const success = await saveProjectToCloud(projectRecord);
+      const success = await saveProject(projectRecord);
       if (success) {
-        setSavedCloudIds((prev) => [...prev, projectId]);
-        addToast('Saved to Cloud', 'Project and deliverables stored in your cloud workspace.', 'success');
+        setSavedProjectIds((prev) => [...new Set([...prev, projectId])]);
+        addToast('Project Saved', 'Project and deliverables saved to the local workspace.', 'success');
       } else {
-        addToast('Save Failed', 'Could not store the project. Check that the backend is running and you are signed in.', 'error');
+        addToast('Save Failed', 'Could not save the project. Check that the backend is running.', 'error');
       }
     } catch (err) {
-      addToast('Save Failed', 'Could not store the project. Check the backend connection or Firestore permissions.', 'error');
+      addToast('Save Failed', 'Could not save the project. Check the backend connection.', 'error');
     }
   };
 
@@ -265,12 +251,12 @@ function AppContent() {
     );
   };
 
-  // Create Project in FastAPI / MongoDB Atlas
+  // Create a project in the local workspace.
   const handleCreateProject = async (name: string, description?: string) => {
     try {
-      const newProj = await saveProjectToCloud({
+      const saved = await saveProject({
         id: `proj-${Date.now()}`,
-        userId: user?.uid,
+        userId: 'local-workspace',
         title: name,
         description: description || 'Enterprise transformation workspace.',
         source: {
@@ -298,9 +284,9 @@ function AppContent() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
-      addToast('Project Created', `Project "${name}" registered in MongoDB.`, 'success');
+      addToast('Project Created', `Project "${name}" saved to the local workspace.`, saved ? 'success' : 'error');
     } catch (err: any) {
-      addToast('Create Project', `Registered project "${name}" in workspace.`, 'info');
+      addToast('Create Project Failed', `Could not save project "${name}".`, 'error');
     }
   };
 
@@ -321,21 +307,17 @@ function AppContent() {
     addToast('Project Loaded', `Opened workspace for "${project.title || project.name || 'Project'}".`, 'info');
   };
 
-  // Delete project — MongoDB Atlas & Firestore
+  // Delete a project from local workspace storage.
   const handleDeleteProject = async (projectId: string) => {
-    if (user && cloudProjects.some((p) => p.id === projectId)) {
-      try {
-        await deleteProjectFromCloud(projectId);
-        addToast('Project Deleted', 'Project removed from your cloud workspace.', 'info');
-      } catch (err) {
-        addToast('Delete Failed', 'Could not delete project.', 'error');
-      }
-    } else {
-      addToast('Sign In Required', 'Projects are stored in your cloud workspace. Sign in to manage them.', 'info');
-    }
+    const deleted = await deleteProject(projectId);
+    addToast(
+      deleted ? 'Project Deleted' : 'Delete Failed',
+      deleted ? 'Project removed from the local workspace.' : 'Could not delete project.',
+      deleted ? 'info' : 'error'
+    );
   };
 
-  const isCurrentSaved = user ? savedCloudIds.includes(currentProjectId) || cloudProjects.some((p) => p.id === currentProjectId) : false;
+  const isCurrentSaved = savedProjectIds.includes(currentProjectId) || projects.some((p) => p.id === currentProjectId);
 
   return (
     <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col font-sans antialiased selection:bg-purple-600 selection:text-white">
@@ -358,18 +340,6 @@ function AppContent() {
           currentView={currentView}
           onNavigate={setCurrentView}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
-          onOpenAuthModal={(mode) => {
-            setAuthModalMode(mode);
-            setIsAuthModalOpen(true);
-          }}
-        />
-
-        {/* Sign In & Sign Up Modal */}
-        <AuthModal
-          isOpen={isAuthModalOpen}
-          onClose={() => setIsAuthModalOpen(false)}
-          initialMode={authModalMode}
-          onSuccess={(msg) => addToast('Authentication', msg, 'success')}
         />
 
         {/* Dynamic Page Router */}
@@ -427,9 +397,9 @@ function AppContent() {
               onAddDeliverable={handleAddDeliverable}
               onPublishMcp={handlePublishMcp}
               onShowToast={addToast}
-              onSaveToCloud={handleSaveToCloud}
-              isSavedToCloud={isCurrentSaved}
-              isSavingToCloud={isSyncing}
+              onSaveToWorkspace={handleSaveToWorkspace}
+              isSavedToWorkspace={isCurrentSaved}
+              isSavingToWorkspace={isSyncing}
             />
           )}
 
@@ -499,8 +469,8 @@ function AppContent() {
 
 export default function App() {
   return (
-    <FirebaseProvider>
+    <WorkspaceProvider>
       <AppContent />
-    </FirebaseProvider>
+    </WorkspaceProvider>
   );
 }

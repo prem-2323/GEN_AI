@@ -35,7 +35,7 @@ class ExportRequest(BaseModel):
 
 class ExportRecord(BaseModel):
     exportId: str
-    firebaseUid: str
+    userId: str
     projectId: str
     sourceId: Optional[str] = None
     deliverableId: str

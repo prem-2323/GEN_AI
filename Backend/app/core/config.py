@@ -47,18 +47,34 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = DEFAULT_GEMINI_MODEL
 
-    # Development Flags
-    dev_bypass_auth: bool = True
-
-    # Neo4j Graph Database Configuration (Phase 5)
+    # Neo4j Graph Database Configuration
+    graph_backend: str = "neo4j"  # "neo4j" | "mock"
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_username: str = "neo4j"
     neo4j_password: str = "password"
     neo4j_database: str = "neo4j"
     neo4j_enabled: bool = True
 
-    # Vector & Embeddings Configuration (Phase 6 & 7)
+    # Vector & Embeddings Configuration (Phase 3, 4, 6 & 7)
+    vector_backend: str = "faiss"  # "faiss" | "memory"
     vector_dimension: int = 384
+    embedding_provider: str = "sentence_transformers"  # "sentence_transformers" | "mock" | "deterministic"
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    embedding_device: str = "auto"  # "auto" | "cuda" | "cpu"
+    embedding_batch_size: int = 16
+    embedding_normalize: bool = True
+
+    # Phase 5 Hybrid Retrieval Configuration
+    vector_top_k: int = 10
+    graph_top_k: int = 10
+    hybrid_top_k: int = 5
+    rrf_k: int = 60
+
+    # Teacher Model Configuration
+    teacher_model: str = "qwen3:4b"
+    teacher_timeout_seconds: int = 180
+    teacher_max_retries: int = 2
+    dataset_source: str = "grounded"  # "grounded" | "teacher"
 
 
     model_config = SettingsConfigDict(

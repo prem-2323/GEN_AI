@@ -1,5 +1,3 @@
-import { auth } from '../lib/firebase';
-
 export class ApiError extends Error {
   status: number;
   data: any;
@@ -65,24 +63,13 @@ export async function apiFetch<T = any>(
 }
 
 /**
- * Authenticated fetch helper:
- * Automatically extracts Firebase ID token & sets Authorization: Bearer <token>
- * Never manually sends Firebase UID in body.
+ * Send API requests under the local, anonymous workspace identity.
  */
-export async function authenticatedFetch<T = any>(
+export async function workspaceFetch<T = any>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const user = auth.currentUser;
-  const token = user ? await user.getIdToken().catch(() => '') : '';
-  const uid = user?.uid || 'guest-user';
-
   const headers = new Headers(options.headers || {});
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  // Local/testing development header
-  headers.set('X-User-Uid', uid);
 
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
@@ -120,22 +107,14 @@ export async function authenticatedFetch<T = any>(
 }
 
 /**
- * Helper to upload FormData files with authentication
+ * Upload FormData files under the local workspace identity.
  */
-export async function authenticatedUpload<T = any>(
+export async function workspaceUpload<T = any>(
   path: string,
   formData: FormData,
   options: RequestInit = {}
 ): Promise<T> {
-  const user = auth.currentUser;
-  const token = user ? await user.getIdToken().catch(() => '') : '';
-  const uid = user?.uid || 'guest-user';
-
   const headers = new Headers(options.headers || {});
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  headers.set('X-User-Uid', uid);
   // Do NOT set Content-Type header so browser calculates multipart boundary
 
   const baseUrl = getApiBaseUrl();

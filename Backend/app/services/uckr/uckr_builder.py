@@ -140,7 +140,6 @@ def build_uckr_from_analysis(
         id=uckr_id,
         projectId=project_id,
         sourceId=source_id,
-        firebaseUid=uid,
         userId=uid,
         version=version,
         previousVersion=previous_version,

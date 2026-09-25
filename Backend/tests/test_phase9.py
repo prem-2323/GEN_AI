@@ -1,19 +1,19 @@
-"""Phase 9 — MongoDB Everything & GridFS Architecture Automated Test Suite.
+"""Phase 9 — Local JSON and filesystem persistence test suite.
 
 Verifies:
-  1. MongoDB Atlas connectivity & all 11 collections + GridFS index initialization
-  2. Firebase Auth -> User profile persistence in `users`
+    1. Local JSON repository and filesystem storage
+    2. Anonymous local workspace access
   3. Project creation & configuration in `projects`
-  4. File upload (PDF/TXT) stored in MongoDB GridFS (`contentforge_files`) & metadata in `sources`
+    4. File upload (PDF/TXT) stored on disk & metadata in `sources`
   5. Extracted content (pages, chunks, images) stored in `extracted_content`
   6. AI Analysis results stored in `analysis`
   7. UCKR versioned knowledge representation stored in `uckr`
   8. Transformation deliverables stored in `deliverables`
   9. Consistency validation stored in `validations`
  10. Quality scores stored in `quality`
- 11. Export artifact generation & binary stored in GridFS + metadata in `exports`
+ 11. Export artifact generation & binary stored on disk + metadata in `exports`
  12. Background job tracking stored in `jobs`
- 13. Secure GridFS file download & cross-tenant security check (User B blocked -> 403)
+ 13. Local file download and workspace ownership checks
 """
 from __future__ import annotations
 
@@ -52,10 +52,9 @@ USER_B_HEADERS = {
 
 def run_phase9_test_suite():
     print("\n" + "=" * 64)
-    print("  PHASE 9 — MONGODB EVERYTHING & GRIDFS ARCHITECTURE TEST SUITE")
+    print("  PHASE 9 — LOCAL REPOSITORY & FILESYSTEM STORAGE TEST SUITE")
     print("=" * 64 + "\n")
 
-    users_repo = get_repository("users")
     projects_repo = get_repository("projects")
 
     # --- Test 1: Verify Storage Abstraction & Repository Layer ---
@@ -64,22 +63,17 @@ def run_phase9_test_suite():
     assert storage is not None, "FileStorageInterface could not be initialized."
     print("  [OK] LocalFileSystemStorage and JSONDocumentRepository active.")
 
-    # --- Test 2: User Persistence in `users` repository ---
-    print("\n[Test 2] User Authentication & Profile Persistence:")
-    me_resp = client.get("/api/me", headers=USER_A_HEADERS)
-    assert me_resp.status_code == 200, f"/api/me failed: {me_resp.text}"
-    user_data = me_resp.json()
-    user_uid = user_data["uid"]
-
-    user_doc = users_repo.find_one({"$or": [{"firebaseUid": user_uid}, {"userId": user_uid}]})
-    assert user_doc is not None, "User document was not saved to `users` repository."
-    print(f"  [OK] User document stored in `users`: id={user_doc.get('userId')} email={user_doc.get('email')}")
+    # --- Test 2: Anonymous local workspace ---
+    print("\n[Test 2] Anonymous local workspace access:")
+    workspace_resp = client.get("/api/projects")
+    assert workspace_resp.status_code == 200, f"Workspace request failed: {workspace_resp.text}"
+    print("  [OK] Project listing is available without sign-in.")
 
     # --- Test 3: Project in `projects` collection ---
-    print("\n[Test 3] Project Creation in MongoDB `projects`:")
+    print("\n[Test 3] Project Creation in local JSON storage:")
     proj_payload = {
         "name": "Phase 9 Enterprise Cyber Report",
-        "description": "Demonstrating full MongoDB persistent state",
+        "description": "Demonstrating local persistent state",
         "configuration": {
             "audience": "executive",
             "tone": "authoritative",
@@ -98,8 +92,8 @@ def run_phase9_test_suite():
     assert proj_doc is not None, "Project document missing in `projects` repository."
     print(f"  [OK] Project stored in `projects`: id={project_id} name={proj_doc.get('name')}")
 
-    # --- Test 4: Source Binary Upload to GridFS & Metadata in `sources` ---
-    print("\n[Test 4] Source Binary Upload to MongoDB GridFS & Metadata in `sources`:")
+    # --- Test 4: Source file upload & metadata in `sources` ---
+    print("\n[Test 4] Source upload to disk & metadata in `sources`:")
     source_content = (
         "CONFIDENTIAL CYBER THREAT REPORT - AUGUST 2026\n"
         "Organization X detected a sophisticated ransomware outbreak on 15 August 2026. "
@@ -252,12 +246,11 @@ def run_phase9_test_suite():
     assert "exports" in ws_data
     print(f"  [OK] Workspace API returned full lineage: {len(ws_data['sources'])} sources, {len(ws_data['deliverables'])} deliverables, {len(ws_data['exports'])} exports.")
 
-    # --- Test 14: Logout / Re-login Persistence Verification ---
-    print("\n[Test 14] Re-login & Long-Term Database Persistence Verification:")
-    # Simulate fresh client session / new request cycle
+    # --- Test 14: Persistence across new client instances ---
+    print("\n[Test 14] Local storage persistence verification:")
     relogin_client = TestClient(app)
-    re_auth = relogin_client.get("/api/me", headers=USER_A_HEADERS)
-    assert re_auth.status_code == 200
+    re_workspace = relogin_client.get("/api/projects")
+    assert re_workspace.status_code == 200
     
     # Reload project and all related sub-documents directly from database
     re_proj = relogin_client.get(f"/api/projects/{project_id}", headers=USER_A_HEADERS)
@@ -265,14 +258,14 @@ def run_phase9_test_suite():
     
     re_uckr = relogin_client.get(f"/api/projects/{project_id}/uckr", headers=USER_A_HEADERS)
     assert re_uckr.status_code == 200, "UCKR state lost across sessions."
-    print("  [OK] Re-login complete: Project, UCKR, and Deliverable lineage fully restored from MongoDB.")
+    print("  [OK] Project and pipeline data remain available from local storage.")
 
     # --- Cleanup ---
     client.delete(f"/api/projects/{project_id}", headers=USER_A_HEADERS)
     print("\n  [OK] Cleaned up test project.")
 
     print("\n" + "=" * 64)
-    print("  ALL 14 PHASE 9 MONGODB & GRIDFS TESTS PASSED 100%!")
+    print("  ALL PHASE 9 LOCAL STORAGE TESTS PASSED!")
     print("=" * 64 + "\n")
 
 

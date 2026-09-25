@@ -69,12 +69,35 @@ class GraphQueryResult(BaseModel):
 
 
 class GraphHealthResponse(BaseModel):
-    """Neo4j health check contract."""
+    """Neo4j health check contract matching Phase 2 specification & backward compatibility."""
     ok: bool = True
-    status: str = "healthy"  # healthy | degraded | offline
-    neo4j: str = "connected"  # connected | disconnected | mock_fallback
-    uri: str = ""
-    database: str = ""
+    status: str = "healthy"
+    backend: str = "neo4j"
+    connected: bool = True
+    database: str = "neo4j"
+    neo4j_version: Optional[str] = "5.x"
+    node_count: int = 0
+    relationship_count: int = 0
+    error: Optional[str] = None
+
+
+class GraphNodeCountsModel(BaseModel):
+    """Detailed node count breakdown by label."""
+    documents: int = 0
+    chunks: int = 0
+    entities: int = 0
+    facts: int = 0
+    metrics: int = 0
+    concepts: int = 0
+
+
+class GraphStatusResponse(BaseModel):
+    """Neo4j database status contract."""
+    backend: str = "neo4j"
+    connected: bool = True
+    schema_initialized: bool = True
+    nodes: GraphNodeCountsModel = Field(default_factory=GraphNodeCountsModel)
+    relationships: int = 0
     error: Optional[str] = None
 
 
@@ -85,4 +108,6 @@ __all__ = [
     "GraphPayload",
     "GraphQueryResult",
     "GraphHealthResponse",
+    "GraphNodeCountsModel",
+    "GraphStatusResponse",
 ]

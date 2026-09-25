@@ -2,7 +2,7 @@
 
 ## Phase 1 — Project Restructuring
 
-The project has completed **Phase 1: Project Restructuring**, establishing modular boundaries, separating HTTP API routing from business logic, separating domain data schemas from AI model layers, and standardizing core infrastructure (configuration, logging, exceptions, schemas) while preserving full compatibility with existing MongoDB, Firebase Auth, and AI processing pipelines.
+The project uses a local JSON document repository and filesystem storage, with modular FastAPI routes and AI processing pipelines. The application has no account authentication or cloud database integration.
 
 ---
 
@@ -21,7 +21,7 @@ Document Extraction Layer (app/extraction/service - PDF, DOCX, TXT, MD, Images)
    ↓
 Domain Schemas & Services (app/domain_models/, app/core/, app/services/)
    ↓
-Database & Storage Layer (app/config/mongo, app/services/storage, GridFS)
+Local Persistence Layer (JSON document repository and filesystem storage)
 ```
 
 ---
@@ -79,13 +79,12 @@ React Output UI (Phase 15)
 Backend/
 ├── app/
 │   ├── main.py                 # Canonical FastAPI application
-│   ├── auth.py                 # Backward-compatible auth dependency shim
+│   ├── auth.py                 # Local workspace identity shim
 │   ├── api/
 │   │   ├── __init__.py
-│   │   ├── dependencies.py     # Auth & context dependencies
+│   │   ├── dependencies.py     # Anonymous workspace context
 │   │   └── routes/             # Clean HTTP route handlers
 │   │       ├── health.py
-│   │       ├── auth.py
 │   │       ├── projects.py
 │   │       ├── upload.py
 │   │       ├── sources.py
@@ -108,7 +107,7 @@ Backend/
 │   │   ├── __init__.py
 │   │   ├── service.py          # Ingestion orchestration
 │   │   ├── validator.py        # File validation & sanitization
-│   │   └── file_manager.py     # Disk & GridFS file storage
+│   │   └── file_manager.py     # Local disk file storage
 │   ├── extraction/
 │   │   ├── __init__.py
 │   │   └── service.py          # PDF / DOCX / TXT / Image extraction
@@ -124,7 +123,7 @@ Backend/
 │   ├── transformation/         # Boundary & wrapper for Transformation Engine
 │   ├── validation/             # Boundary & wrapper for Consistency Validation
 │   ├── provenance/             # Boundary for Evidence Lineage (Phase 14)
-│   ├── config/                 # Database configuration (MongoDB Atlas, Firebase)
+│   ├── config/                 # Application settings
 │   ├── services/               # Internal business domain services
 │   └── utils/                  # Helper utilities
 ├── tests/                      # Automated test suites

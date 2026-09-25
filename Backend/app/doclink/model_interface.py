@@ -204,9 +204,7 @@ def get_doclink_llm(provider: Optional[str] = None, use_llm: bool = True) -> "Do
     settings = get_settings()
     if ollama_ok and any(settings.text_model.lower() in m.lower() for m in installed):
         return OllamaDocLinkLLM()
-    if settings.gemini_api_key:
-        return GeminiDocLinkLLM()
-    log.info("DocLink running in deterministic mode (no LLM provider available)")
+    log.info("DocLink running in deterministic mode (Ollama offline/model missing)")
     return NullDocLinkLLM()
 
 

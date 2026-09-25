@@ -1,4 +1,4 @@
-"""Phase 2-14 end-to-end test: Firebase UID -> project -> upload -> Mongo
+"""Phase 2-14 end-to-end test: local workspace -> project -> upload -> JSON
 source -> extraction -> AI -> UCKR -> 7 deliverables -> validation ->
 export -> search -> jobs -> isolation. Run: python test_phase2_14.py
 """
@@ -32,7 +32,7 @@ def check(name, cond, extra=""):
 
 
 print("1. health:", c.get("/health").json().get("ok"))
-print("2. me:", c.get("/api/me", headers=A).json().get("userId"))
+print("2. projects:", c.get("/api/projects", headers=A).status_code)
 
 proj = c.post("/api/projects", json={"name": "Threat Intel Report", "description": "e2e"}, headers=A).json()
 pid = proj["id"]

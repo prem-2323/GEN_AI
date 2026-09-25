@@ -145,7 +145,7 @@ def generate(
         "id": deliv_id,
         "deliverableId": deliv_id,
         "userId": uid,
-        "firebaseUid": uid,
+        "userId": uid,
         "projectId": project_id,
         "sourceId": uckr.get("sourceId", ""),
         "uckrVersion": uckr.get("version", 1),

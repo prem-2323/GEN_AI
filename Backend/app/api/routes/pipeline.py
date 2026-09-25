@@ -17,7 +17,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...services.ai import pipeline_orchestrator as ai_orchestrator
 from ...services.export import export_service
 from ...services.jobs import job_service
@@ -40,7 +40,7 @@ def _check_pid(project_id: str) -> None:
 # ---- Phase 3+4: analyse -> UCKR ----
 @router.post("/api/projects/{project_id}/analyze")
 async def analyze_source(project_id: str, payload: dict[str, Any],
-                         user: dict = Depends(get_current_user)):
+                         user: dict = Depends(get_workspace_identity)):
     uid = user["uid"]
     _check_pid(project_id)
     source_id = (payload or {}).get("sourceId", "")
@@ -59,14 +59,14 @@ async def analyze_source(project_id: str, payload: dict[str, Any],
 
 
 @router.get("/api/projects/{project_id}/uckr")
-async def get_uckr(project_id: str, user: dict = Depends(get_current_user),
+async def get_uckr(project_id: str, user: dict = Depends(get_workspace_identity),
                    sourceId: Optional[str] = None):
     _check_pid(project_id)
     return {"ok": True, "uckr": uckr_service.get_latest_uckr(project_id, user["uid"], sourceId)}
 
 
 @router.get("/api/projects/{project_id}/uckr/versions")
-async def list_uckrs(project_id: str, user: dict = Depends(get_current_user)):
+async def list_uckrs(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     return {"ok": True, "versions": uckr_service.list_uckrs(project_id, user["uid"])}
 
@@ -74,7 +74,7 @@ async def list_uckrs(project_id: str, user: dict = Depends(get_current_user)):
 # ---- Phase 5: transform ----
 @router.post("/api/projects/{project_id}/transform", status_code=201)
 async def transform_project(project_id: str, payload: dict[str, Any] = {},
-                            user: dict = Depends(get_current_user)):
+                            user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     types = payload.get("types") or payload.get("outputTypes") or [
         "linkedin", "twitter", "advisory", "executive_summary",
@@ -93,7 +93,7 @@ async def transform_project(project_id: str, payload: dict[str, Any] = {},
 
 
 @router.get("/api/projects/{project_id}/deliverables")
-async def list_project_deliverables(project_id: str, user: dict = Depends(get_current_user)):
+async def list_project_deliverables(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     items = transformation_service.list_deliverables(user["uid"], project_id)
     return {"ok": True, "deliverables": items, "count": len(items)}
@@ -101,14 +101,14 @@ async def list_project_deliverables(project_id: str, user: dict = Depends(get_cu
 
 # ---- Phase 6 & 7: validation ----
 @router.post("/api/projects/{project_id}/validate")
-async def validate_project_pipeline(project_id: str, user: dict = Depends(get_current_user)):
+async def validate_project_pipeline(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     val = validation_service.validate_project(user["uid"], project_id)
     return {"ok": True, "validation": val}
 
 
 @router.get("/api/projects/{project_id}/validations")
-async def list_project_validations(project_id: str, user: dict = Depends(get_current_user)):
+async def list_project_validations(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     items = validation_service.list_validations(user["uid"], project_id)
     return {"ok": True, "validations": items, "count": len(items)}
@@ -117,7 +117,7 @@ async def list_project_validations(project_id: str, user: dict = Depends(get_cur
 # ---- Phase 7: jobs ----
 @router.post("/api/projects/{project_id}/jobs", status_code=201)
 async def start_job(project_id: str, payload: dict[str, Any],
-                    background: BackgroundTasks, user: dict = Depends(get_current_user)):
+                    background: BackgroundTasks, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     source_id = (payload or {}).get("sourceId", "")
     if not source_id:
@@ -131,19 +131,19 @@ async def start_job(project_id: str, payload: dict[str, Any],
 
 
 @router.get("/api/jobs/{job_id}")
-async def get_job(job_id: str, user: dict = Depends(get_current_user)):
+async def get_job(job_id: str, user: dict = Depends(get_workspace_identity)):
     return {"ok": True, "job": job_service.get_job(job_id, user["uid"])}
 
 
 @router.get("/api/projects/{project_id}/jobs")
-async def list_jobs(project_id: str, user: dict = Depends(get_current_user)):
+async def list_jobs(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     return {"ok": True, "jobs": job_service.list_jobs(user["uid"], project_id)}
 
 
 # ---- Phase 10: export ----
 @router.post("/api/deliverables/{deliverable_id}/export")
-async def export_one(deliverable_id: str, user: dict = Depends(get_current_user), format: str = "md"):
+async def export_one(deliverable_id: str, user: dict = Depends(get_workspace_identity), format: str = "md"):
     from ...storage.repository import get_repository
     deliv_repo = get_repository("deliverables")
     deliv = deliv_repo.find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]})
@@ -154,14 +154,14 @@ async def export_one(deliverable_id: str, user: dict = Depends(get_current_user)
 
 # ---- Phase 9/11: search + overview ----
 @router.get("/api/search")
-async def search(q: str = "", kind: str = "all", user: dict = Depends(get_current_user)):
+async def search(q: str = "", kind: str = "all", user: dict = Depends(get_workspace_identity)):
     if kind not in ("all", "project", "source"):
         raise HTTPException(status_code=422, detail="kind must be all|project|source.")
     return {"ok": True, **search_service.search(user["uid"], q, kind)}
 
 
 @router.get("/api/projects/{project_id}/overview")
-async def overview(project_id: str, user: dict = Depends(get_current_user)):
+async def overview(project_id: str, user: dict = Depends(get_workspace_identity)):
     _check_pid(project_id)
     get_project(project_id, user["uid"])
     return {"ok": True, **search_service.project_overview(user["uid"], project_id)}

@@ -1,6 +1,5 @@
-import { authenticatedFetch, getApiBaseUrl } from './client';
+import { workspaceFetch, getApiBaseUrl } from './client';
 import { ExportRecord, ExportRequestPayload } from '../types/export';
-import { auth } from '../lib/firebase';
 
 export const exportApi = {
   exportDeliverable: async (
@@ -8,7 +7,7 @@ export const exportApi = {
     deliverableId: string,
     payload: ExportRequestPayload
   ): Promise<{ ok: boolean; export: ExportRecord }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/export`, {
+    return workspaceFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/export`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
@@ -17,31 +16,23 @@ export const exportApi = {
   listExports: async (
     projectId: string
   ): Promise<{ ok: boolean; exports: ExportRecord[]; count: number }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/exports`);
+    return workspaceFetch(`/api/projects/${projectId}/exports`);
   },
 
   getExport: async (
     projectId: string,
     exportId: string
   ): Promise<{ ok: boolean; export: ExportRecord }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/exports/${exportId}`);
+    return workspaceFetch(`/api/projects/${projectId}/exports/${exportId}`);
   },
 
   downloadExportBlob: async (
     projectId: string,
     exportId: string
   ): Promise<{ blob: Blob; filename: string }> => {
-    const user = auth.currentUser;
-    const token = user ? await user.getIdToken().catch(() => '') : '';
-    const uid = user?.uid || 'guest-user';
     const baseUrl = getApiBaseUrl();
 
-    const headers: HeadersInit = {
-      'X-User-Uid': uid,
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+    const headers: HeadersInit = {};
 
     const res = await fetch(`${baseUrl}/api/projects/${projectId}/exports/${exportId}/download`, {
       headers,
@@ -66,17 +57,9 @@ export const exportApi = {
     projectId: string,
     fileId: string
   ): Promise<{ blob: Blob; filename: string }> => {
-    const user = auth.currentUser;
-    const token = user ? await user.getIdToken().catch(() => '') : '';
-    const uid = user?.uid || 'guest-user';
     const baseUrl = getApiBaseUrl();
 
-    const headers: HeadersInit = {
-      'X-User-Uid': uid,
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+    const headers: HeadersInit = {};
 
     const res = await fetch(`${baseUrl}/api/projects/${projectId}/files/${fileId}/download`, {
       headers,

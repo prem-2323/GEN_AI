@@ -98,7 +98,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
             <span>Project Repository</span>
             <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-mono">
               <Database className="w-3 h-3" />
-              <span>FastAPI & MongoDB Atlas</span>
+              <span>Local API Storage</span>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
@@ -326,7 +326,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
                   className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-purple-600/25 cursor-pointer"
                 >
                   {isCreating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-                  <span>{isCreating ? 'Creating in MongoDB...' : 'Create Project'}</span>
+                  <span>{isCreating ? 'Saving locally...' : 'Create Project'}</span>
                 </button>
               </div>
             </form>

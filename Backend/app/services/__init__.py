@@ -10,7 +10,7 @@
     projects/       project CRUD + workspace snapshots
     search/         scoped search and project overview
     sources/        source lifecycle + stage machine
-    storage/        GridFS + local file storage adapters
+    storage/        Local file storage adapters
     transformation/ deliverable generation (Phase 5 engine + pipeline engine)
     uckr/           UCKR builder / validator (Phase 4 engine + pipeline engine)
     validation/     pipeline consistency checks (legacy route shape)

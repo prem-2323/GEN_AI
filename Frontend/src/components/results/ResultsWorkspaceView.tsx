@@ -20,7 +20,6 @@ import {
   Presentation,
   Video,
   FileCheck,
-  Cloud,
   Check,
   Loader2,
   ShieldCheck,
@@ -64,9 +63,9 @@ interface ResultsWorkspaceViewProps {
   onAddDeliverable: (type: OutputType) => void;
   onPublishMcp: (deliverableType: string) => void;
   onShowToast: (title: string, message: string, type?: 'success' | 'info' | 'error') => void;
-  onSaveToCloud?: () => void;
-  isSavedToCloud?: boolean;
-  isSavingToCloud?: boolean;
+  onSaveToWorkspace?: () => void;
+  isSavedToWorkspace?: boolean;
+  isSavingToWorkspace?: boolean;
 }
 
 export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
@@ -81,9 +80,9 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
   onAddDeliverable,
   onPublishMcp,
   onShowToast,
-  onSaveToCloud,
-  isSavedToCloud,
-  isSavingToCloud
+  onSaveToWorkspace,
+  isSavedToWorkspace,
+  isSavingToWorkspace
 }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | OutputType>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -262,25 +261,25 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
               <span>Share</span>
             </button>
 
-            {onSaveToCloud && (
+            {onSaveToWorkspace && (
               <button
-                onClick={onSaveToCloud}
-                disabled={isSavingToCloud}
+                onClick={onSaveToWorkspace}
+                disabled={isSavingToWorkspace}
                 className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                  isSavedToCloud
+                  isSavedToWorkspace
                     ? 'bg-amber-950/40 border-amber-500/50 text-amber-300'
                     : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200 hover:text-white'
                 }`}
-                title="Persist this transformation and deliverables to Firebase Firestore"
+                title="Save this transformation and deliverables to the local workspace"
               >
-                {isSavingToCloud ? (
+                {isSavingToWorkspace ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-400" />
-                ) : isSavedToCloud ? (
+                ) : isSavedToWorkspace ? (
                   <Check className="w-3.5 h-3.5 text-amber-400" />
                 ) : (
-                  <Cloud className="w-3.5 h-3.5 text-amber-400" />
+                  <Database className="w-3.5 h-3.5 text-amber-400" />
                 )}
-                <span>{isSavingToCloud ? 'Saving...' : isSavedToCloud ? 'Saved to Cloud' : 'Save to Firebase'}</span>
+                <span>{isSavingToWorkspace ? 'Saving...' : isSavedToWorkspace ? 'Saved' : 'Save Project'}</span>
               </button>
             )}
 

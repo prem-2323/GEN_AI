@@ -157,8 +157,13 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
         } else if (backendEnabled) {
           try {
             const uploadRes = await backendApi.uploadSource('proj_default', file);
-            if (uploadRes && uploadRes.text?.content) {
-              extractedText = uploadRes.text.content;
+            const backendText =
+              uploadRes?.extractedDocument?.content ||
+              uploadRes?.text?.content ||
+              uploadRes?.extracted?.content ||
+              uploadRes?.source?.text?.content;
+            if (typeof backendText === 'string') {
+              extractedText = backendText;
             }
           } catch {
             // fallback

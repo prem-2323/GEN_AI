@@ -13,10 +13,12 @@ from ..doclink.service import DocLinkService
 from .mapper import map_doclink_result_to_payload
 from .models import (
     GraphHealthResponse,
+    GraphNodeCountsModel,
     GraphNodeModel,
     GraphPayload,
     GraphQueryResult,
     GraphRelationshipModel,
+    GraphStatusResponse,
 )
 from .repository import (
     MockNeo4jGraphStore,
@@ -99,43 +101,134 @@ class GraphService:
     def health_check(self) -> GraphHealthResponse:
         """Perform Neo4j connectivity and status health audit."""
         settings = get_settings()
-        repo = self._get_repo()
-
-        if getattr(repo, "is_mock", False):
-            return GraphHealthResponse(
-                ok=True,
-                status="healthy",
-                neo4j="mock_fallback",
-                uri=settings.neo4j_uri,
-                database=settings.neo4j_database,
-                error=None,
-            )
+        backend_choice = (getattr(settings, "graph_backend", "neo4j") or "neo4j").strip().lower()
 
         try:
-            adapter = getattr(repo, "adapter", None)
-            if adapter and adapter.verify_connectivity():
+            repo = self._get_repo()
+            if getattr(repo, "is_mock", False):
+                mock_nodes = len(getattr(repo, "nodes", {})) + len(getattr(repo, "documents", {}))
+                mock_rels = len(getattr(repo, "relationships", {})) if isinstance(getattr(repo, "relationships", None), dict) else len(getattr(repo, "relationships", []))
                 return GraphHealthResponse(
                     ok=True,
                     status="healthy",
-                    neo4j="connected",
-                    uri=settings.neo4j_uri,
+                    backend="mock",
+                    connected=True,
+                    database="in_memory_mock",
+                    neo4j_version="mock",
+                    node_count=mock_nodes,
+                    relationship_count=mock_rels,
+                    error=None,
+                )
+
+            adapter = getattr(repo, "adapter", None)
+            if adapter and adapter.verify_connectivity():
+                # Query actual counts from Neo4j
+                count_res = adapter.execute_read("MATCH (n) WITH count(n) AS nodes MATCH ()-[r]->() RETURN nodes, count(r) AS rels")
+                node_cnt = count_res[0]["nodes"] if count_res else 0
+                rel_cnt = count_res[0]["rels"] if count_res else 0
+                return GraphHealthResponse(
+                    ok=True,
+                    status="healthy",
+                    backend="neo4j",
+                    connected=True,
                     database=settings.neo4j_database,
+                    neo4j_version="5.x",
+                    node_count=node_cnt,
+                    relationship_count=rel_cnt,
+                    error=None,
                 )
             return GraphHealthResponse(
                 ok=False,
                 status="degraded",
-                neo4j="disconnected",
-                uri=settings.neo4j_uri,
+                backend=backend_choice,
+                connected=False,
                 database=settings.neo4j_database,
-                error="Neo4j connectivity verification failed.",
+                error=f"Neo4j instance at {settings.neo4j_uri} unreachable.",
             )
         except Exception as exc:
             return GraphHealthResponse(
                 ok=False,
                 status="offline",
-                neo4j="disconnected",
-                uri=settings.neo4j_uri,
+                backend=backend_choice,
+                connected=False,
                 database=settings.neo4j_database,
+                error=str(exc),
+            )
+
+    def get_status(self) -> GraphStatusResponse:
+        """Retrieve detailed database status and node breakdown across labels."""
+        settings = get_settings()
+        backend_choice = (getattr(settings, "graph_backend", "neo4j") or "neo4j").strip().lower()
+
+        try:
+            repo = self._get_repo()
+            if getattr(repo, "is_mock", False):
+                mock_nodes = getattr(repo, "nodes", {})
+                mock_docs = getattr(repo, "documents", {})
+                mock_rels = getattr(repo, "relationships", [])
+                counts = GraphNodeCountsModel(
+                    documents=len(mock_docs),
+                    chunks=0,
+                    entities=len(mock_nodes),
+                    facts=0,
+                    metrics=0,
+                    concepts=0,
+                )
+                return GraphStatusResponse(
+                    backend="mock",
+                    connected=True,
+                    schema_initialized=True,
+                    nodes=counts,
+                    relationships=len(mock_rels),
+                    error=None,
+                )
+
+            adapter = getattr(repo, "adapter", None)
+            if not adapter or not adapter.verify_connectivity():
+                return GraphStatusResponse(
+                    backend="neo4j",
+                    connected=False,
+                    schema_initialized=False,
+                    nodes=GraphNodeCountsModel(),
+                    relationships=0,
+                    error=f"Neo4j instance at {settings.neo4j_uri} unreachable.",
+                )
+
+            counts_query = (
+                "OPTIONAL MATCH (d:Document) WITH count(d) AS docs "
+                "OPTIONAL MATCH (c:Chunk) WITH docs, count(c) AS chks "
+                "OPTIONAL MATCH (e:Entity) WITH docs, chks, count(e) AS ents "
+                "OPTIONAL MATCH (f:Fact) WITH docs, chks, ents, count(f) AS fcts "
+                "OPTIONAL MATCH (m:Metric) WITH docs, chks, ents, fcts, count(m) AS mets "
+                "OPTIONAL MATCH (cp:Concept) WITH docs, chks, ents, fcts, mets, count(cp) AS cncpts "
+                "OPTIONAL MATCH ()-[r]->() "
+                "RETURN docs, chks, ents, fcts, mets, cncpts, count(r) AS rels"
+            )
+            res = adapter.execute_read(counts_query)
+            row = res[0] if res else {}
+            counts = GraphNodeCountsModel(
+                documents=row.get("docs", 0),
+                chunks=row.get("chks", 0),
+                entities=row.get("ents", 0),
+                facts=row.get("fcts", 0),
+                metrics=row.get("mets", 0),
+                concepts=row.get("cncpts", 0),
+            )
+            return GraphStatusResponse(
+                backend="neo4j",
+                connected=True,
+                schema_initialized=True,
+                nodes=counts,
+                relationships=row.get("rels", 0),
+                error=None,
+            )
+        except Exception as exc:
+            return GraphStatusResponse(
+                backend=backend_choice,
+                connected=False,
+                schema_initialized=False,
+                nodes=GraphNodeCountsModel(),
+                relationships=0,
                 error=str(exc),
             )
 

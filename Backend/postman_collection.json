@@ -1,16 +1,17 @@
 {
   "info": {
-    "name": "ContentForge AI — Full Lifecycle (Phases 1 to 5)",
-    "description": "Comprehensive Postman collection for ContentForge AI: Auth, Multi-tenant Projects, Sources, Phase 3 AI Content Understanding (Qwen + Gemma), and Phase 5 Real UCKR Engine (Facts, Entities, Events, Metrics, Claims, Actions, Relationships, Grounded Citations, and Validation).",
+    "name": "ContentForge AI — Full System Integration (Qwen3:4b + Gemma3:4b)",
+    "description": "Comprehensive Postman collection for the local workspace API: Active Parameters (qwen3:4b & gemma3:4b), Projects, Sources, AI Content Extraction, UCKR Knowledge Graph, Transformation Engine, and Validation Audits.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
-    { "key": "idToken", "value": "PASTE_FIREBASE_ID_TOKEN_HERE" },
-    { "key": "uidA", "value": "user-A-test-uid" },
-    { "key": "uidB", "value": "user-B-test-uid" },
+    { "key": "uidA", "value": "local-workspace" },
+    { "key": "uidB", "value": "ignored-identity" },
     { "key": "projectId", "value": "proj-phase4-cyber-001" },
-    { "key": "sourceId", "value": "src-phase4-cyber-001" }
+    { "key": "sourceId", "value": "src-phase4-cyber-001" },
+    { "key": "textModel", "value": "qwen3:4b" },
+    { "key": "visionModel", "value": "gemma3:4b" }
   ],
   "item": [
     {
@@ -29,19 +30,15 @@
       ]
     },
     {
-      "name": "02 - Auth Profile (User A)",
-      "request": {
-        "method": "GET",
-        "header": [{ "key": "X-User-Uid", "value": "{{uidA}}" }, { "key": "X-User-Email", "value": "userA@example.com" }],
-        "url": "{{baseUrl}}/api/me"
-      },
+      "name": "01b - Active AI Models & Parameters (Qwen3:4b + Gemma3:4b)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/active-params" },
       "event": [
         {
           "listen": "test",
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('Auth me 200', () => { pm.response.to.have.status(200); pm.expect(pm.response.json().uid).to.eql(pm.variables.get('uidA')); });"
+              "pm.test('Active Params 200 OK', () => pm.response.to.have.status(200));"
             ]
           }
         }
@@ -343,7 +340,7 @@
       ]
     },
     {
-      "name": "16 - Security: Cross-Tenant Denial (User B)",
+      "name": "16 - Shared Workspace: Ignore Supplied Identity",
       "request": {
         "method": "POST",
         "header": [
@@ -362,7 +359,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('Cross-tenant 403 Forbidden', () => pm.response.to.have.status(403));"
+              "pm.test('Workspace request succeeds without account authentication', () => pm.response.to.have.status(200));"
             ]
           }
         }

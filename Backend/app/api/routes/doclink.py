@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...doclink.schemas import (
     DocLinkAnalyzeRequest,
     DocLinkAnalyzeResponse,
@@ -31,7 +31,7 @@ service = DocLinkService()
 @doclink_router.post("/analyze", response_model=DocLinkAnalyzeResponse, status_code=200)
 async def analyze_document_endpoint(
     req: DocLinkAnalyzeRequest,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Run Phase 4 DocLink pipeline on a stored document by document_id."""
     doc_id = req.resolved_document_id()
@@ -64,7 +64,7 @@ async def analyze_document_endpoint(
 @doclink_router.post("/analyze-text", response_model=DocLinkAnalyzeResponse, status_code=200)
 async def analyze_text_endpoint(
     req: DocLinkTextRequest,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Run Phase 4 DocLink pipeline directly on arbitrary text."""
     if not req.text or not req.text.strip():
@@ -86,7 +86,7 @@ async def analyze_text_endpoint(
 @doclink_router.get("/{document_id}", response_model=DocLinkAnalyzeResponse)
 async def get_doclink_result_endpoint(
     document_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Retrieve DocLink analysis result for a document_id."""
     cached = doclink_repo.find_one({"document_id": document_id})

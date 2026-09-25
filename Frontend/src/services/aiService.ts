@@ -564,7 +564,7 @@ export async function analyzeSourceContent(source: SourceFile, projectId: string
   }
 
   const promise = (async () => {
-    // 1. Try FastAPI Backend (Phase 3 Qwen/Gemma + MongoDB)
+    // 1. Try FastAPI backend analysis with local persistence.
     if (backendEnabled) {
       try {
         const srcId = source.id || 'SRC_001';
@@ -620,7 +620,7 @@ export async function buildUckrKnowledge(
   analysis: AIAnalysis,
   projectId: string = 'proj_default'
 ): Promise<UckrKnowledgeBase> {
-  // 1. Try FastAPI Backend (Phase 4 Real UCKR Engine + MongoDB)
+  // 1. Try FastAPI backend UCKR generation with local persistence.
   if (backendEnabled) {
     try {
       const srcId = source.id || 'SRC_001';
@@ -770,6 +770,28 @@ export async function generateDeliverables(
   }
   if (selectedOutputs.length === 0) {
     throw new Error('No outputs selected. Choose at least one deliverable.');
+  }
+
+  // 1. Try FastAPI Backend Transformation Engine (Phase 6 Qwen/Gemma + DB persistence)
+  if (backendEnabled && source.projectId) {
+    try {
+      const backendRes = await backendApi.transform(source.projectId, selectedOutputs, config as unknown as Record<string, unknown>).catch(() => null);
+      if (backendRes && backendRes.deliverables && Array.isArray(backendRes.deliverables)) {
+        const mapped: TransformationDeliverables = {};
+        for (const item of backendRes.deliverables) {
+          const kind = item.type as OutputType;
+          if (kind && item.content) {
+            (mapped as Record<string, unknown>)[kind] = item.content;
+          }
+        }
+        if (Object.keys(mapped).length > 0) {
+          onProgress?.('Backend Ollama transformation complete', 100);
+          return mapped;
+        }
+      }
+    } catch {
+      // fallback to client-side/Gemini/deterministic
+    }
   }
 
   const result: TransformationDeliverables = {};

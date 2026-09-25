@@ -14,8 +14,8 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ...auth import get_current_user
-from ...graph.models import GraphHealthResponse, GraphQueryResult
+from ..dependencies import get_workspace_identity
+from ...graph.models import GraphHealthResponse, GraphQueryResult, GraphStatusResponse
 from ...graph.service import GraphService
 
 router = APIRouter(tags=["graph"])
@@ -31,10 +31,16 @@ async def neo4j_health_endpoint():
     return graph_service.health_check()
 
 
+@graph_router.get("/status", response_model=GraphStatusResponse)
+async def neo4j_status_endpoint():
+    """Detailed Neo4j database node breakdown and relationship status."""
+    return graph_service.get_status()
+
+
 @graph_router.post("/ingest", response_model=GraphQueryResult, status_code=200)
 async def ingest_document_graph_endpoint(
     payload: Dict[str, Any],
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Ingest DocLink analysis result or document_id into Neo4j graph database."""
     doc_id = payload.get("document_id") or payload.get("documentId")
@@ -52,7 +58,7 @@ async def ingest_document_graph_endpoint(
 @graph_router.get("/entity/{entity_id}")
 async def get_entity_endpoint(
     entity_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Find entity node by entity_id or canonical name."""
     entity = graph_service.find_entity(entity_id)
@@ -64,7 +70,7 @@ async def get_entity_endpoint(
 @graph_router.get("/entity/{entity_id}/relationships")
 async def get_entity_relationships_endpoint(
     entity_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get all relationships connected to entity_id."""
     relationships = graph_service.get_entity_relationships(entity_id)
@@ -75,7 +81,7 @@ async def get_entity_relationships_endpoint(
 async def get_entity_neighbors_endpoint(
     entity_id: str,
     depth: int = Query(default=1, ge=1, le=3),
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get neighbor entity nodes connected to entity_id."""
     neighbors = graph_service.get_neighbors(entity_id, depth=depth)
@@ -85,7 +91,7 @@ async def get_entity_neighbors_endpoint(
 @graph_router.get("/document/{document_id}", response_model=GraphQueryResult)
 async def get_document_graph_endpoint(
     document_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get complete subgraph associated with document_id."""
     return graph_service.get_document_graph(document_id)
@@ -95,7 +101,7 @@ async def get_document_graph_endpoint(
 async def search_entities_endpoint(
     q: str = Query(..., min_length=1),
     limit: int = Query(default=20, ge=1, le=100),
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Search entity nodes by substring matching on canonical name or alias."""
     entities = graph_service.search_entities(q, limit=limit)

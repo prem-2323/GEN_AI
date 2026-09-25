@@ -52,12 +52,23 @@ class Neo4jDriverAdapter:
             self._driver = None
             return None
 
-    def verify_connectivity(self) -> bool:
-        """Check if Neo4j database is reachable and authenticated."""
+    def connect(self) -> Any:
+        """Explicitly connect and verify Neo4j driver."""
         driver = self.get_driver()
         if driver is None:
-            return False
+            raise ConnectionError(f"Could not initialize Neo4j driver to {self.uri}")
         try:
+            driver.verify_connectivity()
+            return driver
+        except Exception as exc:
+            raise ConnectionError(f"Failed to connect to Neo4j database at {self.uri}: {exc}") from exc
+
+    def verify_connectivity(self) -> bool:
+        """Check if Neo4j database is reachable and authenticated."""
+        try:
+            driver = self.get_driver()
+            if driver is None:
+                return False
             driver.verify_connectivity()
             return True
         except Exception as exc:
@@ -66,22 +77,27 @@ class Neo4jDriverAdapter:
 
     def execute_transaction(self, work_fn: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Execute write transaction scope with automatic commit/rollback."""
-        driver = self.get_driver()
-        if driver is None:
-            raise RuntimeError("Neo4j driver connection unavailable.")
-
+        driver = self.connect()
         with driver.session(database=self.database) as session:
             return session.execute_write(work_fn, *args, **kwargs)
 
-    def execute_query(self, cypher: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        """Execute Cypher query and return list of result record dicts."""
-        driver = self.get_driver()
-        if driver is None:
-            raise RuntimeError("Neo4j driver connection unavailable.")
-
+    def execute_write(self, cypher: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Execute Cypher write transaction and return records."""
+        driver = self.connect()
         with driver.session(database=self.database) as session:
             result = session.run(cypher, parameters=params or {})
             return [record.data() for record in result]
+
+    def execute_read(self, cypher: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Execute Cypher read query and return records."""
+        driver = self.connect()
+        with driver.session(database=self.database) as session:
+            result = session.run(cypher, parameters=params or {})
+            return [record.data() for record in result]
+
+    def execute_query(self, cypher: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Execute Cypher query and return list of result record dicts."""
+        return self.execute_read(cypher, params)
 
     def close(self) -> None:
         """Gracefully close Neo4j driver connection pool."""

@@ -5,7 +5,7 @@ __pycache__/
 serviceAccountKey.json
 serviceAccount*.json
 mock_db.json
-# local file bytes + generated exports (Phase 2/10; metadata lives in MongoDB)
+# local file bytes + generated exports (metadata lives in the JSON repository)
 storage/
 uploads/
 outputs/

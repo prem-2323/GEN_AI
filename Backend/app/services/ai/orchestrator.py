@@ -43,7 +43,7 @@ def check_ollama_models() -> Tuple[bool, List[str]]:
 def orchestrate_source_analysis(
     project_id: str,
     source_id: str,
-    firebase_uid: str,
+    user_id: str,
     extracted_text: str,
     extracted_images: Optional[List[Dict[str, Any]]] = None,
 ) -> AnalysisRecord:
@@ -107,7 +107,7 @@ def orchestrate_source_analysis(
         analysisId=analysis_id,
         projectId=project_id,
         sourceId=source_id,
-        firebaseUid=firebase_uid,
+        userId=user_id,
         contentHash=c_hash,
         textAnalysis=text_analysis,
         visualAnalysis=visual_evidence,

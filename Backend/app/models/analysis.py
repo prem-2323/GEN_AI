@@ -111,7 +111,7 @@ class AnalysisRecord(BaseModel):
     analysisId: str
     projectId: str
     sourceId: str
-    firebaseUid: str
+    userId: str
     contentHash: str = ""
     textAnalysis: TextAnalysis = Field(default_factory=TextAnalysis)
     visualAnalysis: List[VisualEvidence] = Field(default_factory=list)

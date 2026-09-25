@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...models.validation import RegenerateRequest, ValidationRecord, ValidationRequest as LegacyValidationRequest
 from ...services.consistency import (
     get_latest_validation,
@@ -102,7 +102,7 @@ async def validate_source_deliverables(
     project_id: str,
     source_id: str,
     payload: Optional[LegacyValidationRequest] = None,
-    user: Dict[str, Any] = Depends(get_current_user),
+    user: Dict[str, Any] = Depends(get_workspace_identity),
 ):
     """Audits all generated deliverables against the canonical UCKR single source of truth."""
     req = payload or LegacyValidationRequest()
@@ -116,7 +116,7 @@ async def validate_source_deliverables(
 async def get_validation_report(
     project_id: str,
     source_id: str,
-    user: Dict[str, Any] = Depends(get_current_user),
+    user: Dict[str, Any] = Depends(get_workspace_identity),
 ):
     """Retrieves the latest validation audit report with exact check breakdown and scores."""
     return get_latest_validation(project_id, source_id, user)
@@ -129,7 +129,7 @@ async def get_validation_report(
 async def validate_individual_deliverable(
     project_id: str,
     deliverable_id: str,
-    user: Dict[str, Any] = Depends(get_current_user),
+    user: Dict[str, Any] = Depends(get_workspace_identity),
 ):
     """Validates an individual deliverable against canonical UCKR."""
     deliv = get_single_deliverable(project_id, deliverable_id, user)
@@ -160,7 +160,7 @@ async def regenerate_deliverable(
     project_id: str,
     deliverable_id: str,
     payload: Optional[RegenerateRequest] = None,
-    user: Dict[str, Any] = Depends(get_current_user),
+    user: Dict[str, Any] = Depends(get_workspace_identity),
 ):
     """Regenerates a deliverable using validation error feedback and re-validates."""
     req = payload or RegenerateRequest()

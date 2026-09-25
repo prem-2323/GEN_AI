@@ -12,7 +12,8 @@ class EmbeddingConfig(BaseModel):
     max_chunk_size: int = 1200
     top_k: int = 5
     batch_size: int = 16
-    embedding_model_name: str = "deterministic-384d"
+    embedding_provider: str = "sentence_transformers"
+    embedding_model_name: str = "BAAI/bge-small-en-v1.5"
     vector_dimension: int = 384
     cache_embeddings: bool = True
 

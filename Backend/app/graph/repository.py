@@ -19,6 +19,7 @@ from .models import (
 )
 from .neo4j import Neo4jDriverAdapter
 from .queries import (
+    ALL_SCHEMA_CONSTRAINTS,
     CREATE_DOCUMENT_ID_CONSTRAINT,
     CREATE_ENTITY_ID_CONSTRAINT,
     FIND_ENTITY_QUERY,
@@ -228,11 +229,11 @@ class Neo4jGraphRepository(GraphStoreInterface):
         self.is_mock = False
 
     def init_constraints(self) -> bool:
-        """Create uniqueness constraints for Entity entity_id and Document document_id."""
+        """Create uniqueness constraints for Document, Chunk, Entity, Fact, Metric, and Concept nodes idempotently."""
         try:
-            self.adapter.execute_query(CREATE_ENTITY_ID_CONSTRAINT)
-            self.adapter.execute_query(CREATE_DOCUMENT_ID_CONSTRAINT)
-            log.info("Neo4j uniqueness constraints initialized successfully.")
+            for constraint_query in ALL_SCHEMA_CONSTRAINTS:
+                self.adapter.execute_write(constraint_query)
+            log.info("Neo4j uniqueness constraints for Document, Chunk, Entity, Fact, Metric, Concept initialized successfully.")
             return True
         except Exception as exc:
             log.warning("Failed to initialize Neo4j constraints: %s", exc)
@@ -437,24 +438,36 @@ _GLOBAL_GRAPH_REPO: Optional[Union[Neo4jGraphRepository, MockNeo4jGraphStore]] =
 
 
 def get_graph_repository() -> Union[Neo4jGraphRepository, MockNeo4jGraphStore]:
-    """Resolve Neo4j repository singleton: returns real Neo4j repository if reachable, mock store otherwise."""
+    """Resolve Neo4j repository singleton based on GRAPH_BACKEND config.
+    
+    If GRAPH_BACKEND=neo4j, strictly connects to real Neo4j (raises ConnectionError if offline).
+    If GRAPH_BACKEND=mock, uses MockNeo4jGraphStore explicitly for testing.
+    """
     global _GLOBAL_GRAPH_REPO
     if _GLOBAL_GRAPH_REPO is not None:
         return _GLOBAL_GRAPH_REPO
 
     settings = get_settings()
-    if settings.neo4j_enabled:
-        adapter = Neo4jDriverAdapter()
-        if adapter.verify_connectivity():
-            repo = Neo4jGraphRepository(adapter)
-            repo.init_constraints()
-            _GLOBAL_GRAPH_REPO = repo
-            return repo
+    backend_choice = (getattr(settings, "graph_backend", "neo4j") or "neo4j").strip().lower()
 
-    log.info("Neo4j daemon unreachable; initializing MockNeo4jGraphStore fallback.")
-    mock_repo = MockNeo4jGraphStore()
-    _GLOBAL_GRAPH_REPO = mock_repo
-    return mock_repo
+    if backend_choice == "mock":
+        log.info("GRAPH_BACKEND=mock configured explicitly. Using MockNeo4jGraphStore.")
+        mock_repo = MockNeo4jGraphStore()
+        _GLOBAL_GRAPH_REPO = mock_repo
+        return mock_repo
+
+    # Default production path: GRAPH_BACKEND=neo4j
+    adapter = Neo4jDriverAdapter()
+    if not adapter.verify_connectivity():
+        raise ConnectionError(
+            f"Neo4j database unreachable at '{adapter.uri}'. "
+            f"GRAPH_BACKEND=neo4j requires an active Neo4j database instance. Silent fallback is disabled."
+        )
+
+    repo = Neo4jGraphRepository(adapter)
+    repo.init_constraints()
+    _GLOBAL_GRAPH_REPO = repo
+    return repo
 
 
 def set_graph_repository(repo: Union[Neo4jGraphRepository, MockNeo4jGraphStore]) -> None:

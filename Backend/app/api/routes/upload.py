@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from ..dependencies import get_current_user
+from ..dependencies import get_workspace_identity
 from ...core.exceptions import AppException
 from ...core.logging import get_logger
 from ...ingestion.service import ingestion_service
@@ -17,7 +17,7 @@ router = APIRouter(tags=["upload"])
 async def upload_project_source(
     project_id: str,
     file: UploadFile = File(...),
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Upload a source document to a project and run Phase 3 Ingestion & Extraction."""
     uid = user["uid"]
@@ -42,7 +42,7 @@ async def upload_project_source(
 @router.post("/api/upload")
 async def upload_source(
     file: UploadFile = File(...),
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Standalone source upload & Phase 3 Ingestion/Extraction endpoint."""
     filename = file.filename or "source.txt"

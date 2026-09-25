@@ -14,6 +14,7 @@ from .schemas import (
 from .query_analyzer import QueryAnalyzer
 from .vector_retriever import VectorRetriever
 from .graph_retriever import GraphRetriever
+from .hybrid_retriever import HybridRetriever
 from .fusion import ResultFusion, WeightedScoreFusion, ReciprocalRankFusion
 from .reranker import RerankerInterface, LightweightReranker
 from .context_builder import ContextBuilder
@@ -35,6 +36,7 @@ __all__ = [
     "QueryAnalyzer",
     "VectorRetriever",
     "GraphRetriever",
+    "HybridRetriever",
     "ResultFusion",
     "WeightedScoreFusion",
     "ReciprocalRankFusion",

@@ -17,7 +17,7 @@ Document Ingestion Layer (app/ingestion/)
        ↓
 Document Extraction Layer (app/extraction/)
        ↓
-Core Domain Engines & Storage (app/services/, MongoDB GridFS)
+Core Domain Engines & Storage (app/services/, local JSON and filesystem)
 ```
 
 ### Full Target Architecture (Phases 1 – 16)

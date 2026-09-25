@@ -55,6 +55,9 @@ class DistillationRequest(BaseModel):
     teacher_model_id: str = Field("teacher_model_v1")
     student_model_id: str = Field("student_model_v1")
     config: Optional[DistillationConfig] = None
+    project_id: Optional[str] = None
+    source_id: Optional[str] = None
+    pipeline: bool = False
 
 
 class DistillationStatusResponse(BaseModel):

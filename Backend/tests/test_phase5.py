@@ -40,11 +40,11 @@ def test_phase5_all():
     assert res1_neo4j.json()["ok"] is True
     print("  [OK] Neo4j Health Check:", res1_neo4j.json()["neo4j"])
 
-    # 2. Auth Profile
-    print("\n[Test 2] Auth Profile (User A):")
-    res2 = c.get("/api/me", headers={"X-User-Uid": uid_a, "X-User-Email": "userA@example.com"})
+    # 2. Anonymous local workspace
+    print("\n[Test 2] Local Workspace API:")
+    res2 = c.get("/api/projects")
     assert res2.status_code == 200
-    print("  [OK] Auth Profile:", res2.json()["displayName"], f"({res2.json()['uid']})")
+    print("  [OK] Project listing is available without sign-in.")
 
     # 3. Create Project
     print("\n[Test 3] Create Project (User A):")

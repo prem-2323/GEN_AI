@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...embeddings.models import IndexDocumentResponse, SearchRequest
 from ...embeddings.service import EmbeddingPipelineService
 
@@ -23,7 +23,7 @@ embeddings_service = EmbeddingPipelineService()
 @router.post("/index-text", response_model=IndexDocumentResponse, status_code=200)
 async def index_text_endpoint(
     payload: Dict[str, Any],
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Index arbitrary text using Phase 6 semantic chunking and embedding pipeline."""
     text = payload.get("text", "")
@@ -43,7 +43,7 @@ async def index_text_endpoint(
 @router.post("/index/{document_id}", response_model=IndexDocumentResponse, status_code=200)
 async def index_document_endpoint(
     document_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Fetch stored document and run Phase 6 semantic chunking & vector indexing."""
     try:
@@ -55,7 +55,7 @@ async def index_document_endpoint(
 @router.post("/search", status_code=200)
 async def semantic_search_endpoint(
     req: SearchRequest,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Perform top-K semantic similarity search over indexed vector store."""
     if not req.query or not req.query.strip():
@@ -82,7 +82,7 @@ async def semantic_search_endpoint(
 @router.delete("/document/{document_id}")
 async def delete_document_vectors_endpoint(
     document_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Delete all vectors and metadata associated with document_id."""
     deleted_count = embeddings_service.delete_document_vectors(document_id)
@@ -93,10 +93,18 @@ async def delete_document_vectors_endpoint(
     }
 
 
+@router.get("/status", status_code=200)
+async def get_embeddings_status_endpoint(
+    user: dict = Depends(get_workspace_identity),
+):
+    """Get active embedding provider status, model name, dimension, and device info."""
+    return embeddings_service.get_embedding_status()
+
+
 @router.get("/document/{document_id}")
 async def get_document_vectors_status_endpoint(
     document_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get vector indexing status and chunk metadata for a document_id."""
     return embeddings_service.get_document_status(document_id)

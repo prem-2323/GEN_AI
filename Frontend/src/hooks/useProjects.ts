@@ -1,20 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { projectApi } from '../api/projectApi';
 import { ProjectRecord, ProjectCreatePayload } from '../types/project';
-import { useFirebase } from '../context/FirebaseContext';
 
 export function useProjects() {
-  const { user } = useFirebase();
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProjects = useCallback(async () => {
-    if (!user) {
-      setProjects([]);
-      setLoading(false);
-      return;
-    }
     setLoading(true);
     setError(null);
     try {
@@ -25,7 +18,7 @@ export function useProjects() {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     fetchProjects();

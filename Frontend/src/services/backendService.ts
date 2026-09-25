@@ -1,35 +1,20 @@
-import { auth } from '../lib/firebase';
-
 /**
- * Optional FastAPI backend client (ContentForge AI, MongoDB `contentforge`).
- * Set VITE_BACKEND_URL=http://127.0.0.1:8000 to route project persistence
- * through the backend (Firebase ID token -> UID -> users -> projects ->
- * sources -> UCKR -> deliverables). When unset, the app keeps using direct
- * Firestore (see FirebaseContext).
+ * FastAPI client for the local JSON repository and filesystem storage.
  */
 
 const BASE = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
-  ?.VITE_BACKEND_URL as string | undefined;
+  ?.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
 
-export const backendEnabled = Boolean(BASE);
+export const backendEnabled = true;
 
 async function headers(): Promise<HeadersInit> {
-  const token = auth.currentUser ? await auth.currentUser.getIdToken().catch(() => '') : '';
-  const uid = auth.currentUser?.uid || 'guest-user';
   return {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    'X-User-Uid': uid,
   };
 }
 
-async function authHeaders(): Promise<HeadersInit> {
-  const token = auth.currentUser ? await auth.currentUser.getIdToken().catch(() => '') : '';
-  const uid = auth.currentUser?.uid || 'guest-user';
-  return {
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    'X-User-Uid': uid,
-  };
+async function uploadHeaders(): Promise<HeadersInit> {
+  return {};
 }
 
 async function req(path: string, init?: RequestInit) {
@@ -45,7 +30,7 @@ async function req(path: string, init?: RequestInit) {
 
 async function uploadReq(path: string, file: File) {
   if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
-  const h = await authHeaders();
+  const h = await uploadHeaders();
   const form = new FormData();
   form.append('file', file);
   const res = await fetch(`${BASE}${path}`, { method: 'POST', headers: h, body: form });
@@ -57,7 +42,6 @@ async function uploadReq(path: string, file: File) {
 }
 
 export const backendApi = {
-  me: () => req('/api/me'),
   listProjects: () => req('/api/projects'),
   getProject: (id: string) => req(`/api/projects/${id}`),
   createProject: (body: unknown) =>
@@ -104,8 +88,20 @@ export const backendApi = {
     req(`/api/projects/${projectId}/sources/${sourceId}/uckr`, { method: 'POST' }),
   getUckr: (projectId: string, sourceId?: string) =>
     req(`/api/projects/${projectId}/uckr${sourceId ? `?sourceId=${sourceId}` : ''}`),
-  transform: (projectId: string, types: string[], config?: unknown) =>
-    req(`/api/projects/${projectId}/transform`, { method: 'POST', body: JSON.stringify({ types, config }) }),
+  transform: (projectId: string, types: string[], config?: Record<string, unknown>) =>
+    req(`/api/projects/${projectId}/transform`, {
+      method: 'POST',
+      body: JSON.stringify({
+        outputTypes: types.map((type) => type === 'twitter' ? 'x' : type === 'video' ? 'video_script' : type),
+        configuration: {
+          audience: String(config?.audience || config?.targetAudience || 'executive').toLowerCase(),
+          tone: String(config?.tone || 'professional').toLowerCase(),
+          language: config?.language || 'English',
+          detailLevel: String(config?.detailLevel || config?.levelOfDetail || 'medium').toLowerCase(),
+          objective: String(config?.objective || 'awareness').toLowerCase().replace(/\s+/g, '_'),
+        },
+      }),
+    }),
   listDeliverables: (projectId: string) => req(`/api/projects/${projectId}/deliverables`),
   validateProject: (projectId: string) =>
     req(`/api/projects/${projectId}/validate`, { method: 'POST' }),

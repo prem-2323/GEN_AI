@@ -1,14 +1,14 @@
-"""Phase 10 — Multi-Format Export System & GridFS Delivery Automated Test Suite.
+"""Phase 10 — Multi-format export and local file delivery test suite.
 
 Verifies:
   1. Complete End-to-End Pipeline: Source -> Extraction -> UCKR -> Deliverables
   2. Deliverable Approval & Governance Workflow (require_approval check)
-  3. TXT Export -> GridFS -> Verify content and metadata
-  4. DOCX Export -> GridFS -> Verify valid Word document
-  5. PDF Export -> GridFS -> Verify valid ReportLab PDF binary
-  6. PPTX Export -> GridFS -> Verify PowerPoint slides with UCKR fact citations
-  7. MP3 Audio Export -> GridFS -> Verify audio binary
-  8. MongoDB `exports` Collection Lineage & Metadata Verification
+    3. TXT Export -> local filesystem -> Verify content and metadata
+    4. DOCX Export -> local filesystem -> Verify valid Word document
+    5. PDF Export -> local filesystem -> Verify valid ReportLab PDF binary
+    6. PPTX Export -> local filesystem -> Verify PowerPoint slides with UCKR fact citations
+    7. MP3 Audio Export -> local filesystem -> Verify audio binary
+    8. JSON `exports` Repository Lineage & Metadata Verification
   9. Secure Download Endpoint with Strict Tenant Security (User B blocked with 403 Forbidden)
  10. Missing Deliverable / Cross-tenant Error Handlers (404 / 403)
 """
@@ -128,13 +128,13 @@ def run_phase10_test_suite():
     assert txt_resp.status_code == 200, f"TXT export failed: {txt_resp.text}"
     txt_exp = txt_resp.json()["export"]
     txt_file_id = txt_exp["fileId"]
-    assert txt_file_id, "GridFS fileId missing on TXT export."
+    assert txt_file_id, "Local file ID missing on TXT export."
 
     # Download and verify content
     dl_txt = client.get(f"/api/projects/{project_id}/exports/{txt_exp['exportId']}/download", headers=USER_A_HEADERS)
     assert dl_txt.status_code == 200
     assert "CONTENTFORGE AI" in dl_txt.text
-    print(f"  [OK] TXT Export verified in GridFS (id={txt_file_id}, size={len(dl_txt.content)} bytes).")
+    print(f"  [OK] TXT Export verified in local storage (id={txt_file_id}, size={len(dl_txt.content)} bytes).")
 
     # --- Test 3: DOCX Document Export ---
     print("\n[Test 3] Testing DOCX Exporter (python-docx):")
@@ -199,10 +199,10 @@ def run_phase10_test_suite():
     )
     assert audio_resp.status_code == 200, f"MP3 export failed: {audio_resp.text}"
     audio_exp = audio_resp.json()["export"]
-    print(f"  [OK] MP3 Audio synthesized and stored in GridFS (fileId={audio_exp['fileId']}, size={audio_exp['fileSize']} bytes).")
+    print(f"  [OK] MP3 Audio synthesized and stored locally (fileId={audio_exp['fileId']}, size={audio_exp['fileSize']} bytes).")
 
-    # --- Test 7: MongoDB `exports` Collection Verification ---
-    print("\n[Test 7] Verifying MongoDB `exports` Collection Records & Lineage:")
+    # --- Test 7: Local `exports` repository verification ---
+    print("\n[Test 7] Verifying local `exports` records & lineage:")
     list_resp = client.get(f"/api/projects/{project_id}/exports", headers=USER_A_HEADERS)
     assert list_resp.status_code == 200
     exports_list = list_resp.json()["exports"]
@@ -212,7 +212,7 @@ def run_phase10_test_suite():
         assert exp.get("fileId"), "fileId is missing in export record."
         assert exp.get("exportType") in ("txt", "docx", "pdf", "pptx", "mp3", "md"), f"Unknown export type {exp.get('exportType')}"
         assert exp.get("uckrVersion") is not None
-    print(f"  [OK] All {len(exports_list)} export records verified in MongoDB with full UCKR lineage.")
+    print(f"  [OK] All {len(exports_list)} export records verified in local storage with full UCKR lineage.")
 
     # --- Test 8: Cross-Tenant Security on Download Endpoint ---
     print("\n[Test 8] Cross-Tenant Security Enforcement:")

@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 import { DeliverableQualityReport } from '../types/quality';
 
 export const qualityApi = {
@@ -6,7 +6,7 @@ export const qualityApi = {
     projectId: string,
     deliverableId: string
   ): Promise<{ ok: boolean; deliverable: any; message?: string }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/approve`, {
+    return workspaceFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/approve`, {
       method: 'POST',
     });
   },
@@ -15,6 +15,6 @@ export const qualityApi = {
     projectId: string,
     deliverableId: string
   ): Promise<DeliverableQualityReport> => {
-    return authenticatedFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/quality`);
+    return workspaceFetch(`/api/projects/${projectId}/deliverables/${deliverableId}/quality`);
   },
 };

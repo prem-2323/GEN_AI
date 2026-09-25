@@ -1,8 +1,8 @@
-"""Phase 6 Embedding Models & Provider Abstraction.
+"""Phase 3 Real Embedding Models & Provider Abstraction.
 
-Supports local Ollama embeddings, remote Gemini embeddings, and a fast deterministic
-384-dimensional fallback embedder for offline/CI environments.
-Includes batch embedding support and content-hash caching.
+Supports production SentenceTransformers (BAAI/bge-small-en-v1.5 or all-MiniLM-L6-v2),
+device detection (CUDA/CPU), batching, L2 normalization, and explicit error reporting.
+Also retains DeterministicEmbeddingModel strictly for offline unit tests.
 """
 from __future__ import annotations
 
@@ -46,13 +46,125 @@ class EmbeddingModelInterface(ABC):
         pass
 
 
-class DeterministicEmbeddingModel(EmbeddingModelInterface):
-    """Deterministic, high-quality 384-dimensional L2-normalized vector generator.
+class SentenceTransformerEmbeddingModel(EmbeddingModelInterface):
+    """Production Real Embedding Model backed by SentenceTransformers (e.g. BAAI/bge-small-en-v1.5).
 
-    Uses character n-gram hashing and semantic keyword projection.
-    Cos-sim between identical/similar texts is high (~0.85 - 1.0), and distinct texts is low.
-    Never fails, requires no remote daemon or GPU.
+    Supports automatic CUDA/CPU detection, L2 vector normalization, batch processing,
+    and explicit error reporting with NO silent fallback to deterministic hash vectors.
     """
+
+    def __init__(
+        self,
+        model_name: Optional[str] = None,
+        device: Optional[str] = None,
+        normalize: Optional[bool] = None,
+    ) -> None:
+        settings = get_settings()
+        self._model_name = model_name or getattr(settings, "embedding_model", "BAAI/bge-small-en-v1.5")
+        self._normalize = normalize if normalize is not None else getattr(settings, "embedding_normalize", True)
+
+        pref_device = (device or getattr(settings, "embedding_device", "auto")).lower().strip()
+        import torch
+
+        self._cuda_available = torch.cuda.is_available()
+
+        if pref_device == "cuda":
+            if self._cuda_available:
+                self._device = "cuda"
+            else:
+                log.warning("CUDA requested for embeddings but PyTorch reports CUDA unavailable; falling back to CPU.")
+                self._device = "cpu"
+        elif pref_device == "auto":
+            self._device = "cuda" if self._cuda_available else "cpu"
+        else:
+            self._device = "cpu"
+
+        log.info(
+            "Initializing SentenceTransformer model '%s' on device '%s' (CUDA available: %s, normalize: %s)",
+            self._model_name,
+            self._device,
+            self._cuda_available,
+            self._normalize,
+        )
+
+        try:
+            from sentence_transformers import SentenceTransformer
+
+            self._model = SentenceTransformer(self._model_name, device=self._device)
+            get_dim = getattr(self._model, "get_embedding_dimension", getattr(self._model, "get_sentence_embedding_dimension", None))
+            self._dim = get_dim() if get_dim else 384
+        except Exception as exc:
+            log.error("Failed to load SentenceTransformer model '%s': %s", self._model_name, exc)
+            raise RuntimeError(f"Could not load SentenceTransformer model '{self._model_name}': {exc}") from exc
+
+    @property
+    def dimension(self) -> int:
+        return self._dim
+
+    @property
+    def name(self) -> str:
+        return f"sentence-transformers:{self._model_name}"
+
+    @property
+    def model_name(self) -> str:
+        return self._model_name
+
+    @property
+    def device(self) -> str:
+        return self._device
+
+    @property
+    def cuda_available(self) -> bool:
+        return self._cuda_available
+
+    @property
+    def normalize(self) -> bool:
+        return self._normalize
+
+    def embed_text(self, text: str) -> List[float]:
+        clean = (text or "").strip()
+        if not clean:
+            return [0.0] * self._dim
+
+        vec = self._model.encode(
+            clean,
+            normalize_embeddings=self._normalize,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+        )
+        return [float(x) for x in vec]
+
+    def embed_texts(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
+        return self.embed_batch(texts, batch_size=batch_size)
+
+    def embed_batch(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
+        if not texts:
+            return []
+
+        settings = get_settings()
+        b_size = batch_size or getattr(settings, "embedding_batch_size", 16)
+
+        cleaned_texts = [t if (t and t.strip()) else " " for t in texts]
+
+        vecs = self._model.encode(
+            cleaned_texts,
+            batch_size=b_size,
+            normalize_embeddings=self._normalize,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+        )
+
+        res: List[List[float]] = []
+        for i, raw in enumerate(vecs):
+            if not texts[i] or not texts[i].strip():
+                res.append([0.0] * self._dim)
+            else:
+                res.append([float(x) for x in raw])
+        return res
+
+
+class DeterministicEmbeddingModel(EmbeddingModelInterface):
+    """Deterministic 384-dimensional vector generator used strictly for unit tests."""
 
     def __init__(self, dimension: int = 384) -> None:
         self._dim = dimension
@@ -69,14 +181,12 @@ class DeterministicEmbeddingModel(EmbeddingModelInterface):
     def _hash_vector(self, text: str) -> List[float]:
         ch_hash = compute_content_hash(text)
 
-        # Check cache
         if ch_hash in _EMBEDDING_CACHE:
             return _EMBEDDING_CACHE[ch_hash]
 
         raw = [0.0] * self._dim
         words = [w.strip().lower() for w in text.split() if w.strip()]
 
-        # 1. Word-level hashing & frequency projection
         for w in words:
             w_bytes = w.encode("utf-8")
             h = int(hashlib.md5(w_bytes).hexdigest(), 16)
@@ -84,7 +194,6 @@ class DeterministicEmbeddingModel(EmbeddingModelInterface):
             sign = 1.0 if ((h >> 4) & 1) == 1 else -1.0
             raw[idx] += sign * (1.0 + math.log(1 + len(w)))
 
-        # 2. Character 3-gram hashing for sub-word semantic capture
         for i in range(len(text) - 2):
             gram = text[i : i + 3].lower().encode("utf-8")
             h = int(hashlib.sha256(gram).hexdigest(), 16)
@@ -92,7 +201,6 @@ class DeterministicEmbeddingModel(EmbeddingModelInterface):
             sign = 1.0 if ((h >> 2) & 1) == 1 else -1.0
             raw[idx] += 0.3 * sign
 
-        # 3. L2 Normalization
         norm = math.sqrt(sum(v * v for v in raw))
         if norm > 1e-9:
             normalized = [round(v / norm, 6) for v in raw]
@@ -105,12 +213,15 @@ class DeterministicEmbeddingModel(EmbeddingModelInterface):
     def embed_text(self, text: str) -> List[float]:
         return self._hash_vector(text)
 
-    def embed_batch(self, texts: List[str]) -> List[List[float]]:
+    def embed_texts(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
+        return self.embed_batch(texts)
+
+    def embed_batch(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
         return [self.embed_text(t) for t in texts]
 
 
 class OllamaEmbeddingModel(EmbeddingModelInterface):
-    """Local Ollama embedding provider (e.g. nomic-embed-text)."""
+    """Local Ollama embedding provider."""
 
     def __init__(self, model_name: str = "nomic-embed-text", dimension: int = 768) -> None:
         self._model = model_name
@@ -126,26 +237,25 @@ class OllamaEmbeddingModel(EmbeddingModelInterface):
         return self._name
 
     def embed_text(self, text: str) -> List[float]:
-        try:
-            import ollama
+        import ollama
 
-            settings = get_settings()
-            client = ollama.Client(host=settings.ollama_base_url)
-            resp = client.embeddings(model=self._model, prompt=text)
-            vec = resp.get("embedding") if isinstance(resp, dict) else getattr(resp, "embedding", None)
-            if vec and isinstance(vec, list):
-                return vec
-        except Exception as exc:
-            log.debug("Ollama embedding failed (%s); falling back to deterministic", exc)
+        settings = get_settings()
+        client = ollama.Client(host=settings.ollama_base_url)
+        resp = client.embeddings(model=self._model, prompt=text)
+        vec = resp.get("embedding") if isinstance(resp, dict) else getattr(resp, "embedding", None)
+        if vec and isinstance(vec, list):
+            return vec
+        raise RuntimeError(f"Ollama returned invalid embedding vector for model {self._model}")
 
-        return DeterministicEmbeddingModel(dimension=self._dim).embed_text(text)
+    def embed_texts(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
+        return self.embed_batch(texts)
 
-    def embed_batch(self, texts: List[str]) -> List[List[float]]:
+    def embed_batch(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
         return [self.embed_text(t) for t in texts]
 
 
 class GeminiEmbeddingModel(EmbeddingModelInterface):
-    """Remote Gemini text-embedding provider."""
+    """Deprecated Gemini embedding provider stub."""
 
     def __init__(self, model_name: str = "text-embedding-004", dimension: int = 768) -> None:
         self._model = model_name
@@ -161,25 +271,10 @@ class GeminiEmbeddingModel(EmbeddingModelInterface):
         return self._name
 
     def embed_text(self, text: str) -> List[float]:
-        settings = get_settings()
-        if not settings.gemini_api_key:
-            return DeterministicEmbeddingModel(dimension=self._dim).embed_text(text)
+        raise NotImplementedError("Gemini API has been removed. Use SentenceTransformerEmbeddingModel.")
 
-        try:
-            from google import genai
-
-            client = genai.Client(api_key=settings.gemini_api_key)
-            res = client.models.embed_content(model=self._model, contents=text)
-            embedding = getattr(res, "embedding", None)
-            if embedding and hasattr(embedding, "values"):
-                return list(embedding.values)
-        except Exception as exc:
-            log.debug("Gemini embedding failed (%s); falling back", exc)
-
-        return DeterministicEmbeddingModel(dimension=self._dim).embed_text(text)
-
-    def embed_batch(self, texts: List[str]) -> List[List[float]]:
-        return [self.embed_text(t) for t in texts]
+    def embed_batch(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
+        raise NotImplementedError("Gemini API has been removed. Use SentenceTransformerEmbeddingModel.")
 
 
 _DEFAULT_EMBEDDER: Optional[EmbeddingModelInterface] = None
@@ -192,37 +287,44 @@ def set_default_embedder(embedder: Optional[EmbeddingModelInterface]) -> None:
 
 
 def get_embedder(provider: Optional[str] = None) -> EmbeddingModelInterface:
-    """Factory resolving active embedding model provider (Ollama -> Gemini -> Deterministic)."""
+    """Factory resolving active embedding model provider.
+
+    Default production path uses SentenceTransformerEmbeddingModel.
+    Raises explicit RuntimeError on initialization failure with NO silent fallback.
+    """
     global _DEFAULT_EMBEDDER
     if _DEFAULT_EMBEDDER is not None and provider is None:
         return _DEFAULT_EMBEDDER
 
     settings = get_settings()
-    p = (provider or "").lower().strip()
+    p = (provider or getattr(settings, "embedding_provider", "sentence_transformers")).lower().strip()
+
+    if p in ("sentence_transformers", "sentence-transformers", "real"):
+        inst = SentenceTransformerEmbeddingModel()
+        if provider is None:
+            _DEFAULT_EMBEDDER = inst
+        return inst
+
+    if p in ("deterministic", "mock"):
+        inst = DeterministicEmbeddingModel(dimension=getattr(settings, "vector_dimension", 384))
+        if provider is None:
+            _DEFAULT_EMBEDDER = inst
+        return inst
 
     if p.startswith("ollama"):
         return OllamaEmbeddingModel()
+
     if p.startswith("gemini"):
         return GeminiEmbeddingModel()
-    if p == "deterministic":
-        return DeterministicEmbeddingModel(dimension=settings.vector_dimension)
 
-    # Check Ollama availability
-    if settings.ollama_enabled:
-        try:
-            import ollama
-            client = ollama.Client(host=settings.ollama_base_url, timeout=1.5)
-            models = [m.model for m in client.list().models]
-            if any("embed" in m for m in models):
-                return OllamaEmbeddingModel()
-        except Exception:
-            pass
-
-    # Check Gemini key
-    if settings.gemini_api_key:
-        return GeminiEmbeddingModel()
-
-    return DeterministicEmbeddingModel(dimension=getattr(settings, "vector_dimension", 384))
+    try:
+        inst = SentenceTransformerEmbeddingModel()
+        if provider is None:
+            _DEFAULT_EMBEDDER = inst
+        return inst
+    except Exception as exc:
+        log.error("Failed to initialize SentenceTransformers embedder: %s", exc)
+        raise RuntimeError(f"Embedding provider initialization failed for '{p}': {exc}") from exc
 
 
 def clear_embedding_cache() -> None:
@@ -232,6 +334,7 @@ def clear_embedding_cache() -> None:
 
 __all__ = [
     "EmbeddingModelInterface",
+    "SentenceTransformerEmbeddingModel",
     "DeterministicEmbeddingModel",
     "OllamaEmbeddingModel",
     "GeminiEmbeddingModel",

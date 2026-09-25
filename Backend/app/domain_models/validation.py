@@ -69,9 +69,9 @@ class RegenerateRequest(BaseModel):
 
 
 class ValidationRecord(BaseModel):
-    """MongoDB record in the `validations` collection."""
+    """Local repository record for a validation."""
     id: str = Field(alias="_id")
-    firebaseUid: str
+    userId: str
     projectId: str
     sourceId: str
     uckrId: str

@@ -27,11 +27,11 @@ def test_phase4_all():
     assert res1.status_code == 200, f"Health failed: {res1.text}"
     print("  [OK] Health OK:", res1.json())
 
-    # 2. Auth Profile
-    print("\n[Test 2] Auth Profile (User A):")
-    res2 = c.get("/api/me", headers={"X-User-Uid": uid_a, "X-User-Email": "userA@example.com"})
+    # 2. Anonymous local workspace
+    print("\n[Test 2] Local Workspace API:")
+    res2 = c.get("/api/projects")
     assert res2.status_code == 200
-    print("  [OK] Auth Profile:", res2.json()["displayName"], f"({res2.json()['uid']})")
+    print("  [OK] Project listing is available without sign-in.")
 
     # Clean up any leftover project state from prior runs
     c.delete(f"/api/projects/{proj_id}", headers={"X-User-Uid": uid_a})
@@ -81,7 +81,7 @@ def test_phase4_all():
         json={"forceRefresh": True},
     )
     assert res5.status_code == 200
-    print("  [OK] AI Analysis completed and stored in MongoDB analysis collection.")
+    print("  [OK] AI Analysis completed and stored in the local JSON repository.")
 
     # 6. Phase 4: Build Real UCKR Knowledge Base
     print("\n[Test 6] Phase 4: Build Real UCKR Knowledge Base:")

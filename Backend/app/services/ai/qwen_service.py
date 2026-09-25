@@ -41,7 +41,7 @@ def _clean_json_str(raw: str) -> str:
     return cleaned
 
 
-def _ollama_client(timeout: float = 12.0):
+def _ollama_client(timeout: float = 180.0):
     try:
         import ollama
         return ollama.Client(host=get_settings().ollama_base_url, timeout=timeout)
@@ -49,7 +49,7 @@ def _ollama_client(timeout: float = 12.0):
         return None
 
 
-def _call_ollama(text: str, model_name: str, timeout: float = 12.0) -> Optional[dict]:
+def _call_ollama(text: str, model_name: str, timeout: float = 180.0) -> Optional[dict]:
     client = _ollama_client(timeout=timeout)
     if client is None:
         return None
@@ -65,7 +65,14 @@ def _call_ollama(text: str, model_name: str, timeout: float = 12.0) -> Optional[
         )
         content = resp["message"]["content"]
         cleaned = _clean_json_str(content)
-        return json.loads(cleaned)
+        parsed = json.loads(cleaned)
+        if not isinstance(parsed, dict):
+            return None
+        has_content = bool(str(parsed.get("summary", "")).strip()) or any(
+            parsed.get(key)
+            for key in ("facts", "entities", "events", "metrics", "claims", "actions", "topics", "relationships")
+        )
+        return parsed if has_content else None
     except Exception as exc:
         log.info("Ollama Qwen call skipped (%s), trying fallback", exc)
         return None
@@ -274,12 +281,7 @@ def analyze_text_with_qwen(
         if raw_dict:
             provider = "ollama"
 
-    if not raw_dict and settings.ai_fallback_enabled:
-        raw_dict = _call_gemini(text)
-        if raw_dict:
-            provider = "gemini"
-
-    # 3. Deterministic Grounded Engine (processes real extracted document content)
+    # Deterministic Grounded Engine fallback (processes real extracted document content)
     if not raw_dict:
         raw_dict = _deterministic_extractive_analysis(text)
         provider = "deterministic"
@@ -293,7 +295,7 @@ def analyze_text_with_qwen(
 
 
 def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict: Optional[int] = None) -> str:
-    """Send generation prompt to local Ollama Qwen model or Gemini fallback."""
+    """Send generation prompt exclusively to local Ollama Qwen model."""
     settings = get_settings()
     client = _ollama_client(timeout=timeout or 8.0)
     if client:
@@ -309,19 +311,7 @@ def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict
             raw = resp["message"]["content"]
             return re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
         except Exception as exc:
-            log.info("Ollama generate skipped (%s), trying fallback", exc)
-
-    if settings.gemini_api_key:
-        try:
-            from google import genai
-            g_client = genai.Client(api_key=settings.gemini_api_key)
-            resp = g_client.models.generate_content(
-                model=settings.gemini_model or "gemini-2.5-flash",
-                contents=prompt,
-            )
-            return (resp.text or "").strip()
-        except Exception as g_exc:
-            log.info("Gemini generate fallback skipped: %s", g_exc)
+            log.info("Ollama generate skipped (%s), falling back to grounded output", exc)
 
     return prompt[:200]
 

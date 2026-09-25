@@ -1,4 +1,4 @@
-"""Export API Routes (Phase 10 — Multi-Format Exporter & GridFS Delivery)."""
+"""Export API routes backed by local filesystem storage."""
 from __future__ import annotations
 
 import io
@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...services.export.schemas import ExportRequest
 from ...services.export.export_service import (
     export_deliverable_artifact,
@@ -30,7 +30,7 @@ async def export_deliverable(
     project_id: str,
     deliverable_id: str,
     payload: ExportRequest,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Export a deliverable into a downloadable file format (pptx, docx, pdf, txt, mp3) stored in storage."""
     uid = _extract_uid(user)
@@ -49,7 +49,7 @@ async def export_deliverable(
 async def approve_deliverable_endpoint(
     project_id: str,
     deliverable_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Approve deliverable for official enterprise export."""
     uid = _extract_uid(user)
@@ -59,7 +59,7 @@ async def approve_deliverable_endpoint(
 @router.get("/exports")
 async def list_exports(
     project_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """List all exports for a project."""
     uid = _extract_uid(user)
@@ -71,7 +71,7 @@ async def list_exports(
 async def get_export(
     project_id: str,
     export_id: str,
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Get metadata for a specific export."""
     uid = _extract_uid(user)
@@ -84,7 +84,7 @@ async def download_export_file(
     project_id: str,
     export_id: str,
     inline: bool = Query(False, description="View inline in browser if supported"),
-    user: Any = Depends(get_current_user),
+    user: Any = Depends(get_workspace_identity),
 ):
     """Download export binary stream directly from storage with strict tenant security."""
     uid = _extract_uid(user)

@@ -121,7 +121,7 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
         "exportId": export_id,
         "id": export_id,
         "userId": uid,
-        "firebaseUid": uid,
+        "userId": uid,
         "projectId": doc["projectId"],
         "sourceId": doc.get("sourceId"),
         "deliverableId": deliverable_id,

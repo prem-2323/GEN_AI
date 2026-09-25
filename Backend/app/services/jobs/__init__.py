@@ -1,4 +1,4 @@
-"""Jobs domain — MongoDB-backed background pipeline queue and worker.
+"""Jobs domain — file-backed background pipeline queue and worker.
 
 Module: job_service
 """

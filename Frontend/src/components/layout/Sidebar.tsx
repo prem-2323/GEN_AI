@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Home, 
   Sparkles, 
@@ -10,14 +10,9 @@ import {
   ShieldCheck, 
   Activity,
   X,
-  Cloud,
-  LogIn,
-  LogOut,
-  Loader2,
   Database
 } from 'lucide-react';
 import { ViewState } from '../../types';
-import { useFirebase } from '../../context/FirebaseContext';
 
 interface SidebarProps {
   currentView: ViewState;
@@ -34,8 +29,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   outputsCount
 }) => {
-  const { user, signInWithGoogle, signOutUser, authLoading } = useFirebase();
-  const [isSigningIn, setIsSigningIn] = useState(false);
   const navItems = [
     { id: 'dashboard' as ViewState, label: 'Dashboard', icon: Home },
     { id: 'new_transformation' as ViewState, label: 'New Transformation', icon: Sparkles, badge: 'Core' },
@@ -151,37 +144,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </nav>
 
-        {/* Operator Profile & Engine Status */}
+        {/* Local workspace status */}
         <div className="p-4 border-t border-slate-800/80 bg-[#090d16]/70">
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2.5">
-              {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt={user.displayName || 'User'}
-                  className="w-8 h-8 rounded-lg object-cover ring-1 ring-purple-500/50"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-700 flex items-center justify-center font-bold text-white text-xs border border-purple-400/30 shadow-inner">
-                  {user ? (user.displayName || user.email || 'U')[0].toUpperCase() : 'OP'}
-                </div>
-              )}
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-700 flex items-center justify-center font-bold text-white text-xs border border-purple-400/30 shadow-inner">
+                <Database className="w-4 h-4" />
+              </div>
               <div className="leading-tight overflow-hidden">
                 <div className="text-sm font-semibold text-slate-200 truncate max-w-[130px]">
-                  {user ? (user.displayName || user.email?.split('@')[0]) : 'Operator'}
+                  Local Workspace
                 </div>
                 <div className="text-[11px] text-slate-400 truncate max-w-[130px]">
-                  {user ? (user.email || 'Firebase User') : 'Enterprise Workspace'}
+                  File-backed storage
                 </div>
               </div>
             </div>
-            {user ? (
-              <span title="Firestore Sync Active">
-                <Cloud className="w-4 h-4 text-amber-400" />
-              </span>
-            ) : (
-              <Sparkles className="w-4 h-4 text-purple-400" />
-            )}
+            <Sparkles className="w-4 h-4 text-purple-400" />
           </div>
 
           <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">
@@ -191,51 +170,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span className="font-medium text-[11px]">
-                {user ? 'Firebase Synced' : 'AI Engine Online'}
+                Local API Ready
               </span>
             </div>
             <Activity className="w-3.5 h-3.5 opacity-70" />
           </div>
 
-          {/* Action Button below Firebase Synced */}
-          <div className="mt-2.5">
-            {user ? (
-              <button
-                onClick={() => signOutUser()}
-                className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/90 hover:bg-rose-500/15 border border-slate-800 hover:border-rose-500/30 text-slate-300 hover:text-rose-300 text-xs font-medium transition-all cursor-pointer"
-                title={`Sign out of ${user.email || 'Firebase'}`}
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Sign Out</span>
-              </button>
-            ) : (
-              <button
-                onClick={async () => {
-                  try {
-                    setIsSigningIn(true);
-                    await signInWithGoogle();
-                  } finally {
-                    setIsSigningIn(false);
-                  }
-                }}
-                disabled={authLoading || isSigningIn}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-semibold shadow-md shadow-amber-500/20 transition-all cursor-pointer disabled:opacity-60"
-                title="Sign in with Google to sync deliverables to Firebase Firestore"
-              >
-                {authLoading || isSigningIn ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-950" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="w-3.5 h-3.5" />
-                    <span>Sign In with Google</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
         </div>
       </aside>
     </>

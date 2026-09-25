@@ -136,7 +136,7 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
 
     setExportingMap(prev => ({ ...prev, [item.filename]: true }));
 
-    // Try backend GridFS export first if projectId is present
+    // Try backend file export first if projectId is present
     if (projectId) {
       try {
         const deliverableId = `del-${item.id}`;
@@ -159,11 +159,11 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
           URL.revokeObjectURL(url);
 
           setDownloadedMap(prev => ({ ...prev, [item.filename]: true }));
-          onShowToast('GridFS Export Ready', `Downloaded official ${item.format.toUpperCase()} from MongoDB GridFS.`, 'success');
+          onShowToast('Export Ready', `Downloaded ${item.format.toUpperCase()} from local file storage.`, 'success');
           return;
         }
       } catch (err: any) {
-        console.warn('Backend GridFS export fallback to direct client download:', err);
+        console.warn('Backend file export fallback to direct client download:', err);
       } finally {
         setExportingMap(prev => ({ ...prev, [item.filename]: false }));
       }
@@ -199,11 +199,11 @@ export const ExportCenter: React.FC<ExportCenterProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-white tracking-tight uppercase">
-              EXPORTS & GRIDFS DELIVERY
+              EXPORTS & FILE DELIVERY
             </h3>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
               <HardDriveDownload className="w-3 h-3" />
-              <span>MongoDB GridFS Connected</span>
+              <span>Local File Storage</span>
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">

@@ -11,7 +11,7 @@ Phase 1 Architectural Layout:
       ↓
     Core Domain Engines (services/, core/)
       ↓
-    MongoDB & Storage Layer (config/mongo, services/storage)
+    Local JSON & filesystem storage (storage/)
 """
 from __future__ import annotations
 
@@ -28,7 +28,6 @@ from .core.logging import get_logger, setup_logging
 
 # API Routers
 from .api.routes.health import router as health_router
-from .api.routes.auth import router as auth_router
 from .api.routes.projects import router as projects_router
 from .api.routes.upload import router as upload_router
 from .api.routes.sources import router as sources_router
@@ -109,7 +108,6 @@ app.add_middleware(
 
 # Register API Routers
 app.include_router(health_router)
-app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(upload_router)
 app.include_router(sources_router)

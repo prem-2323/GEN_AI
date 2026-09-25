@@ -165,7 +165,7 @@ def build_uckr(
     return {
         "uckrId": f"UCKR-{uuid.uuid4().hex[:8].upper()}",
         "userId": uid,
-        "firebaseUid": uid,
+        "userId": uid,
         "projectId": project_id,
         "sourceId": source_id,
         "stats": {

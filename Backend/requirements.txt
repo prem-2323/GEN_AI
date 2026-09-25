@@ -14,5 +14,10 @@ ollama>=0.4
 google-genai>=1.0
 # Phase 5 Graph Database
 neo4j>=5.0
+# Phase 3 Embedding Model
+sentence-transformers>=3.0
+# Phase 4 Vector Store
+faiss-cpu>=1.7
+numpy>=1.24
 # Phase 10 exports
 python-pptx>=1.0

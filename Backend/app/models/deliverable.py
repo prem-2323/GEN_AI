@@ -123,9 +123,9 @@ class TransformationRequest(BaseModel):
 
 
 class DeliverableRecord(BaseModel):
-    """MongoDB record in the `deliverables` collection."""
+    """Local repository record for a deliverable."""
     id: str = Field(alias="_id")
-    firebaseUid: str
+    userId: str
     projectId: str
     sourceId: str
     uckrId: str

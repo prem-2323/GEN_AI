@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 import { JobRecord } from '../types/job';
 
 export interface StartJobPayload {
@@ -13,17 +13,17 @@ export const jobApi = {
     projectId: string,
     payload: StartJobPayload
   ): Promise<{ ok: boolean; job: JobRecord }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/jobs`, {
+    return workspaceFetch(`/api/projects/${projectId}/jobs`, {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   },
 
   getJob: async (jobId: string): Promise<{ ok: boolean; job: JobRecord }> => {
-    return authenticatedFetch(`/api/jobs/${jobId}`);
+    return workspaceFetch(`/api/jobs/${jobId}`);
   },
 
   listJobs: async (projectId: string): Promise<{ ok: boolean; jobs: JobRecord[] }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/jobs`);
+    return workspaceFetch(`/api/projects/${projectId}/jobs`);
   },
 };

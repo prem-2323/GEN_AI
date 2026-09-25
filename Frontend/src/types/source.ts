@@ -4,7 +4,6 @@ export interface SourceFile {
   id: string;
   sourceId?: string;
   projectId?: string;
-  firebaseUid?: string;
   userId?: string;
   name: string;
   type: SourceType | string;

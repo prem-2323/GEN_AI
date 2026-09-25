@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 import { UckrKnowledgeBase, UckrVersionSummary } from '../types/uckr';
 
 export const uckrApi = {
@@ -6,7 +6,7 @@ export const uckrApi = {
     projectId: string,
     sourceId: string
   ): Promise<{ ok: boolean; uckrId: string; version: number; status: string; statistics: any; uckr: UckrKnowledgeBase }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr`, {
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr`, {
       method: 'POST',
     });
   },
@@ -15,7 +15,7 @@ export const uckrApi = {
     projectId: string,
     sourceId: string
   ): Promise<{ ok: boolean; uckr: UckrKnowledgeBase }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr`);
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr`);
   },
 
   getProjectUckr: async (
@@ -23,14 +23,14 @@ export const uckrApi = {
     sourceId?: string
   ): Promise<{ ok: boolean; uckr: UckrKnowledgeBase }> => {
     const query = sourceId ? `?sourceId=${encodeURIComponent(sourceId)}` : '';
-    return authenticatedFetch(`/api/projects/${projectId}/uckr${query}`);
+    return workspaceFetch(`/api/projects/${projectId}/uckr${query}`);
   },
 
   rebuildUckr: async (
     projectId: string,
     sourceId: string
   ): Promise<{ ok: boolean; uckrId: string; version: number; status: string; statistics: any; uckr: UckrKnowledgeBase }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/rebuild`, {
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/rebuild`, {
       method: 'POST',
     });
   },
@@ -40,7 +40,7 @@ export const uckrApi = {
     sourceId: string,
     version: number
   ): Promise<{ ok: boolean; uckr: UckrKnowledgeBase }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/${version}`);
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/${version}`);
   },
 
   listUckrVersions: async (
@@ -48,13 +48,13 @@ export const uckrApi = {
     sourceId?: string
   ): Promise<{ ok: boolean; versions: UckrVersionSummary[] }> => {
     const query = sourceId ? `?sourceId=${encodeURIComponent(sourceId)}` : '';
-    return authenticatedFetch(`/api/projects/${projectId}/uckr/versions${query}`);
+    return workspaceFetch(`/api/projects/${projectId}/uckr/versions${query}`);
   },
 
   getUckrValidation: async (
     projectId: string,
     sourceId: string
   ): Promise<{ ok: boolean; validation: any }> => {
-    return authenticatedFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/validation`);
+    return workspaceFetch(`/api/projects/${projectId}/sources/${sourceId}/uckr/validation`);
   },
 };

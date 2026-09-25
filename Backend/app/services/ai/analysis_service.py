@@ -22,14 +22,14 @@ def _now() -> str:
 def analyze_source(
     project_id: str,
     source_id: str,
-    firebase_uid: str,
+    user_id: str,
     extracted_text: Optional[str] = None,
     extracted_images: Optional[list] = None,
     force_refresh: bool = False,
 ) -> AnalysisRecord:
     """Run or retrieve source analysis with SHA-256 deduplication and repository persistence."""
     # 1. Verify project ownership (raises 404 or 403)
-    project = get_project(project_id, uid=firebase_uid)
+    project = get_project(project_id, uid=user_id)
 
     # 2. Extract text from project source if not passed directly
     if not extracted_text:
@@ -76,7 +76,7 @@ def analyze_source(
     record = orchestrate_source_analysis(
         project_id=project_id,
         source_id=source_id,
-        firebase_uid=firebase_uid,
+        user_id=user_id,
         extracted_text=extracted_text,
         extracted_images=extracted_images,
     )
@@ -114,9 +114,14 @@ def analyze_source(
     return record
 
 
-def get_analysis(project_id: str, source_id: str, firebase_uid: str) -> AnalysisRecord:
+def analyze_source_sync(project_id: str, source_id: str, user_id: str) -> AnalysisRecord:
+    """Compatibility entry point for synchronous UCKR construction flows."""
+    return analyze_source(project_id, source_id, user_id)
+
+
+def get_analysis(project_id: str, source_id: str, user_id: str) -> AnalysisRecord:
     """Retrieve saved analysis, enforcing ownership."""
-    get_project(project_id, uid=firebase_uid)
+    get_project(project_id, uid=user_id)
 
     analysis_repo = get_repository("analysis")
     doc = analysis_repo.find_one(
@@ -125,18 +130,18 @@ def get_analysis(project_id: str, source_id: str, firebase_uid: str) -> Analysis
     )
     if not doc:
         # If not analyzed yet, run initial analysis automatically
-        return analyze_source(project_id, source_id, firebase_uid)
+        return analyze_source(project_id, source_id, user_id)
 
     owner_uid = doc.get("userId") or doc.get("firebaseUid")
-    if owner_uid and owner_uid != firebase_uid:
+    if owner_uid and owner_uid != user_id:
         raise HTTPException(status_code=403, detail="Access denied to this analysis record.")
 
     return AnalysisRecord(**doc)
 
 
-def get_analysis_status(project_id: str, source_id: str, firebase_uid: str) -> Dict[str, Any]:
+def get_analysis_status(project_id: str, source_id: str, user_id: str) -> Dict[str, Any]:
     """Check processing status and progress."""
-    get_project(project_id, uid=firebase_uid)
+    get_project(project_id, uid=user_id)
     analysis_repo = get_repository("analysis")
     doc = analysis_repo.find_one(
         {"projectId": project_id, "sourceId": source_id},

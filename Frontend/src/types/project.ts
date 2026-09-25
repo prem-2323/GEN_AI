@@ -2,7 +2,6 @@ export interface ProjectRecord {
   id: string;
   projectId?: string;
   userId?: string;
-  firebaseUid?: string;
   name: string;
   projectName?: string;
   title?: string;

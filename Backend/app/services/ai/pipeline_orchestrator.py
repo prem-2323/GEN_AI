@@ -43,7 +43,7 @@ def text_hash(text: str) -> str:
 # ------------------------------------------------------------------
 # Provider 1: Ollama (Qwen for text, Gemma for vision)
 # ------------------------------------------------------------------
-def _ollama_client(timeout: float = 12.0):
+def _ollama_client(timeout: float = 180.0):
     try:
         import ollama
 
@@ -54,7 +54,7 @@ def _ollama_client(timeout: float = 12.0):
 
 
 def _ollama_text_analysis(text: str) -> Optional[dict]:
-    client = _ollama_client(timeout=12.0)
+    client = _ollama_client(timeout=180.0)
     if client is None:
         return None
     settings = get_settings()
@@ -216,9 +216,6 @@ def analyze_text(text: str, use_cache_on_source: Optional[dict] = None) -> dict:
 
     result = _ollama_text_analysis(text)
     provider = "ollama-qwen"
-    if not result:
-        result = _gemini_text_analysis(text)
-        provider = "gemini"
     if not result:
         result = _extractive_analysis(text)
         provider = result.pop("provider", "extractive")

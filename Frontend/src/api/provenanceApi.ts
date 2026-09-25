@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 
 export interface LineageNodeUI {
   node_id: string;
@@ -42,37 +42,37 @@ export interface IntegrityResultUI {
 
 export const provenanceApi = {
   getOutputProvenance: async (outputId: string): Promise<OutputProvenanceUI> => {
-    return authenticatedFetch(`/api/provenance/output/${outputId}`);
+    return workspaceFetch(`/api/provenance/output/${outputId}`);
   },
 
   getOutputLineage: async (outputId: string): Promise<LineageTreeUI> => {
-    return authenticatedFetch(`/api/provenance/output/${outputId}/lineage`);
+    return workspaceFetch(`/api/provenance/output/${outputId}/lineage`);
   },
 
   getDocumentLineage: async (documentId: string): Promise<LineageTreeUI> => {
-    return authenticatedFetch(`/api/provenance/document/${documentId}/lineage`);
+    return workspaceFetch(`/api/provenance/document/${documentId}/lineage`);
   },
 
   getClaimProvenance: async (claimId: string): Promise<any> => {
-    return authenticatedFetch(`/api/provenance/claim/${claimId}`);
+    return workspaceFetch(`/api/provenance/claim/${claimId}`);
   },
 
   getEvidence: async (evidenceId: string): Promise<any> => {
-    return authenticatedFetch(`/api/provenance/evidence/${evidenceId}`);
+    return workspaceFetch(`/api/provenance/evidence/${evidenceId}`);
   },
 
   getCitationProvenance: async (citationId: string): Promise<any> => {
-    return authenticatedFetch(`/api/provenance/citation/${citationId}`);
+    return workspaceFetch(`/api/provenance/citation/${citationId}`);
   },
 
   verifyIntegrity: async (payload: { artifact_id: string; content: string; expected_hash?: string }): Promise<IntegrityResultUI> => {
-    return authenticatedFetch('/api/provenance/verify', {
+    return workspaceFetch('/api/provenance/verify', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
   },
 
   getMetrics: async (): Promise<any> => {
-    return authenticatedFetch('/api/provenance/metrics');
+    return workspaceFetch('/api/provenance/metrics');
   },
 };

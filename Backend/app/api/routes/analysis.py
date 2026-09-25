@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...models.analysis import AnalysisRecord
 from ...services.ai.analysis_service import analyze_source, get_analysis, get_analysis_status
 
@@ -24,7 +24,7 @@ async def start_analysis(
     project_id: str,
     source_id: str,
     payload: Optional[AnalyzeRequest] = None,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Start or retrieve AI Content Understanding (Qwen text + Gemma vision) for a source."""
     text = payload.extractedText if payload else None
@@ -34,7 +34,7 @@ async def start_analysis(
     return analyze_source(
         project_id=project_id,
         source_id=source_id,
-        firebase_uid=user["uid"],
+        user_id=user["uid"],
         extracted_text=text,
         extracted_images=images,
         force_refresh=refresh,
@@ -45,20 +45,20 @@ async def start_analysis(
 async def get_source_analysis(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get the structured AI analysis (facts, entities, events, metrics, visual evidence)."""
-    return get_analysis(project_id=project_id, source_id=source_id, firebase_uid=user["uid"])
+    return get_analysis(project_id=project_id, source_id=source_id, user_id=user["uid"])
 
 
 @router.get("/status")
 async def get_source_analysis_status(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Check analysis progress and pipeline stage."""
-    return get_analysis_status(project_id=project_id, source_id=source_id, firebase_uid=user["uid"])
+    return get_analysis_status(project_id=project_id, source_id=source_id, user_id=user["uid"])
 
 
 @router.post("/retry", response_model=AnalysisRecord)
@@ -66,7 +66,7 @@ async def retry_source_analysis(
     project_id: str,
     source_id: str,
     payload: Optional[AnalyzeRequest] = None,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Force re-run AI Content Understanding on the source."""
     text = payload.extractedText if payload else None
@@ -75,7 +75,7 @@ async def retry_source_analysis(
     return analyze_source(
         project_id=project_id,
         source_id=source_id,
-        firebase_uid=user["uid"],
+        user_id=user["uid"],
         extracted_text=text,
         extracted_images=images,
         force_refresh=True,

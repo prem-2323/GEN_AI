@@ -1,4 +1,4 @@
-import { authenticatedFetch } from './client';
+import { workspaceFetch } from './client';
 
 export interface RagQueryPayload {
   query: string;
@@ -27,7 +27,7 @@ export interface RagQueryResponse {
 
 export const ragApi = {
   query: async (payload: RagQueryPayload): Promise<RagQueryResponse> => {
-    return authenticatedFetch('/api/rag/query', {
+    return workspaceFetch('/api/rag/query', {
       method: 'POST',
       body: JSON.stringify(payload),
     });

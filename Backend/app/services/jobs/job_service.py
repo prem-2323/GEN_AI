@@ -43,7 +43,7 @@ def create_job(uid: str, project_id: str, source_id: str, job_type: str = "full_
     doc = {
         "jobId": f"job-{uuid.uuid4().hex[:12]}",
         "userId": uid,
-        "firebaseUid": uid,
+        "userId": uid,
         "projectId": project_id,
         "sourceId": source_id,
         "type": job_type,

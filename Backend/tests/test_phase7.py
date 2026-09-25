@@ -56,10 +56,10 @@ def run_tests():
     assert res.status_code == 200, f"Health check failed: {res.text}"
     print(f"[Test 1] Health Endpoint:\n  [OK] Health OK: {res.json().get('status')}\n")
 
-    # 2. Auth Profile User A
-    res = client.get("/api/me", headers={"X-User-Uid": USER_A_UID, "X-User-Email": "usera@example.com"})
-    assert res.status_code == 200, f"Auth failed: {res.text}"
-    print(f"[Test 2] Auth Profile (User A):\n  [OK] Auth Profile: {res.json().get('email')}\n")
+    # 2. Anonymous local workspace
+    res = client.get("/api/projects")
+    assert res.status_code == 200, f"Workspace request failed: {res.text}"
+    print("[Test 2] Local workspace is available without sign-in.\n")
 
     # 3. Create Project
     res = client.post(

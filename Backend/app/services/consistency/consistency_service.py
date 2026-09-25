@@ -150,7 +150,7 @@ def validate_project_sources(
         "validationId": val_id,
         "id": val_id,
         "userId": user_uid,
-        "firebaseUid": user_uid,
+        "userId": user_uid,
         "projectId": project_id,
         "sourceId": source_id,
         "uckrId": str(uckr_doc.get("id") or uckr_doc.get("uckrId")),

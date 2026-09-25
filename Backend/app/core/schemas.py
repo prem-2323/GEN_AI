@@ -22,8 +22,6 @@ class HealthStatus(BaseModel):
     app_name: str
     environment: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    mongo: Optional[str] = None
-    firebase: Optional[str] = None
 
 
 class PaginationParams(BaseModel):

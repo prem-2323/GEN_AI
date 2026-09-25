@@ -6,6 +6,7 @@ to a smaller Student PyTorch Model using temperature-scaled soft targets and har
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import Optional
 from pydantic import BaseModel, Field, model_validator
 
@@ -39,4 +40,28 @@ class DistillationConfig(BaseModel):
 
 default_distillation_config = DistillationConfig()
 
-__all__ = ["DistillationConfig", "default_distillation_config"]
+
+class PaperDistillationConfig(BaseModel):
+    """Configuration for document-grounded teacher/student experiments."""
+
+    output_dir: str = Field("./outputs/distillation")
+    teacher_model: str = Field("qwen3:4b", min_length=1)
+    student_model: str = Field("Qwen/Qwen2.5-0.5B-Instruct", min_length=1)
+    train_records: int = Field(160, ge=1)
+    validation_records: int = Field(20, ge=1)
+    test_records: int = Field(20, ge=1)
+    evaluation_records: int = Field(50, ge=1)
+    max_seq_length: int = Field(256, ge=128, le=4096)
+    batch_size: int = Field(1, ge=1)
+    gradient_accumulation_steps: int = Field(16, ge=1)
+    learning_rate: float = Field(2e-4, gt=0.0)
+    epochs: int = Field(1, ge=1, le=5)
+
+    @property
+    def output_path(self) -> Path:
+        path = Path(self.output_dir)
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+
+__all__ = ["DistillationConfig", "default_distillation_config", "PaperDistillationConfig"]

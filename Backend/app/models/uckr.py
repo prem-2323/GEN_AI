@@ -287,7 +287,7 @@ class UCKRRecord(BaseModel):
     uckrId: str
     projectId: str
     sourceId: str
-    firebaseUid: str
+    userId: str
     userId: str
     version: int = 1
     previousVersion: Optional[int] = None

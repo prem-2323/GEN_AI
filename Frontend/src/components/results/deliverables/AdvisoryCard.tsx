@@ -31,6 +31,17 @@ export const AdvisoryCard: React.FC<AdvisoryCardProps> = ({
   const [situation, setSituation] = useState(deliverable.situation);
   const [threatImpact, setThreatImpact] = useState(deliverable.threatImpact);
 
+  const handleSaveEdit = () => {
+    onUpdate({
+      ...deliverable,
+      title,
+      situation,
+      threatImpact
+    });
+    setIsEditing(false);
+    onShowToast('Saved', 'Advisory brief edits saved successfully.', 'info');
+  };
+
   const handlePrintPdf = () => {
     // Open clean styled printable window
     const printWindow = window.open('', '_blank');
@@ -154,6 +165,13 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="flex items-center gap-1 px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium cursor-pointer transition-colors"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>{isEditing ? 'Cancel' : 'Edit Brief'}</span>
+          </button>
           <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
             {deliverable.severity}
           </span>
@@ -162,6 +180,45 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
           </span>
         </div>
       </div>
+
+      {isEditing && (
+        <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-purple-300 mb-1">Advisory Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-purple-300 mb-1">Situation Overview</label>
+            <textarea
+              rows={3}
+              value={situation}
+              onChange={(e) => setSituation(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-purple-300 mb-1">Threat Impact</label>
+            <textarea
+              rows={2}
+              value={threatImpact}
+              onChange={(e) => setThreatImpact(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-purple-500"
+            />
+          </div>
+          <button
+            onClick={handleSaveEdit}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold cursor-pointer transition-colors"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            <span>Save Advisory Edits</span>
+          </button>
+        </div>
+      )}
 
       {/* Document Sheet Layout */}
       <div className="rounded-xl bg-slate-950/90 border border-slate-800 p-6 space-y-6 text-xs sm:text-sm text-slate-200">
@@ -172,7 +229,7 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
               {deliverable.domain ? `${deliverable.domain.toUpperCase()} POLICY & ADVISORY BRIEF` : 'STRATEGIC POLICY & ADVISORY BRIEF'}
             </div>
             <h2 className="text-base sm:text-lg font-bold text-white mt-1">
-              {deliverable.title}
+              {title}
             </h2>
           </div>
           <div className="text-xs text-slate-400 font-mono sm:text-right">
@@ -187,7 +244,7 @@ ${deliverable.complianceReferences.map(c => `- ${c}`).join('\n')}
             1. Situation & Context
           </h4>
           <p className="text-slate-300 leading-relaxed bg-slate-900/50 p-3.5 rounded-lg border border-slate-800/60">
-            {deliverable.situation}
+            {situation}
           </p>
         </div>
 

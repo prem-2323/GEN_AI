@@ -25,7 +25,8 @@ from .models import (
     SemanticChunk,
     VectorRecord,
 )
-from .repository import MemoryVectorStore, get_vector_store
+from .interface import VectorStoreInterface
+from .repository import get_vector_store
 
 log = logging.getLogger("gen-transform.embeddings.service")
 
@@ -37,7 +38,7 @@ class EmbeddingPipelineService:
         self,
         config: Optional[EmbeddingConfig] = None,
         embedder: Optional[EmbeddingModelInterface] = None,
-        vector_store: Optional[MemoryVectorStore] = None,
+        vector_store: Optional[VectorStoreInterface] = None,
     ) -> None:
         self.config = config or default_embedding_config
         self.embedder = embedder
@@ -49,7 +50,7 @@ class EmbeddingPipelineService:
             return self.embedder
         return get_embedder()
 
-    def _get_store(self) -> MemoryVectorStore:
+    def _get_store(self) -> VectorStoreInterface:
         if self.store is not None:
             return self.store
         return get_vector_store()
@@ -235,6 +236,24 @@ class EmbeddingPipelineService:
             "indexed": len(vecs) > 0,
             "total_vectors": len(vecs),
             "chunks": [v.metadata.model_dump() for v in vecs],
+        }
+
+    def get_embedding_status(self) -> Dict[str, Any]:
+        """Return status information for active embedding provider."""
+        embedder = self._get_embedder()
+        provider_name = getattr(embedder, "name", "unknown")
+        model_name = getattr(embedder, "model_name", provider_name)
+        dim = embedder.dimension
+        device = getattr(embedder, "device", "cpu")
+        normalized = getattr(embedder, "normalize", True)
+
+        return {
+            "provider": "sentence_transformers" if "sentence-transformers" in provider_name else provider_name,
+            "model": model_name,
+            "dimension": dim,
+            "device": device,
+            "normalized": normalized,
+            "status": "ready",
         }
 
 

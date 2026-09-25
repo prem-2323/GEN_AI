@@ -113,7 +113,7 @@ def validate_project(uid: str, project_id: str) -> dict:
         "id": val_id,
         "validationId": val_id,
         "userId": uid,
-        "firebaseUid": uid,
+        "userId": uid,
         "projectId": project_id,
         "sourceId": uckr.get("sourceId", ""),
         "uckrId": uckr.get("uckrId") or uckr.get("id", ""),
@@ -147,7 +147,7 @@ def validate_project(uid: str, project_id: str) -> dict:
             "qualityId": qual_id,
             "id": qual_id,
             "userId": uid,
-            "firebaseUid": uid,
+            "userId": uid,
             "projectId": project_id,
             "deliverableId": did,
             "scores": {

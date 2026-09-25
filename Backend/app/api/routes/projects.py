@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...models.project import ProjectCreate, ProjectUpdate, ProjectOut
 from ...services.projects import project_service
 from ...utils.helpers import is_valid_id
@@ -22,8 +22,8 @@ def _validate_project_id(project_id: str):
 
 @router.post("/api/projects", response_model=ProjectOut, status_code=201)
 @router.post("/projects", response_model=ProjectOut, status_code=201, include_in_schema=False)
-async def create_project(payload: ProjectCreate, user: dict = Depends(get_current_user)):
-    """Create a new project owned by the authenticated Firebase user."""
+async def create_project(payload: ProjectCreate, user: dict = Depends(get_workspace_identity)):
+    """Create a project in the local workspace."""
     data = payload.model_dump(exclude_unset=False, exclude_none=False)
     name = (data.get("name") or data.get("projectName") or data.get("title") or "").strip()
     if not name:
@@ -38,17 +38,17 @@ async def create_project(payload: ProjectCreate, user: dict = Depends(get_curren
 @router.get("/api/projects", response_model=List[ProjectOut])
 @router.get("/projects", response_model=List[ProjectOut], include_in_schema=False)
 async def list_projects(
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
     limit: int = Query(default=50, ge=1, le=100),
 ):
-    """List all projects belonging strictly to the authenticated Firebase user."""
+    """List projects in the local workspace."""
     return project_service.list_projects(uid=user["uid"], limit=limit)
 
 
 @router.get("/api/projects/{project_id}", response_model=ProjectOut)
 @router.get("/projects/{project_id}", response_model=ProjectOut, include_in_schema=False)
-async def get_project(project_id: str, user: dict = Depends(get_current_user)):
-    """Get project details if owned by the authenticated user."""
+async def get_project(project_id: str, user: dict = Depends(get_workspace_identity)):
+    """Get project details from the local workspace."""
     _validate_project_id(project_id)
     return project_service.get_project(project_id, uid=user["uid"])
 
@@ -58,9 +58,9 @@ async def get_project(project_id: str, user: dict = Depends(get_current_user)):
 async def update_project(
     project_id: str,
     payload: ProjectUpdate,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
-    """Update project fields with ownership verification."""
+    """Update project fields in the local workspace."""
     _validate_project_id(project_id)
     patch = payload.model_dump(exclude_unset=True)
     return project_service.update_project(project_id, patch, uid=user["uid"])
@@ -68,8 +68,8 @@ async def update_project(
 
 @router.delete("/api/projects/{project_id}")
 @router.delete("/projects/{project_id}", include_in_schema=False)
-async def delete_project(project_id: str, user: dict = Depends(get_current_user)):
-    """Delete project with ownership verification."""
+async def delete_project(project_id: str, user: dict = Depends(get_workspace_identity)):
+    """Delete a project from the local workspace."""
     _validate_project_id(project_id)
     project_service.delete_project(project_id, uid=user["uid"])
     return {"ok": True, "deleted": project_id}
@@ -77,7 +77,7 @@ async def delete_project(project_id: str, user: dict = Depends(get_current_user)
 
 @router.get("/api/projects/{project_id}/workspace")
 @router.get("/projects/{project_id}/workspace", include_in_schema=False)
-async def get_project_workspace(project_id: str, user: dict = Depends(get_current_user)):
+async def get_project_workspace(project_id: str, user: dict = Depends(get_workspace_identity)):
     """Retrieve full aggregated project workspace state (sources, UCKR, deliverables, validations, quality, exports)."""
     _validate_project_id(project_id)
     return project_service.get_project_workspace(project_id, uid=user["uid"])
@@ -88,7 +88,7 @@ async def get_project_workspace(project_id: str, user: dict = Depends(get_curren
 async def download_project_file(
     project_id: str,
     file_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
     inline: bool = Query(False),
 ):
     """Download project-scoped file directly from storage abstraction with tenant security."""

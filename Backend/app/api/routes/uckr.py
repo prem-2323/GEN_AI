@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from ...auth import get_current_user
+from ..dependencies import get_workspace_identity
 from ...services.uckr.uckr_builder import (
     build_and_save_uckr,
     get_latest_uckr_record,
@@ -38,7 +38,7 @@ def _check_id(val: str, name: str = "ID") -> None:
 async def build_uckr_endpoint(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Build or retrieve the canonical UCKR knowledge base for a source."""
     _check_id(project_id, "Project ID")
@@ -58,7 +58,7 @@ async def build_uckr_endpoint(
 async def get_source_uckr_endpoint(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get latest UCKR for a specific project source."""
     _check_id(project_id, "Project ID")
@@ -71,7 +71,7 @@ async def get_source_uckr_endpoint(
 async def get_source_uckr_validation_endpoint(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get deep validation and consistency report for source UCKR."""
     _check_id(project_id, "Project ID")
@@ -84,7 +84,7 @@ async def get_source_uckr_validation_endpoint(
 async def rebuild_source_uckr_endpoint(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Force rebuild UCKR from latest AI analysis and increment version."""
     _check_id(project_id, "Project ID")
@@ -105,7 +105,7 @@ async def get_source_uckr_version_endpoint(
     project_id: str,
     source_id: str,
     version: int,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get a specific historical version of UCKR for auditability."""
     _check_id(project_id, "Project ID")
@@ -119,7 +119,7 @@ async def get_source_uckr_version_endpoint(
 async def get_project_uckr_latest(
     project_id: str,
     sourceId: Optional[str] = None,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Project-level latest UCKR retrieval for UI display."""
     _check_id(project_id, "Project ID")
@@ -132,7 +132,7 @@ async def list_project_uckr_versions(
     project_id: str,
     sourceId: Optional[str] = None,
     limit: int = Query(default=20, ge=1, le=100),
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     _check_id(project_id, "Project ID")
     versions = list_uckr_versions(project_id, user["uid"], source_id=sourceId, limit=limit)
@@ -144,7 +144,7 @@ async def list_project_uckr_versions(
 # ==========================================
 
 @validation_router.post("")
-async def validate_output(payload: Dict[str, Any], user: dict = Depends(get_current_user)):
+async def validate_output(payload: Dict[str, Any], user: dict = Depends(get_workspace_identity)):
     deliv_type = payload.get("type", "generic")
     content = payload.get("content")
     source_text = payload.get("sourceText", "")

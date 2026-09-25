@@ -14,7 +14,6 @@ def test_phase3_all():
     print("=" * 60)
 
     uid_a = "user-A-test-uid"
-    uid_b = "user-B-test-uid"
     proj_id = "proj-cyber-001"
     src_id = "src-cyber-001"
 
@@ -24,11 +23,11 @@ def test_phase3_all():
     assert res1.status_code == 200, f"Health failed: {res1.text}"
     print("  [OK] Health OK:", res1.json())
 
-    # 2. Auth /api/me
-    print("\n[Test 2] Auth Profile (User A):")
-    res2 = c.get("/api/me", headers={"X-User-Uid": uid_a, "X-User-Email": "userA@example.com"})
-    assert res2.status_code == 200, f"Auth failed: {res2.text}"
-    print("  [OK] Auth Profile:", res2.json()["displayName"], f"({res2.json()['uid']})")
+    # 2. Anonymous local workspace
+    print("\n[Test 2] Local Workspace API:")
+    res2 = c.get("/api/projects")
+    assert res2.status_code == 200, f"Workspace request failed: {res2.text}"
+    print("  [OK] Project listing is available without sign-in.")
 
     # 3. Create Project
     print("\n[Test 3] Create Project (User A):")
@@ -114,23 +113,28 @@ def test_phase3_all():
     assert res7.status_code == 200
     print("  [OK] Status Check:", res7.json())
 
-    # 8. Security Cross-Tenant Isolation
-    print("\n[Test 8] Security Cross-Tenant Check (User B attempting access to User A analysis):")
+    # 8. Shared anonymous workspace
+    print("\n[Test 8] Shared Local Workspace Access:")
     res8 = c.get(
         f"/api/projects/{proj_id}/sources/{src_id}/analysis",
-        headers={"X-User-Uid": uid_b},
+        headers={"X-User-Uid": "ignored-identity"},
     )
-    assert res8.status_code == 403, f"Expected 403, got {res8.status_code}"
-    print("  [OK] Cross-Tenant Access Correctly Blocked with 403 Forbidden")
+    assert res8.status_code == 200, f"Expected shared workspace access, got {res8.status_code}"
+    print("  [OK] Local workspace data is available without account authentication.")
 
-    # 9. Phase 4: Retrieve Project UCKR
-    print("\n[Test 9] Retrieve Project UCKR Knowledge Base:")
+    # 9. Phase 4: Build and Retrieve Project UCKR
+    print("\n[Test 9] Build & Retrieve Project UCKR Knowledge Base:")
+    res9_build = c.post(
+        f"/api/projects/{proj_id}/sources/{src_id}/uckr",
+        headers={"X-User-Uid": uid_a},
+    )
+    assert res9_build.status_code == 201, f"Build UCKR failed: {res9_build.text}"
     res9 = c.get(
         f"/api/projects/{proj_id}/uckr",
         headers={"X-User-Uid": uid_a},
     )
-    assert res9.status_code == 200
-    print("  [OK] UCKR Retrieved Successfully")
+    assert res9.status_code == 200, f"Get UCKR failed: {res9.text}"
+    print("  [OK] UCKR Built & Retrieved Successfully")
 
     # 10. Clean up test project
     print("\n[Test 10] Clean up Project:")

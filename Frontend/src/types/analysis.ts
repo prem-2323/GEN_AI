@@ -69,7 +69,6 @@ export interface AnalysisRecord {
   id?: string;
   projectId: string;
   sourceId: string;
-  firebaseUid?: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   provider: string;
   model: string;

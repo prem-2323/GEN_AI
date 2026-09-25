@@ -1,5 +1,4 @@
 export * from './client';
-export * from './authApi';
 export * from './projectApi';
 export * from './sourceApi';
 export * from './analysisApi';

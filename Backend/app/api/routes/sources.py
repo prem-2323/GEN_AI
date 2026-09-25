@@ -5,8 +5,8 @@ import uuid
 from typing import Any, Dict, List
 from fastapi import APIRouter, Depends, HTTPException
 
-from ...auth import get_current_user
-from ...storage.repository import JSONDocumentRepository
+from ..dependencies import get_workspace_identity
+from ...storage.repository import get_repository
 from ...services.projects.project_service import get_project
 from ...services.sources.source_service import (
     delete_source as service_delete_source,
@@ -17,15 +17,15 @@ from ...utils.helpers import utcnow_iso
 
 router = APIRouter(tags=["sources"])
 
-sources_repo = JSONDocumentRepository("sources")
-projects_repo = JSONDocumentRepository("projects")
+sources_repo = get_repository("sources")
+projects_repo = get_repository("projects")
 
 
 @router.post("/api/projects/{project_id}/sources", status_code=201)
 async def create_source(
     project_id: str,
     payload: Dict[str, Any],
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Add a source to a project."""
     get_project(project_id, uid=user["uid"])
@@ -36,7 +36,7 @@ async def create_source(
         "id": source_id,
         "sourceId": source_id,
         "projectId": project_id,
-        "firebaseUid": user["uid"],
+        "userId": user["uid"],
         "name": payload.get("name", "Untitled_Source.txt"),
         "type": payload.get("type", "TEXT"),
         "size": payload.get("size", "0 KB"),
@@ -65,7 +65,7 @@ async def create_source(
 @router.get("/api/projects/{project_id}/sources")
 async def list_sources(
     project_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """List sources attached to the project."""
     get_project(project_id, uid=user["uid"])
@@ -77,7 +77,7 @@ async def list_sources(
 async def get_source_by_id(
     project_id: str,
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get single source details within a project."""
     get_project(project_id, uid=user["uid"])
@@ -87,7 +87,7 @@ async def get_source_by_id(
 @router.get("/api/sources/{source_id}")
 async def get_source_standalone(
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Get single source details by sourceId (cross-tenant protected)."""
     return service_get_source(source_id, user["uid"])
@@ -96,7 +96,7 @@ async def get_source_standalone(
 @router.delete("/api/sources/{source_id}")
 async def delete_source_standalone(
     source_id: str,
-    user: dict = Depends(get_current_user),
+    user: dict = Depends(get_workspace_identity),
 ):
     """Delete a source by sourceId."""
     service_delete_source(source_id, user["uid"])

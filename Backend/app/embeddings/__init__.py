@@ -1,5 +1,5 @@
 """
-Phase 6 Embeddings Module Export
+Phase 4+6 Embeddings Module Export
 """
 
 from app.embeddings.config import EmbeddingConfig, get_embedding_config
@@ -16,6 +16,7 @@ from app.embeddings.models import (
 from app.embeddings.chunker import SemanticChunker
 from app.embeddings.embedder import (
     EmbeddingModelInterface,
+    SentenceTransformerEmbeddingModel,
     DeterministicEmbeddingModel,
     OllamaEmbeddingModel,
     GeminiEmbeddingModel,
@@ -23,10 +24,9 @@ from app.embeddings.embedder import (
     set_default_embedder,
     clear_embedding_cache,
 )
-from app.embeddings.vector_store import (
-    VectorStoreInterface,
-    MemoryVectorStore,
-)
+from app.embeddings.interface import VectorStoreInterface
+from app.embeddings.vector_store import MemoryVectorStore
+from app.embeddings.faiss_store import FAISSVectorStore
 from app.embeddings.repository import (
     VectorStoreRepository,
     get_vector_store,
@@ -48,6 +48,7 @@ __all__ = [
     "EmbeddingProvider",
     "SemanticChunker",
     "EmbeddingModelInterface",
+    "SentenceTransformerEmbeddingModel",
     "DeterministicEmbeddingModel",
     "OllamaEmbeddingModel",
     "GeminiEmbeddingModel",
@@ -56,6 +57,7 @@ __all__ = [
     "clear_embedding_cache",
     "VectorStoreInterface",
     "MemoryVectorStore",
+    "FAISSVectorStore",
     "VectorStoreRepository",
     "get_vector_store",
     "set_vector_store",
