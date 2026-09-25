@@ -57,6 +57,10 @@ class Settings(BaseSettings):
     neo4j_database: str = "neo4j"
     neo4j_enabled: bool = True
 
+    # Vector & Embeddings Configuration (Phase 6 & 7)
+    vector_dimension: int = 384
+
+
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
         env_file_encoding="utf-8",

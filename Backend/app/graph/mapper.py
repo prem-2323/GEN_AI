@@ -11,8 +11,11 @@ from ..doclink.schemas import DocLinkEntity, DocLinkFact, DocLinkRelation, DocLi
 from .models import DocumentNodeModel, GraphNodeModel, GraphPayload, GraphRelationshipModel
 
 
-def map_doclink_result_to_payload(result: Union[DocLinkResult, Dict[str, Any]]) -> GraphPayload:
-    """Map Phase 4 DocLink result into Phase 5 GraphPayload."""
+def map_doclink_result_to_payload(result: Union[DocLinkResult, GraphPayload, Dict[str, Any]]) -> GraphPayload:
+    """Map Phase 4 DocLink result or GraphPayload into Phase 5 GraphPayload."""
+    if isinstance(result, GraphPayload):
+        return result
+
     if hasattr(result, "model_dump"):
         data = result.model_dump()
     elif isinstance(result, dict):
@@ -21,7 +24,7 @@ def map_doclink_result_to_payload(result: Union[DocLinkResult, Dict[str, Any]]) 
         raise ValueError("Invalid DocLink result input for graph mapping.")
 
     doc_id = data.get("document_id") or data.get("documentId") or "doc_001"
-    doc_name = data.get("document_name") or doc_id
+    doc_name = data.get("document_name") or data.get("title") or doc_id
 
     # 1. Document Node
     document_node = DocumentNodeModel(
@@ -31,7 +34,8 @@ def map_doclink_result_to_payload(result: Union[DocLinkResult, Dict[str, Any]]) 
     )
 
     # Index entities by canonical name / surface form for resolving endpoint IDs
-    entities_raw = data.get("entities", [])
+    entities_raw = data.get("entities") or data.get("nodes") or []
+
     entity_nodes: List[GraphNodeModel] = []
     name_to_id: Dict[str, str] = {}
 

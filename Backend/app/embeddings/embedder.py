@@ -222,7 +222,7 @@ def get_embedder(provider: Optional[str] = None) -> EmbeddingModelInterface:
     if settings.gemini_api_key:
         return GeminiEmbeddingModel()
 
-    return DeterministicEmbeddingModel(dimension=settings.vector_dimension)
+    return DeterministicEmbeddingModel(dimension=getattr(settings, "vector_dimension", 384))
 
 
 def clear_embedding_cache() -> None:
