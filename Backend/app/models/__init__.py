@@ -1,84 +1,15 @@
-"""Models package."""
-from .project import ProjectCreate, ProjectUpdate, ProjectOut
-from .source import SourceFileModel
-from .uckr import (
-    UckrModel,
-    UCKRRecord,
-    Fact,
-    Entity,
-    Event,
-    Metric,
-    Claim,
-    Action,
-    Relationship,
-    Topic,
-    Citation,
-    UCKRStatistics,
-    UCKRValidationResult,
-)
-from .deliverable import (
-    DeliverablesModel,
-    DeliverableRecord,
-    TransformationConfig,
-    TransformationRequest,
-    TransformResponse,
-)
-from .validation import (
-    CheckCategory,
-    CheckStatus,
-    OverallValidationStatus,
-    CheckItem,
-    DeliverableValidationResult,
-    ValidationScores,
-    ValidationRequest,
-    RegenerateRequest,
-    ValidationRecord,
-)
-from .analysis import (
-    AnalysisRecord,
-    TextAnalysis,
-    VisualEvidence,
-    ExtractedFact,
-    ExtractedEntity,
-    ExtractedEvent,
-    ExtractedMetric,
-    ExtractedClaim,
-    ExtractedAction,
-    ExtractedTopic,
-    ExtractedRelationship,
-    SourceLocation,
-)
+"""PyTorch / AI Model Layer module boundary.
 
-__all__ = [
-    "ProjectCreate",
-    "ProjectUpdate",
-    "ProjectOut",
-    "SourceFileModel",
-    "UckrModel",
-    "UCKRRecord",
-    "Fact",
-    "Entity",
-    "Event",
-    "Metric",
-    "Claim",
-    "Action",
-    "Relationship",
-    "Topic",
-    "Citation",
-    "UCKRStatistics",
-    "UCKRValidationResult",
-    "DeliverablesModel",
-    "AnalysisRecord",
-    "TextAnalysis",
-    "VisualEvidence",
-    "ExtractedFact",
-    "ExtractedEntity",
-    "ExtractedEvent",
-    "ExtractedMetric",
-    "ExtractedClaim",
-    "ExtractedAction",
-    "ExtractedTopic",
-    "ExtractedRelationship",
-    "SourceLocation",
-]
+Note: Deep learning model architectures, PyTorch modules, tensor operations,
+and model inference pipelines will be implemented in Phase 9.
 
+Application/database data schemas have been organized under `app.domain_models`.
+For backward compatibility during migration, domain schemas are also re-exported here.
+"""
+from __future__ import annotations
+
+# Re-export domain models for backward compatibility
+from ..domain_models import *
+from ..domain_models import __all__ as _domain_all
+
+__all__ = list(_domain_all)

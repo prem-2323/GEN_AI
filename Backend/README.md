@@ -2,24 +2,37 @@
 
 ## Phase 1 — Project Restructuring
 
-The project has completed **Phase 1: Project Restructuring**, establishing modular boundaries, separating HTTP API routing from business logic, and standardizing core infrastructure (configuration, logging, exceptions, schemas) while preserving full compatibility with existing MongoDB, Firebase Auth, and AI processing pipelines.
+The project has completed **Phase 1: Project Restructuring**, establishing modular boundaries, separating HTTP API routing from business logic, separating domain data schemas from AI model layers, and standardizing core infrastructure (configuration, logging, exceptions, schemas) while preserving full compatibility with existing MongoDB, Firebase Auth, and AI processing pipelines.
 
 ---
 
 ### Current Phase 1 Architecture
 
 ```text
-React UI
+React UI (Port 3000)
    ↓
-FastAPI Layer (main.py)
+Canonical FastAPI Entrypoint (app/main.py — Port 8000)
    ↓
-API Routing & Dependencies (api/routes, api/dependencies)
+API Routing & Dependencies (app/api/routes, app/api/dependencies)
    ↓
-Document Ingestion Layer (ingestion/service, ingestion/validator, ingestion/file_manager)
+Document Ingestion Layer (app/ingestion/service, validator, file_manager)
    ↓
-Document Extraction Layer (extraction/service - PDF, DOCX, TXT, MD, Images)
+Document Extraction Layer (app/extraction/service - PDF, DOCX, TXT, MD, Images)
    ↓
-Core Engines & Database Adapters (core/, services/, config/mongo, services/storage)
+Domain Schemas & Services (app/domain_models/, app/core/, app/services/)
+   ↓
+Database & Storage Layer (app/config/mongo, app/services/storage, GridFS)
+```
+
+---
+
+### Canonical Entry Point
+
+The single canonical backend entry point is:
+
+```powershell
+# From the Backend directory:
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ---
@@ -29,7 +42,7 @@ Core Engines & Database Adapters (core/, services/, config/mongo, services/stora
 ```text
 React UI
    ↓
-FastAPI Entrypoint
+FastAPI Entrypoint (app.main:app)
    ↓
 Document Ingestion (Phase 3)
    ↓
@@ -43,22 +56,20 @@ Hybrid Vector + Graph RAG (Phase 7)
    ↓
 Quantum / Hybrid Optimization (Phase 8)
    ↓
-PyTorch Model Layer (Phase 9)
+PyTorch Model Layer (Phase 9 — app/models/)
    ↓
-Knowledge Distillation (Phase 10)
+Knowledge Distillation (Phase 10 — app/distillation/)
    ↓
-Active Parameter Engine (Phase 11)
+Active Parameter Engine (Phase 11 — app/active_params/)
    ↓
-Transformation Engine (Phase 12)
+Transformation Engine (Phase 12 — app/transformation/)
    ↓
-Validation + Consistency Engine (Phase 13)
+Validation + Consistency Engine (Phase 13 — app/validation/)
    ↓
-Provenance / Evidence Lineage (Phase 14)
+Provenance / Evidence Lineage (Phase 14 — app/provenance/)
    ↓
 React Output UI (Phase 15)
 ```
-
-> **Note on Future Phases**: Module boundaries (`doclink/`, `graph/`, `embeddings/`, `rag/`, `optimization/`, `distillation/`, `active_params/`, `provenance/`) are provisioned as architectural boundaries. Full algorithm implementations and database migrations (e.g., removing Firebase/MongoDB in favor of Neo4j) are scheduled for their respective future phases.
 
 ---
 
@@ -66,10 +77,9 @@ React Output UI (Phase 15)
 
 ```text
 Backend/
-├── main.py                     # Root FastAPI entrypoint shim
 ├── app/
-│   ├── main.py                 # Core FastAPI application with routers & middleware
-│   ├── auth.py                 # Backward-compatible auth shim
+│   ├── main.py                 # Canonical FastAPI application
+│   ├── auth.py                 # Backward-compatible auth dependency shim
 │   ├── api/
 │   │   ├── __init__.py
 │   │   ├── dependencies.py     # Auth & context dependencies
@@ -102,12 +112,13 @@ Backend/
 │   ├── extraction/
 │   │   ├── __init__.py
 │   │   └── service.py          # PDF / DOCX / TXT / Image extraction
+│   ├── domain_models/          # Application & database domain schemas (UCKR, Projects, Deliverables)
+│   ├── models/                 # PyTorch / AI Model Layer boundary (Phase 9)
 │   ├── doclink/                # Boundary for DocLink engine (Phase 4)
 │   ├── graph/                  # Boundary for Neo4j Knowledge Graph (Phase 5)
 │   ├── embeddings/             # Boundary for Semantic Chunking & Vectors (Phase 6)
 │   ├── rag/                    # Boundary for Hybrid Vector + Graph RAG (Phase 7)
 │   ├── optimization/           # Boundary for Quantum/Hybrid Optimization (Phase 8)
-│   ├── models/                 # Domain schemas & PyTorch model boundary (Phase 9)
 │   ├── distillation/           # Boundary for Knowledge Distillation (Phase 10)
 │   ├── active_params/          # Boundary for Active Parameter Engine (Phase 11)
 │   ├── transformation/         # Boundary & wrapper for Transformation Engine
