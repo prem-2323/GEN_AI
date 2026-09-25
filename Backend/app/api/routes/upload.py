@@ -1,18 +1,14 @@
 """Upload API routes for projects and standalone documents."""
 from __future__ import annotations
 
-import logging
-from typing import Any, Dict
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from ...auth import get_current_user
-from ...services.extraction.extraction_service import extract_content, extract_normalized
-from ...services.projects.project_service import get_project
-from ...services.sources.source_service import create_source, get_source, set_stage, store_extraction
-from ...services.storage.storage_service import save_original, validate_upload
-import io
+from ..dependencies import get_current_user
+from ...core.exceptions import AppException
+from ...core.logging import get_logger
+from ...ingestion.service import ingestion_service
 
-log = logging.getLogger("gen-transform.upload")
+log = get_logger("api.upload")
 
 router = APIRouter(tags=["upload"])
 
@@ -25,62 +21,22 @@ async def upload_project_source(
 ):
     """Upload a source document to a project and run extraction."""
     uid = user["uid"]
-    get_project(project_id, uid=uid)
-
-    contents = await file.read()
     filename = file.filename or "upload.bin"
-    size = len(contents)
+    contents = await file.read()
 
-    # 1. Validation
-    safe_name, mime_type = validate_upload(filename, size, file.content_type or "")
-
-    # 2. Save file to MongoDB GridFS & disk
-    saved = save_original(uid, project_id, safe_name, io.BytesIO(contents))
-    rel_path = saved["storagePath"]
-    stored_name = saved["storedName"]
-    file_id = saved.get("fileId", "")
-
-    # 3. Create Source Record
-    file_meta = {
-        "originalName": filename,
-        "storedName": stored_name,
-        "mimeType": mime_type,
-        "size": size,
-        "storagePath": rel_path,
-        "fileId": file_id,
-        "sha256": saved.get("sha256", ""),
-    }
-    src_doc = create_source(uid, project_id, file_meta)
-    sid = src_doc["sourceId"]
-
-    # 4. State transitions: validating -> extracting -> completed
     try:
-        set_stage(sid, uid, "validating", 20)
-        set_stage(sid, uid, "extracting", 50)
-
-        # 5. Extract text, tables, pages
-        ext = safe_name.rsplit(".", 1)[-1].lower() if "." in safe_name else "txt"
-        normalized = extract_normalized(
-            contents,
-            filename=filename,
-            ext=ext,
-            uid=uid,
+        return ingestion_service.process_project_upload(
             project_id=project_id,
-            source_id=sid,
+            uid=uid,
+            filename=filename,
+            content_bytes=contents,
+            content_type=file.content_type or "",
         )
-
-        # 6. Store extraction & complete
-        final_doc = store_extraction(sid, uid, normalized)
-        final_doc = set_stage(sid, uid, "completed", 100)
-
-        return {
-            "ok": True,
-            "source": final_doc,
-        }
+    except AppException as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.message)
     except Exception as exc:
-        log.error("Source extraction failed for %s: %s", sid, exc)
-        set_stage(sid, uid, "failed", error=str(exc))
-        raise HTTPException(status_code=500, detail=f"Source extraction failed: {exc}")
+        log.error("Unexpected error in project source upload: %s", exc)
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @router.post("/api/upload")
@@ -89,9 +45,17 @@ async def upload_source(
     user: dict = Depends(get_current_user),
 ):
     """Standalone lightweight source upload & extraction endpoint."""
+    filename = file.filename or "source.txt"
     contents = await file.read()
-    result = extract_content(contents, filename=file.filename or "source.txt", mime_type=file.content_type or "")
-    return {
-        "ok": True,
-        "source": result,
-    }
+
+    try:
+        return ingestion_service.process_standalone_upload(
+            filename=filename,
+            content_bytes=contents,
+            content_type=file.content_type or "",
+        )
+    except AppException as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.message)
+    except Exception as exc:
+        log.error("Unexpected error in standalone source upload: %s", exc)
+        raise HTTPException(status_code=500, detail=str(exc))

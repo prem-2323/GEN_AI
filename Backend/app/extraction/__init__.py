@@ -1,7 +1,7 @@
-"""Compatibility shim re-exporting extraction service from app.extraction."""
+"""Extraction Module: multi-format document parser (PDF, DOCX, TXT, MD, Images)."""
 from __future__ import annotations
 
-from ...extraction.service import (
+from .service import (
     ExtractionService,
     extract_content,
     extract_docx,

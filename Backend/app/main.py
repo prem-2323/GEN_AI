@@ -1,26 +1,35 @@
-"""ContentForge AI Backend — FastAPI + Firebase Auth + Firestore + MongoDB Atlas.
+"""ContentForge AI Backend — Modular FastAPI Application.
 
-Architecture:
-    Frontend (Firebase Auth) -> ID Token -> Verified UID
-    -> Users (users/{uid})
-    -> Projects (projects/{projectId} where userId == uid)
-    -> Sources -> UCKR -> Deliverables
-
-MongoDB:
-    30-Minute interval logger into `temp` collection with 24-hr TTL auto-deletion.
+Phase 1 Architectural Layout:
+    React UI
+      ↓
+    FastAPI (main.py)
+      ↓
+    API Layer (api/routes, api/dependencies)
+      ↓
+    Ingestion & Extraction Modules (ingestion/, extraction/)
+      ↓
+    Core Domain Engines (services/, core/)
+      ↓
+    MongoDB & Storage Layer (config/mongo, services/storage)
 """
 from __future__ import annotations
 
-import logging
 from contextlib import asynccontextmanager
+from typing import Any, Dict
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from .config.settings import get_settings
+from .core.config import get_settings
+from .core.exceptions import AppException
+from .core.logging import get_logger, setup_logging
+
 from .config.firebase import init_firebase
-from .config.mongo import ensure_core_indexes, get_mongo_db, start_temp_scheduler, stop_temp_scheduler
+from .config.mongo import ensure_core_indexes, start_temp_scheduler, stop_temp_scheduler
 
+# API Routers
 from .api.routes.health import router as health_router
 from .api.routes.auth import router as auth_router
 from .api.routes.projects import router as projects_router
@@ -35,25 +44,25 @@ from .api.routes.uckr import router as uckr_full_router, uckr_router, validation
 from .api.routes.direct_text_routes import router as direct_text_router
 from .api.routes.export_routes import router as export_routes_router
 
-logging.basicConfig(level=logging.INFO)
-log = logging.getLogger("gen-transform")
-
+# Initialize centralized logging
+setup_logging()
+log = get_logger("main")
 settings = get_settings()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    """Application startup and graceful shutdown lifecycle."""
+    log.info("Starting %s in %s mode (port %d)", settings.app_name, settings.environment, settings.port)
     init_firebase()
     try:
         ensure_core_indexes()
     except Exception as exc:
-        log.warning("Mongo index setup skipped: %s", exc)
+        log.warning("Mongo index verification skipped: %s", exc)
     start_temp_scheduler()
-    log.info("%s backend active (env=%s, port=%d)", settings.app_name, settings.environment, settings.port)
     yield
-    # Shutdown
     stop_temp_scheduler()
+    log.info("%s backend shutdown complete.", settings.app_name)
 
 
 app = FastAPI(
@@ -62,6 +71,15 @@ app = FastAPI(
     description="ContentForge AI backend — Modular, multi-tenant AI transformation platform.",
     lifespan=lifespan,
 )
+
+# Global Exception Handlers
+@app.exception_handler(AppException)
+async def handle_app_exception(request: Request, exc: AppException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"ok": False, "error": exc.message, "details": exc.details},
+    )
+
 
 # CORS Configuration
 origins = [
@@ -83,7 +101,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include Routers
+# Register API Routers
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(projects_router)
