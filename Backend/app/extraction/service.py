@@ -21,6 +21,7 @@ from .pdf import extract_pdf_document
 from .schemas import ExtractedDocument
 from .txt import extract_txt_document
 
+
 log = get_logger("extraction.service")
 
 
