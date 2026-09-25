@@ -44,8 +44,13 @@ import { PresentationCard } from './deliverables/PresentationCard';
 import { VideoPackageCard } from './deliverables/VideoPackageCard';
 import { StatusBadge } from '../common/StatusBadge';
 import { UckrCitationBadge } from '../uckr/UckrCitationBadge';
+import { ValidationBadge } from '../common/ValidationBadge';
+import { ValidationIssueList } from './ValidationIssueList';
+import { ProvenanceViewerModal } from './ProvenanceViewerModal';
+import { RagSearchModal } from './RagSearchModal';
 import { validateDeliverableGrounding } from '../../services/aiService';
 import { ExportCenter } from './ExportCenter';
+import { GitCommit } from 'lucide-react';
 
 interface ResultsWorkspaceViewProps {
   projectId?: string;
@@ -82,6 +87,9 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | OutputType>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isRagModalOpen, setIsRagModalOpen] = useState(false);
+  const [isProvenanceModalOpen, setIsProvenanceModalOpen] = useState(false);
+  const [provenanceTargetOutputId, setProvenanceTargetOutputId] = useState<string>('output-001');
 
   const activeUckr = uckr ?? null;
   const facts = activeUckr?.facts || [];
@@ -220,6 +228,24 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => setIsRagModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/30 text-xs font-semibold transition-all cursor-pointer shadow-sm"
+              title="Execute Hybrid Vector + Graph RAG question answering"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Ask RAG</span>
+            </button>
+
+            <button
+              onClick={() => setIsProvenanceModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all cursor-pointer shadow-sm"
+              title="View Phase 14 Provenance & Traceability Lineage"
+            >
+              <GitCommit className="w-3.5 h-3.5 text-purple-400" />
+              <span>View Provenance</span>
+            </button>
+
             <button
               onClick={onNavigateNew}
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold transition-colors cursor-pointer"
@@ -590,7 +616,7 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
           ) : null
         )}
 
-        {/* 8. Export Center & Multi-Format GridFS Deliveries */}
+        {/* 8. Export Center & Multi-Format Deliveries */}
         <div className="pt-6">
           <ExportCenter
             projectId={projectId}
@@ -599,6 +625,24 @@ export const ResultsWorkspaceView: React.FC<ResultsWorkspaceViewProps> = ({
             onExportAll={handleExportAll}
           />
         </div>
+
+        {/* Phase 7 Hybrid RAG Question Answering Modal */}
+        <RagSearchModal
+          isOpen={isRagModalOpen}
+          onClose={() => setIsRagModalOpen(false)}
+          onSelectEvidence={(evId) => {
+            setIsRagModalOpen(false);
+            setProvenanceTargetOutputId(evId);
+            setIsProvenanceModalOpen(true);
+          }}
+        />
+
+        {/* Phase 14 Provenance Lineage Modal */}
+        <ProvenanceViewerModal
+          isOpen={isProvenanceModalOpen}
+          outputId={provenanceTargetOutputId}
+          onClose={() => setIsProvenanceModalOpen(false)}
+        />
       </div>
     </div>
   );

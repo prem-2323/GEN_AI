@@ -9,3 +9,5 @@ export * from './validationApi';
 export * from './qualityApi';
 export * from './exportApi';
 export * from './jobApi';
+export * from './provenanceApi';
+export * from './ragApi';
