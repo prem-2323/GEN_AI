@@ -19,7 +19,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from ...auth import get_current_user
 from ...services.ai import pipeline_orchestrator as ai_orchestrator
-from ...services.export import pipeline_export as export_service
+from ...services.export import export_service
 from ...services.jobs import job_service
 from ...services.projects.project_service import get_project
 from ...services.search import search_service
@@ -143,9 +143,13 @@ async def list_jobs(project_id: str, user: dict = Depends(get_current_user)):
 
 # ---- Phase 10: export ----
 @router.post("/api/deliverables/{deliverable_id}/export")
-async def export_one(deliverable_id: str, user: dict = Depends(get_current_user),
-                     format: str = "md"):
-    return export_service.export_deliverable(user["uid"], deliverable_id, format)
+async def export_one(deliverable_id: str, user: dict = Depends(get_current_user), format: str = "md"):
+    from ...storage.repository import get_repository
+    deliv_repo = get_repository("deliverables")
+    deliv = deliv_repo.find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]})
+    project_id = (deliv.get("projectId") if deliv else "proj_default") or "proj_default"
+    rec = await export_service.export_deliverable_artifact(user["uid"], project_id, deliverable_id, format)
+    return {"ok": True, "export": rec, "storagePath": rec.get("storagePath")}
 
 
 # ---- Phase 9/11: search + overview ----

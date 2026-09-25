@@ -5,4 +5,7 @@ will be implemented in Phase 6.
 """
 from __future__ import annotations
 
-__all__ = []
+from .interface import VectorStoreInterface
+from .repository import VectorStoreBoundaryRepository
+
+__all__ = ["VectorStoreInterface", "VectorStoreBoundaryRepository"]

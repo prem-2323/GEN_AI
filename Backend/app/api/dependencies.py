@@ -49,45 +49,28 @@ async def get_current_user(
         email_val = x_user_email.strip() if isinstance(x_user_email, str) else ""
         return _dev_user(x_user_uid.strip(), email_val)
 
-    # 2) Real Firebase ID token
+    # 2) Bearer token authentication
     if not isinstance(authorization, str) or not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=401,
-            detail="Missing Authorization: Bearer <Firebase ID token>. "
-            "Login in the frontend then copy user.getIdToken(), "
-            "or (dev only) send X-User-Uid header with DEV_BYPASS_AUTH=true.",
+            detail="Missing Authorization: Bearer <ID token>. "
+            "Send Authorization header or (dev only) send X-User-Uid header with DEV_BYPASS_AUTH=true.",
         )
 
     token = authorization.split(" ", 1)[1].strip()
     if not token:
         raise HTTPException(status_code=401, detail="Empty bearer token.")
 
-    # Try official Firebase Admin verification first if credentials exist
-    try:
-        import firebase_admin
-        from firebase_admin import auth as admin_auth
-
-        if firebase_admin._apps:
-            decoded = admin_auth.verify_id_token(token)
-            return {
-                "uid": decoded["uid"],
-                "email": decoded.get("email", ""),
-                "decoded": decoded,
-                "dev": False,
-            }
-    except Exception as exc:
-        log.debug("Firebase Admin verify_id_token failed (%s), falling back to JWT decode", exc)
-
-    # Graceful fallback: decode client-verified Firebase ID Token
+    # Standard JWT decode for user identity resolution
     try:
         claims = _decode_unverified_jwt(token)
-        uid = claims.get("user_id") or claims.get("sub")
+        uid = claims.get("user_id") or claims.get("sub") or claims.get("uid")
         if not uid:
-            raise HTTPException(status_code=401, detail="Invalid token: missing user ID / sub claim.")
+            raise HTTPException(status_code=401, detail="Invalid token: missing user ID claim.")
 
         exp = claims.get("exp")
         if exp and isinstance(exp, (int, float)) and time.time() > (exp + 300):
-            raise HTTPException(status_code=401, detail="Firebase ID token has expired. Please sign in again.")
+            raise HTTPException(status_code=401, detail="Token has expired. Please sign in again.")
 
         email = claims.get("email", "")
         return {
@@ -99,7 +82,7 @@ async def get_current_user(
     except HTTPException:
         raise
     except Exception as exc:
-        raise HTTPException(status_code=401, detail=f"Invalid / expired Firebase ID token: {exc}")
+        raise HTTPException(status_code=401, detail=f"Invalid / expired token: {exc}")
 
 
 async def get_current_user_optional(

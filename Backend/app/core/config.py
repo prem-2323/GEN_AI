@@ -28,22 +28,10 @@ class Settings(BaseSettings):
     frontend_origin: str = "http://localhost:3000"
     extra_cors_origins: str = ""
 
-    # Firebase / Firestore (Phase 1 legacy isolation)
-    firebase_project_id: str = "gen-lang-client-0421331706"
-    firestore_database_id: str = "ai-studio-gentransformai-ccc00148-cf41-4379-89fb-7302425611e2"
-    firebase_service_account_path: str = "./serviceAccountKey.json"
-    firebase_service_account_json: str = ""
-
-    # MongoDB Atlas (Phase 1 legacy isolation)
-    mongodb_uri: str = ""
-    mongo_uri: str = ""
-    mongodb_db_name: str = "contentforge"
-    temp_log_interval_minutes: int = 30
-    temp_ttl_hours: int = 24
-
     # Storage Paths & Limits
     storage_root: str = "./storage"
-    firebase_storage_bucket: str = ""
+    document_storage_root: str = "./storage/documents"
+    data_storage_root: str = "./storage/data"
     max_upload_mb: int = DEFAULT_MAX_UPLOAD_MB
     allowed_upload_exts: str = "pdf,docx,txt,md,png,jpg,jpeg"
 
@@ -67,9 +55,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
-
-    def mongo_connection_string(self) -> str:
-        return self.mongodb_uri or self.mongo_uri
 
     def allowed_exts(self) -> Set[str]:
         return {e.strip().lower().lstrip(".") for e in self.allowed_upload_exts.split(",") if e.strip()}

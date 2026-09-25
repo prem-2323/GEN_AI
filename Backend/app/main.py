@@ -26,9 +26,6 @@ from .core.config import get_settings
 from .core.exceptions import AppException
 from .core.logging import get_logger, setup_logging
 
-from .config.firebase import init_firebase
-from .config.mongo import ensure_core_indexes, start_temp_scheduler, stop_temp_scheduler
-
 # API Routers
 from .api.routes.health import router as health_router
 from .api.routes.auth import router as auth_router
@@ -54,14 +51,7 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Application startup and graceful shutdown lifecycle."""
     log.info("Starting %s in %s mode (port %d)", settings.app_name, settings.environment, settings.port)
-    init_firebase()
-    try:
-        ensure_core_indexes()
-    except Exception as exc:
-        log.warning("Mongo index verification skipped: %s", exc)
-    start_temp_scheduler()
     yield
-    stop_temp_scheduler()
     log.info("%s backend shutdown complete.", settings.app_name)
 
 

@@ -5,9 +5,8 @@ import logging
 import uuid
 from typing import Any, Dict, List, Optional
 from fastapi import HTTPException
-from pymongo import DESCENDING
 
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...models.uckr import (
     Topic,
     UCKRRecord,
@@ -30,7 +29,7 @@ log = logging.getLogger("gen-transform.uckr_builder")
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def build_uckr_from_analysis(
@@ -173,11 +172,10 @@ def build_uckr_from_analysis(
 
 
 def save_uckr_record(record: UCKRRecord) -> dict:
-    """Saves versioned UCKR record into MongoDB `uckr` collection."""
-    col = get_mongo_db()["uckr"]
+    """Saves versioned UCKR record into `uckr` repository."""
+    repo = get_repository("uckr")
     doc = record.model_dump()
-    col.insert_one(doc)
-    doc.pop("_id", None)
+    repo.insert_one(doc)
     log.info(
         "Saved UCKR: id=%s project=%s source=%s version=%d facts=%d status=%s",
         record.uckrId, record.projectId, record.sourceId, record.version, len(record.facts), record.status
@@ -191,7 +189,7 @@ def build_and_save_uckr(
     source_id: str,
     force_rebuild: bool = False,
 ) -> dict:
-    """Full lifecycle: loads source + analysis, builds UCKR, handles versioning, saves to MongoDB."""
+    """Full lifecycle: loads source + analysis, builds UCKR, handles versioning, saves to repository."""
     from ..projects.project_service import get_project
     from ..sources.source_service import get_source
     from ..ai import analysis_service
@@ -202,25 +200,26 @@ def build_and_save_uckr(
     if src.get("projectId") != project_id:
         raise HTTPException(status_code=400, detail="Source does not belong to this project.")
 
-    db = get_mongo_db()
+    uckr_repo = get_repository("uckr")
     # Check latest version
-    latest_doc = db["uckr"].find_one(
+    latest_doc = uckr_repo.find_one(
         {"projectId": project_id, "sourceId": source_id, **_owner_filter(uid)},
-        sort=[("version", DESCENDING)],
+        sort=[("version", -1)],
+        projection={"_id": 0},
     )
 
     if latest_doc and not force_rebuild:
-        latest_doc.pop("_id", None)
         return latest_doc
 
     prev_version = latest_doc.get("version") if latest_doc else None
     next_version = (latest_doc.get("version", 0) + 1) if latest_doc else 1
 
     # Load analysis or generate
-    ana_doc = db["analysis"].find_one(
+    ana_repo = get_repository("analysis")
+    ana_doc = ana_repo.find_one(
         {"projectId": project_id, "sourceId": source_id, **_owner_filter(uid)},
-        {"_id": 0},
-        sort=[("updatedAt", DESCENDING)],
+        sort=[("updatedAt", -1)],
+        projection={"_id": 0},
     )
 
     if not ana_doc:
@@ -250,20 +249,21 @@ def get_latest_uckr_record(
     from ..projects.project_service import get_project
     get_project(project_id, uid)
 
-    db = get_mongo_db()
+    uckr_repo = get_repository("uckr")
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
         filt["sourceId"] = source_id
 
-    doc = db["uckr"].find_one(filt, {"_id": 0}, sort=[("version", DESCENDING)])
+    doc = uckr_repo.find_one(filt, sort=[("version", -1)], projection={"_id": 0})
     if doc:
         return doc
 
     # Try auto-build if source exists
+    src_repo = get_repository("sources")
     src_filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
         src_filt["$or"] = [{"sourceId": source_id}, {"id": source_id}]
-    src = db["sources"].find_one(src_filt, {"_id": 0})
+    src = src_repo.find_one(src_filt, projection={"_id": 0})
     if src:
         sid = src.get("sourceId") or src.get("id") or "SRC_001"
         return build_and_save_uckr(uid, project_id, sid)
@@ -281,10 +281,10 @@ def get_uckr_version(
     from ..projects.project_service import get_project
     get_project(project_id, uid)
 
-    db = get_mongo_db()
-    doc = db["uckr"].find_one(
+    uckr_repo = get_repository("uckr")
+    doc = uckr_repo.find_one(
         {"projectId": project_id, "sourceId": source_id, "version": version, **_owner_filter(uid)},
-        {"_id": 0},
+        projection={"_id": 0},
     )
     if not doc:
         raise HTTPException(status_code=404, detail=f"UCKR version {version} not found for this source.")
@@ -301,13 +301,12 @@ def list_uckr_versions(
     from ..projects.project_service import get_project
     get_project(project_id, uid)
 
-    db = get_mongo_db()
+    uckr_repo = get_repository("uckr")
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
         filt["sourceId"] = source_id
 
-    cur = db["uckr"].find(filt, {"_id": 0}).sort("version", DESCENDING).limit(limit)
-    return list(cur)
+    return uckr_repo.find(filt, sort=[("version", -1)], limit=limit, projection={"_id": 0})
 
 
 def get_uckr_validation_report(
@@ -338,3 +337,4 @@ def get_uckr_validation_report(
             "checks": {"schema": True, "source_grounding": True},
             "validatedAt": utcnow_iso(),
         }
+

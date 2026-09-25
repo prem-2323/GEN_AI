@@ -29,8 +29,6 @@ from docx import Document
 from pptx import Presentation
 
 from app.main import app
-from app.config.mongo import get_mongo_db, ensure_core_indexes
-from app.services.storage.gridfs_service import get_gridfs_bucket, get_gridfs_files_collection
 
 logging.basicConfig(level=logging.INFO)
 client = TestClient(app)
@@ -50,11 +48,8 @@ USER_B_HEADERS = {
 
 def run_phase10_test_suite():
     print("\n" + "=" * 68)
-    print("  PHASE 10 — MULTI-FORMAT EXPORT SYSTEM & GRIDFS TEST SUITE")
+    print("  PHASE 10 — MULTI-FORMAT EXPORT SYSTEM & STORAGE TEST SUITE")
     print("=" * 68 + "\n")
-
-    db = get_mongo_db()
-    ensure_core_indexes()
 
     # --- Setup: Project & Source ---
     print("[Setup] Provisioning Project, Source & UCKR for Export Testing:")

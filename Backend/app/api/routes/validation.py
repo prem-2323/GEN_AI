@@ -20,9 +20,11 @@ from ...services.consistency import (
     validate_single_deliverable,
 )
 from ...services.transformation.transformation_service import get_single_deliverable
-from ...config.mongo import get_mongo_db
+from ...storage.repository import JSONDocumentRepository
 
 router = APIRouter(tags=["consistency_validation"])
+
+uckr_repo = JSONDocumentRepository("uckr")
 
 
 @router.post(
@@ -65,14 +67,11 @@ async def validate_individual_deliverable(
     user: Dict[str, Any] = Depends(get_current_user),
 ):
     """Validates an individual deliverable against canonical UCKR."""
-    db = get_mongo_db()
     deliv = get_single_deliverable(project_id, deliverable_id, user)
     source_id = deliv.get("sourceId")
     uckr_version = deliv.get("uckrVersion", 1)
 
-    uckr_doc = None
-    if db is not None:
-        uckr_doc = db.uckr.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version})
+    uckr_doc = uckr_repo.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version})
 
     if not uckr_doc:
         raise HTTPException(status_code=404, detail="Canonical UCKR document not found.")

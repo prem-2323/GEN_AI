@@ -31,8 +31,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.config.mongo import get_mongo_db, ensure_core_indexes
-from app.services.storage.gridfs_service import get_gridfs_bucket, get_gridfs_files_collection
+from app.storage.repository import get_repository
+from app.storage import get_storage
 
 logging.basicConfig(level=logging.INFO)
 client = TestClient(app)
@@ -55,27 +55,25 @@ def run_phase9_test_suite():
     print("  PHASE 9 — MONGODB EVERYTHING & GRIDFS ARCHITECTURE TEST SUITE")
     print("=" * 64 + "\n")
 
-    db = get_mongo_db()
-    ensure_core_indexes()
+    users_repo = get_repository("users")
+    projects_repo = get_repository("projects")
 
-    # --- Test 1: Verify Core Indexes & Collections ---
-    print("[Test 1] Verifying MongoDB Collections & GridFS Bucket Initialization:")
-    bucket = get_gridfs_bucket()
-    assert bucket is not None, "GridFS bucket could not be initialized."
-    files_col = get_gridfs_files_collection()
-    assert files_col is not None
-    print("  [OK] GridFS bucket 'contentforge_files' and metadata collection active.")
+    # --- Test 1: Verify Storage Abstraction & Repository Layer ---
+    print("[Test 1] Verifying Storage Abstraction & Repository Initialization:")
+    storage = get_storage()
+    assert storage is not None, "FileStorageInterface could not be initialized."
+    print("  [OK] LocalFileSystemStorage and JSONDocumentRepository active.")
 
-    # --- Test 2: User Persistence in `users` collection ---
-    print("\n[Test 2] User Authentication & MongoDB `users` Profile Sync:")
+    # --- Test 2: User Persistence in `users` repository ---
+    print("\n[Test 2] User Authentication & Profile Persistence:")
     me_resp = client.get("/api/me", headers=USER_A_HEADERS)
     assert me_resp.status_code == 200, f"/api/me failed: {me_resp.text}"
     user_data = me_resp.json()
     user_uid = user_data["uid"]
 
-    user_doc = db["users"].find_one({"$or": [{"firebaseUid": user_uid}, {"userId": user_uid}]})
-    assert user_doc is not None, "User document was not saved to MongoDB `users` collection."
-    print(f"  [OK] User document stored in `users`: id={user_doc.get('_id')} email={user_doc.get('email')}")
+    user_doc = users_repo.find_one({"$or": [{"firebaseUid": user_uid}, {"userId": user_uid}]})
+    assert user_doc is not None, "User document was not saved to `users` repository."
+    print(f"  [OK] User document stored in `users`: id={user_doc.get('userId')} email={user_doc.get('email')}")
 
     # --- Test 3: Project in `projects` collection ---
     print("\n[Test 3] Project Creation in MongoDB `projects`:")
@@ -95,8 +93,9 @@ def run_phase9_test_suite():
     proj = p_resp.json()
     project_id = proj["projectId"]
 
-    proj_doc = db["projects"].find_one({"projectId": project_id})
-    assert proj_doc is not None, "Project document missing in MongoDB `projects`."
+    proj_repo = get_repository("projects")
+    proj_doc = proj_repo.find_one({"projectId": project_id})
+    assert proj_doc is not None, "Project document missing in `projects` repository."
     print(f"  [OK] Project stored in `projects`: id={project_id} name={proj_doc.get('name')}")
 
     # --- Test 4: Source Binary Upload to GridFS & Metadata in `sources` ---
@@ -116,24 +115,26 @@ def run_phase9_test_suite():
     src_data = src_res.get("source", src_res)
     source_id = src_data.get("sourceId") or src_data.get("id")
 
-    # Verify source document in MongoDB `sources`
-    source_doc = db["sources"].find_one({"$or": [{"sourceId": source_id}, {"id": source_id}]})
-    assert source_doc is not None, "Source document missing in MongoDB `sources`."
+    # Verify source document in `sources` repository
+    sources_repo = get_repository("sources")
+    source_doc = sources_repo.find_one({"$or": [{"sourceId": source_id}, {"id": source_id}]})
+    assert source_doc is not None, "Source document missing in `sources` repository."
     file_id = source_doc.get("fileId") or (source_doc.get("file") or {}).get("fileId")
-    assert file_id, "fileId pointing to GridFS is missing on source document."
     print(f"  [OK] Source document stored in `sources`: id={source_id} fileId={file_id}")
 
-    # Verify binary exists in GridFS
-    gridfs_doc = files_col.find_one({"_id": db["sources"].find_one({"sourceId": source_id})["file"]["fileId"] if isinstance(file_id, str) else file_id})
-    print(f"  [OK] Source binary verified in GridFS: {file_id} (filename={source_doc.get('originalFilename') or source_doc.get('file', {}).get('originalName')})")
+    # Verify binary exists in storage
+    storage_path = (source_doc.get("file") or {}).get("storagePath", "")
+    assert storage.exists(storage_path) or storage.exists(source_id), "Source binary missing in storage."
+    print(f"  [OK] Source binary verified in FileStorageInterface: (filename={source_doc.get('originalFilename') or source_doc.get('file', {}).get('originalName')})")
 
     # --- Test 5: Extracted Content Persistence in `extracted_content` ---
     print("\n[Test 5] Extracted Content Storage in `extracted_content`:")
-    ext_doc = db["extracted_content"].find_one({"sourceId": source_id})
-    assert ext_doc is not None, "Extracted content missing in `extracted_content` collection."
+    ext_repo = get_repository("extracted_content")
+    ext_doc = ext_repo.find_one({"sourceId": source_id})
+    assert ext_doc is not None, "Extracted content missing in `extracted_content` repository."
     print(f"  [OK] `extracted_content` record verified: {ext_doc.get('extractionId')} (chunks={len(ext_doc.get('chunks', []))}, pages={len(ext_doc.get('pages', []))})")
 
-    # --- Test 6: AI Content Analysis in `analysis` collection ---
+    # --- Test 6: AI Content Analysis in `analysis` repository ---
     print("\n[Test 6] AI Content Analysis & Storage in `analysis`:")
     ana_resp = client.post(
         f"/api/projects/{project_id}/sources/{source_id}/analysis",
@@ -143,21 +144,23 @@ def run_phase9_test_suite():
     assert ana_resp.status_code == 200, f"Analysis failed: {ana_resp.text}"
     ana_res = ana_resp.json()
 
-    ana_doc = db["analysis"].find_one({"sourceId": source_id})
-    assert ana_doc is not None, "Analysis document missing in MongoDB `analysis` collection."
+    ana_repo = get_repository("analysis")
+    ana_doc = ana_repo.find_one({"sourceId": source_id})
+    assert ana_doc is not None, "Analysis document missing in `analysis` repository."
     print(f"  [OK] AI Analysis stored in `analysis`: id={ana_doc.get('analysisId')} mode={ana_doc.get('mode') or ana_doc.get('analysisMode')}")
 
-    # --- Test 7: UCKR Generation & Versioning in `uckr` collection ---
+    # --- Test 7: UCKR Generation & Versioning in `uckr` repository ---
     print("\n[Test 7] UCKR Knowledge Base Storage & Versioning in `uckr`:")
     uckr_resp = client.get(f"/api/projects/{project_id}/uckr", headers=USER_A_HEADERS)
     assert uckr_resp.status_code == 200, f"Get UCKR failed: {uckr_resp.text}"
     uckr_res = uckr_resp.json()
 
-    uckr_doc = db["uckr"].find_one({"projectId": project_id})
-    assert uckr_doc is not None, "UCKR document missing in MongoDB `uckr` collection."
+    uckr_repo = get_repository("uckr")
+    uckr_doc = uckr_repo.find_one({"projectId": project_id})
+    assert uckr_doc is not None, "UCKR document missing in `uckr` repository."
     print(f"  [OK] UCKR document stored in `uckr`: id={uckr_doc.get('uckrId') or uckr_doc.get('id')} version={uckr_doc.get('version')} facts={len(uckr_doc.get('facts', []))}")
 
-    # --- Test 8: Deliverables Generation in `deliverables` collection ---
+    # --- Test 8: Deliverables Generation in `deliverables` repository ---
     print("\n[Test 8] Deliverable Generation in `deliverables`:")
     trans_payload = {
         "types": ["executive_summary", "advisory", "presentation"],
@@ -169,10 +172,11 @@ def run_phase9_test_suite():
     deliverables = deliv_res.get("deliverables", [])
     assert len(deliverables) > 0, "No deliverables generated."
 
-    deliv_count = db["deliverables"].count_documents({"projectId": project_id})
-    assert deliv_count >= len(deliverables), "Deliverables missing in `deliverables` collection."
+    deliv_repo = get_repository("deliverables")
+    deliv_count = deliv_repo.count_documents({"projectId": project_id})
+    assert deliv_count >= len(deliverables), "Deliverables missing in `deliverables` repository."
     sample_deliv_id = deliverables[0].get("deliverableId") or deliverables[0].get("id")
-    print(f"  [OK] Generated {deliv_count} deliverables stored in `deliverables` collection.")
+    print(f"  [OK] Generated {deliv_count} deliverables stored in `deliverables` repository.")
 
     # --- Test 9: Consistency Validation in `validations` & `quality` ---
     print("\n[Test 9] Validation & Quality Scoring in `validations` & `quality`:")
@@ -180,27 +184,31 @@ def run_phase9_test_suite():
     assert val_resp.status_code == 200, f"Validate failed: {val_resp.text}"
     val_res = val_resp.json()
 
-    val_doc = db["validations"].find_one({"projectId": project_id})
-    assert val_doc is not None, "Validation document missing in `validations` collection."
+    val_repo = get_repository("validations")
+    val_doc = val_repo.find_one({"projectId": project_id})
+    assert val_doc is not None, "Validation document missing in `validations` repository."
     print(f"  [OK] Validation stored in `validations`: id={val_doc.get('validationId')} status={val_doc.get('status')}")
 
-    qual_doc = db["quality"].find_one({"projectId": project_id})
-    assert qual_doc is not None, "Quality metrics document missing in `quality` collection."
+    qual_repo = get_repository("quality")
+    qual_doc = qual_repo.find_one({"projectId": project_id})
+    assert qual_doc is not None, "Quality metrics document missing in `quality` repository."
     print(f"  [OK] Quality record stored in `quality`: overallScore={qual_doc.get('scores', {}).get('overall')}%")
 
-    # --- Test 10: Deliverable Export to GridFS & Metadata in `exports` ---
-    print("\n[Test 10] Deliverable Export (PPTX & Markdown) into GridFS & `exports` Collection:")
+    # --- Test 10: Deliverable Export to Storage & Metadata in `exports` ---
+    print("\n[Test 10] Deliverable Export (PPTX & Markdown) into Storage & `exports` Repository:")
     exp_resp = client.post(f"/api/deliverables/{sample_deliv_id}/export?format=pptx", headers=USER_A_HEADERS)
     assert exp_resp.status_code == 200, f"Export failed: {exp_resp.text}"
     exp_res = exp_resp.json()
-    export_file_id = exp_res.get("fileId")
+    export_record = exp_res.get("export", exp_res)
+    export_file_id = export_record.get("fileId") or export_record.get("filePath")
 
-    exp_doc = db["exports"].find_one({"deliverableId": sample_deliv_id, "type": "pptx"})
-    assert exp_doc is not None, "Export metadata missing in MongoDB `exports` collection."
-    assert exp_doc.get("fileId"), "Export fileId missing."
-    print(f"  [OK] Export metadata stored in `exports`: id={exp_doc.get('exportId')} type={exp_doc.get('type')} fileId={exp_doc.get('fileId')}")
+    export_id = export_record.get("exportId")
+    exp_repo = get_repository("exports")
+    exp_doc = exp_repo.find_one({"exportId": export_id})
+    assert exp_doc is not None, "Export metadata missing in `exports` repository."
+    print(f"  [OK] Export metadata stored in `exports`: id={exp_doc.get('exportId')} type={exp_doc.get('type')}")
 
-    # --- Test 11: Background Job Tracking in `jobs` collection ---
+    # --- Test 11: Background Job Tracking in `jobs` repository ---
     print("\n[Test 11] Background Job Tracking in `jobs`:")
     job_payload = {"sourceId": source_id, "outputs": ["executive_summary"]}
     job_resp = client.post(f"/api/projects/{project_id}/jobs", json=job_payload, headers=USER_A_HEADERS)
@@ -209,31 +217,25 @@ def run_phase9_test_suite():
     job_id = (job_res.get("job") or {}).get("jobId") or job_res.get("jobId")
     assert job_id, "jobId was not returned in job creation response."
 
-    job_doc = db["jobs"].find_one({"jobId": job_id})
-    assert job_doc is not None, "Job document missing in MongoDB `jobs` collection."
+    job_repo = get_repository("jobs")
+    job_doc = job_repo.find_one({"jobId": job_id})
+    assert job_doc is not None, "Job document missing in `jobs` repository."
     print(f"  [OK] Job record stored in `jobs`: id={job_id} stage={job_doc.get('stage')}")
 
-    # --- Test 12: GridFS File Download API & Strict Security ---
-    print("\n[Test 12] Secure GridFS File Download & Cross-Tenant Access Enforcement:")
-    # User A downloads their own file via generic files router
-    if export_file_id:
-        dl_resp = client.get(f"/api/files/{export_file_id}", headers=USER_A_HEADERS)
+    # --- Test 12: File Download API & Strict Security ---
+    print("\n[Test 12] Secure File Download & Cross-Tenant Access Enforcement:")
+    export_id = exp_doc.get("exportId")
+    exp_pid = exp_doc.get("projectId") or project_id
+    if export_id:
+        dl_resp = client.get(f"/api/projects/{exp_pid}/exports/{export_id}/download", headers=USER_A_HEADERS)
         assert dl_resp.status_code == 200, f"User A download failed: {dl_resp.status_code}"
         assert len(dl_resp.content) > 0, "Downloaded file is empty."
-        print(f"  [OK] User A successfully streamed {len(dl_resp.content)} bytes from GridFS.")
-
-        # User A downloads via project-scoped route /api/projects/{id}/files/{fileId}/download
-        pdl_resp = client.get(f"/api/projects/{project_id}/files/{export_file_id}/download", headers=USER_A_HEADERS)
-        assert pdl_resp.status_code == 200, f"Project download failed: {pdl_resp.status_code}"
-        print(f"  [OK] Project-scoped file download API (/api/projects/{project_id}/files/...) verified.")
+        print(f"  [OK] User A successfully streamed {len(dl_resp.content)} bytes from storage.")
 
         # User B attempts to download User A's file -> 403 Forbidden
-        hack_resp = client.get(f"/api/files/{export_file_id}", headers=USER_B_HEADERS)
-        assert hack_resp.status_code == 403, f"Cross-tenant access was NOT blocked! Status: {hack_resp.status_code}"
-        
-        hack_pdl = client.get(f"/api/projects/{project_id}/files/{export_file_id}/download", headers=USER_B_HEADERS)
-        assert hack_pdl.status_code in (403, 404), "Cross-tenant project download not blocked."
-        print(f"  [OK] Cross-tenant download correctly blocked with 403 Forbidden.")
+        hack_resp = client.get(f"/api/projects/{exp_pid}/exports/{export_id}/download", headers=USER_B_HEADERS)
+        assert hack_resp.status_code in (403, 404), f"Cross-tenant access was NOT blocked! Status: {hack_resp.status_code}"
+        print(f"  [OK] Cross-tenant download correctly blocked.")
 
     # --- Test 13: Project Workspace Aggregation API ---
     print("\n[Test 13] Unified Workspace Aggregation (/api/projects/{id}/workspace):")

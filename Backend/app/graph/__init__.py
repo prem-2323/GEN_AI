@@ -4,4 +4,7 @@ Note: Neo4j connectivity, Cypher queries, and graph schema will be implemented i
 """
 from __future__ import annotations
 
-__all__ = []
+from .interface import GraphStoreInterface
+from .repository import Neo4jBoundaryRepository
+
+__all__ = ["GraphStoreInterface", "Neo4jBoundaryRepository"]

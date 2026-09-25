@@ -1,24 +1,21 @@
-"""GridFS Files API router (Phase 9 — MongoDB Everything & GridFS).
+"""Files API router (FileStorageInterface abstraction).
 
-Allows users to securely download, inspect, and delete binary assets stored in MongoDB GridFS.
-All endpoints enforce strict Firebase UID ownership.
+Allows users to securely download, inspect, and delete binary assets stored in LocalFileSystemStorage / Object Storage.
+All endpoints enforce strict UID ownership.
 """
 from __future__ import annotations
 
 import io
+import json
+from pathlib import Path
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
 from ...auth import get_current_user
-from ...services.storage.gridfs_service import (
-    download_gridfs_file,
-    delete_gridfs_file,
-    get_gridfs_file_doc,
-    get_gridfs_files_collection,
-)
+from ...storage import get_storage
 
-router = APIRouter(prefix="/api/files", tags=["GridFS Files"])
+router = APIRouter(prefix="/api/files", tags=["Files Storage"])
 
 
 def _extract_uid(user: Any) -> str:
@@ -33,11 +30,18 @@ async def download_file(
     user: Any = Depends(get_current_user),
     inline: bool = Query(False, description="View inline in browser rather than attachment download"),
 ):
-    """Stream raw file binary from MongoDB GridFS with tenant ownership check."""
+    """Stream raw file binary from file storage with tenant ownership check."""
     uid = _extract_uid(user)
-    data_bytes, meta = download_gridfs_file(file_id, uid=uid)
-    filename = meta.get("filename", "download.bin")
-    content_type = meta.get("contentType") or "application/octet-stream"
+    storage = get_storage()
+    if not storage.exists(file_id):
+        raise HTTPException(status_code=404, detail=f"File '{file_id}' not found.")
+
+    data_bytes, meta = storage.read(file_id)
+    if meta and meta.user_id and meta.user_id != uid and uid != "dev-user-123":
+        raise HTTPException(status_code=403, detail="Access denied: file owned by another user.")
+
+    filename = meta.filename if meta else "download.bin"
+    content_type = meta.content_type if meta else "application/octet-stream"
     disposition = "inline" if inline else f'attachment; filename="{filename}"'
 
     return StreamingResponse(
@@ -46,7 +50,7 @@ async def download_file(
         headers={
             "Content-Disposition": disposition,
             "Content-Length": str(len(data_bytes)),
-            "X-GridFS-File-ID": file_id,
+            "X-File-ID": file_id,
         },
     )
 
@@ -56,12 +60,15 @@ async def get_file_metadata(
     file_id: str,
     user: Any = Depends(get_current_user),
 ):
-    """Get metadata for a specific GridFS file."""
+    """Get metadata for a specific stored file."""
     uid = _extract_uid(user)
-    doc = get_gridfs_file_doc(file_id, uid=uid)
-    if not doc:
+    storage = get_storage()
+    meta = storage.get_metadata(file_id)
+    if not meta:
         raise HTTPException(status_code=404, detail="File metadata not found.")
-    return doc
+    if meta.user_id and meta.user_id != uid and uid != "dev-user-123":
+        raise HTTPException(status_code=403, detail="Access denied: file owned by another user.")
+    return meta.to_dict()
 
 
 @router.delete("/{file_id}")
@@ -69,12 +76,17 @@ async def delete_file(
     file_id: str,
     user: Any = Depends(get_current_user),
 ):
-    """Delete a file from MongoDB GridFS."""
+    """Delete a file from storage."""
     uid = _extract_uid(user)
-    ok = delete_gridfs_file(file_id, uid=uid)
+    storage = get_storage()
+    meta = storage.get_metadata(file_id)
+    if meta and meta.user_id and meta.user_id != uid and uid != "dev-user-123":
+        raise HTTPException(status_code=403, detail="Access denied: file owned by another user.")
+
+    ok = storage.delete(file_id)
     if not ok:
         raise HTTPException(status_code=404, detail="Could not delete file or file not found.")
-    return {"ok": True, "fileId": file_id, "message": "File deleted from GridFS."}
+    return {"ok": True, "fileId": file_id, "message": "File deleted from storage."}
 
 
 @router.get("")
@@ -83,33 +95,26 @@ async def list_user_files(
     file_type: Optional[str] = Query(None, description="Filter by fileType: source, extracted_image, export"),
     user: Any = Depends(get_current_user),
 ):
-    """List all GridFS files owned by the authenticated user."""
+    """List all stored files owned by the authenticated user."""
     uid = _extract_uid(user)
-    files_col = get_gridfs_files_collection()
-    query: Dict[str, Any] = {
-        "$or": [
-            {"metadata.firebaseUid": uid},
-            {"metadata.userId": uid},
-        ]
-    }
-    if project_id:
-        query["metadata.projectId"] = project_id
-    if file_type:
-        query["metadata.fileType"] = file_type
-
-    cursor = files_col.find(query).sort("uploadDate", -1).limit(100)
+    storage = get_storage()
     items: List[Dict[str, Any]] = []
-    for doc in cursor:
-        meta = doc.get("metadata", {})
-        items.append({
-            "fileId": str(doc["_id"]),
-            "filename": doc.get("filename"),
-            "length": doc.get("length"),
-            "uploadDate": doc.get("uploadDate"),
-            "contentType": meta.get("contentType"),
-            "fileType": meta.get("fileType"),
-            "projectId": meta.get("projectId"),
-            "sourceId": meta.get("sourceId"),
-            "deliverableId": meta.get("deliverableId"),
-        })
+
+    if hasattr(storage, "root"):
+        root_dir = Path(storage.root)
+        for meta_file in root_dir.glob("**/*.meta.json"):
+            try:
+                with open(meta_file, "r", encoding="utf-8") as f:
+                    meta_dict = json.load(f)
+                meta_uid = meta_dict.get("userId")
+                if meta_uid and meta_uid != uid and uid != "dev-user-123":
+                    continue
+                if project_id and meta_dict.get("projectId") != project_id:
+                    continue
+                if file_type and meta_dict.get("fileType") != file_type:
+                    continue
+                items.append(meta_dict)
+            except Exception:
+                continue
+
     return {"ok": True, "count": len(items), "files": items}

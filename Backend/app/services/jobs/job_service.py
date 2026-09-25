@@ -1,4 +1,4 @@
-"""Job queue (Phase 7) — MongoDB `jobs` + stage machine + progress.
+"""Job queue (Phase 7) — Database-independent `jobs` repository + stage machine + progress.
 
 Pipeline stages:
     queued -> extracting -> analyzing_text -> analyzing_images
@@ -16,9 +16,7 @@ import uuid
 from typing import Any, Optional
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
 
 log = logging.getLogger("gen-transform.jobs")
@@ -29,7 +27,7 @@ TERMINAL = {"completed", "failed"}
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def create_job(uid: str, project_id: str, source_id: str, job_type: str = "full_transformation",
@@ -44,8 +42,8 @@ def create_job(uid: str, project_id: str, source_id: str, job_type: str = "full_
     now = utcnow_iso()
     doc = {
         "jobId": f"job-{uuid.uuid4().hex[:12]}",
-        "firebaseUid": uid,
         "userId": uid,
+        "firebaseUid": uid,
         "projectId": project_id,
         "sourceId": source_id,
         "type": job_type,
@@ -59,20 +57,22 @@ def create_job(uid: str, project_id: str, source_id: str, job_type: str = "full_
         "createdAt": now,
         "updatedAt": now,
     }
-    get_mongo_db()["jobs"].insert_one({**doc})
-    doc.pop("_id", None)
+    repo = get_repository("jobs")
+    repo.insert_one(doc)
     return doc
 
 
 def _update(job_id: str, **fields) -> None:
     fields["updatedAt"] = utcnow_iso()
-    get_mongo_db()["jobs"].update_one({"jobId": job_id}, {"$set": fields})
+    repo = get_repository("jobs")
+    repo.update_one({"jobId": job_id}, {"$set": fields})
 
 
 def get_job(job_id: str, uid: str) -> dict:
-    doc = get_mongo_db()["jobs"].find_one({"jobId": job_id, **_owner_filter(uid)}, {"_id": 0})
+    repo = get_repository("jobs")
+    doc = repo.find_one({"jobId": job_id, **_owner_filter(uid)}, projection={"_id": 0})
     if not doc:
-        other = get_mongo_db()["jobs"].find_one({"jobId": job_id}, {"jobId": 1})
+        other = repo.find_one({"jobId": job_id}, projection={"_id": 0})
         if other:
             raise HTTPException(status_code=403, detail="Access denied. You do not own this job.")
         raise HTTPException(status_code=404, detail="Job not found.")
@@ -83,10 +83,8 @@ def list_jobs(uid: str, project_id: str, limit: int = 20) -> list[dict]:
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    cur = get_mongo_db()["jobs"].find(
-        {"projectId": project_id, **_owner_filter(uid)}, {"_id": 0}
-    ).sort("createdAt", DESCENDING).limit(limit)
-    return list(cur)
+    repo = get_repository("jobs")
+    return repo.find({"projectId": project_id, **_owner_filter(uid)}, sort=[("createdAt", -1)], limit=limit, projection={"_id": 0})
 
 
 def run_full_transformation(job_id: str, uid: str) -> None:
@@ -96,9 +94,8 @@ def run_full_transformation(job_id: str, uid: str) -> None:
     from ..uckr import pipeline_uckr as uckr_service
     from ..transformation import pipeline_transformation as transformation_service
     from ..validation import validation_service
-    from ..storage.storage_service import absolute_storage_path
+    from ...storage import get_storage
 
-    db = get_mongo_db()
     try:
         job = get_job(job_id, uid)
         project_id, source_id = job["projectId"], job["sourceId"]
@@ -113,7 +110,8 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         source_service.set_stage(source_id, uid, "validating", 15)
         source_service.set_stage(source_id, uid, "extracting", 30)
         rel = (src.get("file") or {}).get("storagePath", "")
-        raw = absolute_storage_path(rel).read_bytes() if rel else b""
+        storage = get_storage()
+        raw = storage.read(rel)[0] if rel and storage.exists(rel) else b""
         ext = ((src.get("file") or {}).get("originalName", "").rsplit(".", 1) + ["txt"])[-1].lower()
 
         from ..extraction.extraction_service import extract_normalized
@@ -131,7 +129,7 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         _update(job_id, stage="analyzing_images", progress=50)
         visuals = []
         imgs = [(im.get("imageId", f"IMG-{i}"), im.get("path", "")) for i, im in enumerate(normalized.get("images", []))]
-        existing = [(iid, absolute_storage_path(p).read_bytes()) for iid, p in imgs if p]
+        existing = [(iid, absolute_storage_path(p).read_bytes()) for iid, p in imgs if p and absolute_storage_path(p).exists()]
         if existing:
             try:
                 visuals = asyncio.run(ai_orchestrator.analyze_images_async(existing))
@@ -145,7 +143,8 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         _update(job_id, stage="building_uckr", progress=65)
         uckr = uckr_service.build_and_save(uid, project_id, source_id, analysis, normalized)
         if visuals:
-            db["uckr"].update_one({"uckrId": uckr["uckrId"]}, {"$set": {"visuals": visuals}})
+            uckr_repo = get_repository("uckr")
+            uckr_repo.update_one({"uckrId": uckr["uckrId"]}, {"$set": {"visuals": visuals}})
 
         _update(job_id, stage="generating_outputs", progress=80)
         made = transformation_service.generate_many(uid, project_id, outputs, params.get("config"))
@@ -165,7 +164,8 @@ def run_full_transformation(job_id: str, uid: str) -> None:
         log.error("job %s failed: %s\n%s", job_id, exc, traceback.format_exc())
         _update(job_id, status="failed", stage="failed", error=str(exc)[:2000])
         try:
-            job = db["jobs"].find_one({"jobId": job_id}, {"projectId": 1, "sourceId": 1})
+            jobs_repo = get_repository("jobs")
+            job = jobs_repo.find_one({"jobId": job_id}, projection={"_id": 0})
             if job:
                 from ..sources import source_service as _ss
 
@@ -175,3 +175,4 @@ def run_full_transformation(job_id: str, uid: str) -> None:
                     pass
         except Exception:
             pass
+

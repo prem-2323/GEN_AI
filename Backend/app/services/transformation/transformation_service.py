@@ -9,7 +9,7 @@ Transforms canonical UCKR into multiple communications deliverables:
 - Presentation Slide Deck
 - Explainer Video Script
 
-Persists all generated outputs in MongoDB `deliverables` collection with full provenance tracking.
+Persists all generated outputs in `deliverables` repository with full provenance tracking.
 """
 from __future__ import annotations
 
@@ -19,9 +19,7 @@ import uuid
 from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...config.settings import get_settings
 from ...models.deliverable import (
     DeliverableType,
@@ -89,8 +87,6 @@ def generate_single_deliverable(
     source_id: str,
 ) -> DeliverableRecord:
     """Generates, validates, and persists a single deliverable from UCKR."""
-    db = get_mongo_db()
-
     # 1. Attempt AI generation or fallback to template
     raw_content = _call_qwen_for_deliverable(dtype, uckr, cfg)
     if not raw_content or not isinstance(raw_content, dict):
@@ -113,11 +109,13 @@ def generate_single_deliverable(
     deliverable_id = f"del_{uuid.uuid4().hex[:8]}"
     now = utcnow_iso()
 
-    uckr_id_raw = uckr.get("_id") or uckr.get("id") or f"uckr_{source_id}"
+    uckr_id_raw = uckr.get("_id") or uckr.get("id") or uckr.get("uckrId") or f"uckr_{source_id}"
     uckr_id_str = str(uckr_id_raw)
 
     doc = {
-        "_id": deliverable_id,
+        "deliverableId": deliverable_id,
+        "id": deliverable_id,
+        "userId": user_uid,
         "firebaseUid": user_uid,
         "projectId": project_id,
         "sourceId": source_id,
@@ -138,12 +136,9 @@ def generate_single_deliverable(
         "updatedAt": now,
     }
 
-    if db is not None:
-        try:
-            db.deliverables.insert_one(doc)
-            log.info("Persisted deliverable %s (%s) for project %s (status=%s)", deliverable_id, dtype, project_id, doc["status"])
-        except Exception as exc:
-            log.warning("Failed to persist deliverable to MongoDB: %s", exc)
+    deliv_repo = get_repository("deliverables")
+    deliv_repo.insert_one(doc)
+    log.info("Persisted deliverable %s (%s) for project %s (status=%s)", deliverable_id, dtype, project_id, doc["status"])
 
     return DeliverableRecord.model_validate(doc)
 
@@ -151,7 +146,7 @@ def generate_single_deliverable(
 def _project_filter(project_id: str, user_uid: str) -> Dict[str, Any]:
     return {
         "$and": [
-            {"$or": [{"_id": project_id}, {"id": project_id}, {"projectId": project_id}]},
+            {"$or": [{"id": project_id}, {"projectId": project_id}]},
             {"$or": [{"userId": user_uid}, {"firebaseUid": user_uid}]},
         ]
     }
@@ -163,36 +158,33 @@ def transform_content(
     user: Dict[str, Any],
 ) -> TransformResponse:
     """Main transformation pipeline entrypoint for projects."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
     # 1. Verify Project
-    proj = None
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
     if proj is None:
         raise HTTPException(status_code=404, detail="Project not found or access denied.")
 
     # 2. Resolve Source ID
     source_id = req.sourceId
     if not source_id:
-        if db is not None:
-            latest_source = db.sources.find_one({"projectId": project_id}, sort=[("createdAt", DESCENDING)])
-            if latest_source:
-                source_id = latest_source.get("_id")
+        src_repo = get_repository("sources")
+        latest_source = src_repo.find_one({"projectId": project_id}, sort=[("createdAt", -1)], projection={"_id": 0})
+        if latest_source:
+            source_id = latest_source.get("sourceId") or latest_source.get("id")
     if not source_id:
         raise HTTPException(status_code=400, detail="No source ID specified and no sources found in project.")
 
     # 3. Load Canonical UCKR Document
+    uckr_repo = get_repository("uckr")
     uckr_query: Dict[str, Any] = {"projectId": project_id, "sourceId": source_id}
     if req.uckrVersion:
         uckr_query["version"] = req.uckrVersion
 
-    uckr_doc = None
-    if db is not None:
-        uckr_doc = db.uckr.find_one(uckr_query, sort=[("version", DESCENDING)])
+    uckr_doc = uckr_repo.find_one(uckr_query, sort=[("version", -1)], projection={"_id": 0})
 
     if not uckr_doc:
         raise HTTPException(
@@ -212,7 +204,7 @@ def transform_content(
             source_id=source_id,
         )
         d_dict = rec.model_dump(by_alias=True)
-        d_dict["id"] = str(d_dict.get("_id"))
+        d_dict["id"] = str(d_dict.get("id") or d_dict.get("deliverableId"))
         generated_deliverables.append(d_dict)
 
     return TransformResponse(
@@ -226,62 +218,60 @@ def transform_content(
 
 def get_project_deliverables(project_id: str, user: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Lists all deliverables for a project."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
-        if proj is None:
-            raise HTTPException(status_code=403, detail="Project access forbidden.")
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
+    if proj is None:
+        raise HTTPException(status_code=403, detail="Project access forbidden.")
 
-        cursor = db.deliverables.find({"projectId": project_id}, sort=[("createdAt", DESCENDING)])
-        results = []
-        for doc in cursor:
-            doc["id"] = str(doc.get("_id"))
-            results.append(doc)
-        return results
-
-    return []
+    deliv_repo = get_repository("deliverables")
+    docs = deliv_repo.find({"projectId": project_id}, sort=[("createdAt", -1)], projection={"_id": 0})
+    for doc in docs:
+        doc["id"] = str(doc.get("id") or doc.get("deliverableId"))
+    return docs
 
 
 def get_single_deliverable(project_id: str, deliverable_id: str, user: Dict[str, Any]) -> Dict[str, Any]:
     """Retrieves a single deliverable by ID."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
-        if proj is None:
-            raise HTTPException(status_code=403, detail="Project access forbidden.")
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
+    if proj is None:
+        raise HTTPException(status_code=403, detail="Project access forbidden.")
 
-        doc = db.deliverables.find_one({"_id": deliverable_id, "projectId": project_id})
-        if not doc:
-            raise HTTPException(status_code=404, detail="Deliverable not found.")
-        doc["id"] = str(doc.get("_id"))
-        return doc
-
-    raise HTTPException(status_code=404, detail="Deliverable not found.")
+    deliv_repo = get_repository("deliverables")
+    doc = deliv_repo.find_one(
+        {"$or": [{"id": deliverable_id}, {"deliverableId": deliverable_id}], "projectId": project_id},
+        projection={"_id": 0},
+    )
+    if not doc:
+        raise HTTPException(status_code=404, detail="Deliverable not found.")
+    doc["id"] = str(doc.get("id") or doc.get("deliverableId"))
+    return doc
 
 
 def delete_single_deliverable(project_id: str, deliverable_id: str, user: Dict[str, Any]) -> Dict[str, Any]:
     """Deletes a single deliverable."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
-        if proj is None:
-            raise HTTPException(status_code=403, detail="Project access forbidden.")
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
+    if proj is None:
+        raise HTTPException(status_code=403, detail="Project access forbidden.")
 
-        res = db.deliverables.delete_one({"_id": deliverable_id, "projectId": project_id})
-        if res.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Deliverable not found.")
-        return {"ok": True, "deleted": deliverable_id}
-
+    deliv_repo = get_repository("deliverables")
+    deleted = deliv_repo.delete_many(
+        {"$or": [{"id": deliverable_id}, {"deliverableId": deliverable_id}], "projectId": project_id}
+    )
+    if deleted == 0:
+        raise HTTPException(status_code=404, detail="Deliverable not found.")
     return {"ok": True, "deleted": deliverable_id}
+

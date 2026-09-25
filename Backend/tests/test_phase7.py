@@ -27,7 +27,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.main import app
-from app.config.mongo import get_mongo_db
+from app.storage.repository import JSONDocumentRepository
 
 client = TestClient(app)
 
@@ -158,15 +158,13 @@ def run_tests():
     assert val_report.get("overallStatus") in ("PASS", "WARNING")
     assert scores.get("consistency", 0) >= 80.0
 
-    # 9. Contradiction Detection — Number Mismatch (240 -> 420)
-    db = get_mongo_db()
+    deliv_repo = JSONDocumentRepository("deliverables")
     advisory_id = deliv_map["advisory"]
     # Corrupt advisory in DB to introduce 420 number mismatch
-    if db is not None:
-        db.deliverables.update_one(
-            {"_id": advisory_id},
-            {"$set": {"content.observations": ["The campaign targeted 420 employees in the finance department."]}}
-        )
+    deliv_repo.update_one(
+        {"$or": [{"id": advisory_id}, {"deliverableId": advisory_id}]},
+        {"$set": {"content.observations": ["The campaign targeted 420 employees in the finance department."]}}
+    )
 
     res = client.post(
         f"/api/projects/{PROJECT_ID}/deliverables/{advisory_id}/validate",

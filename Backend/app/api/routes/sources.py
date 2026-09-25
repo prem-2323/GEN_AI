@@ -6,13 +6,19 @@ from typing import Any, Dict, List
 from fastapi import APIRouter, Depends, HTTPException
 
 from ...auth import get_current_user
-from ...config.mongo import get_mongo_db
+from ...storage.repository import JSONDocumentRepository
 from ...services.projects.project_service import get_project
+from ...services.sources.source_service import (
+    delete_source as service_delete_source,
+    get_source as service_get_source,
+    list_sources as service_list_sources,
+)
 from ...utils.helpers import utcnow_iso
 
-from ...services.sources.source_service import delete_source as service_delete_source, get_source as service_get_source
-
 router = APIRouter(tags=["sources"])
+
+sources_repo = JSONDocumentRepository("sources")
+projects_repo = JSONDocumentRepository("projects")
 
 
 @router.post("/api/projects/{project_id}/sources", status_code=201)
@@ -41,15 +47,14 @@ async def create_source(
         "updatedAt": now,
     }
 
-    mongo_db = get_mongo_db()
-    mongo_db["sources"].update_one(
+    sources_repo.update_one(
         {"id": source_id},
         {"$set": source_doc},
         upsert=True,
     )
 
     # Update project source record
-    mongo_db["projects"].update_one(
+    projects_repo.update_one(
         {"id": project_id},
         {"$set": {"source": source_doc, "sourceCount": 1, "updatedAt": now}},
     )
@@ -64,12 +69,7 @@ async def list_sources(
 ):
     """List sources attached to the project."""
     get_project(project_id, uid=user["uid"])
-    mongo_db = get_mongo_db()
-    cursor = mongo_db["sources"].find(
-        {"projectId": project_id, "$or": [{"firebaseUid": user["uid"]}, {"userId": user["uid"]}]},
-        {"_id": 0},
-    )
-    items = list(cursor)
+    items = service_list_sources(user["uid"], project_id=project_id)
     return {"ok": True, "sources": items, "count": len(items)}
 
 

@@ -91,18 +91,25 @@ async def download_project_file(
     user: dict = Depends(get_current_user),
     inline: bool = Query(False),
 ):
-    """Download project-scoped file directly from MongoDB GridFS with tenant security."""
+    """Download project-scoped file directly from storage abstraction with tenant security."""
     import io
     from fastapi.responses import StreamingResponse
-    from ...services.storage.gridfs_service import download_gridfs_file
+    from ...storage import get_storage
 
     _validate_project_id(project_id)
     # Verifies user owns the project first
     project_service.get_project(project_id, uid=user["uid"])
-    
-    data_bytes, meta = download_gridfs_file(file_id, uid=user["uid"])
-    filename = meta.get("filename", "download.bin")
-    content_type = meta.get("contentType") or "application/octet-stream"
+
+    storage = get_storage()
+    # Support direct key or file_id lookups
+    file_key = f"documents/{project_id}/{file_id}" if not file_id.startswith("documents/") else file_id
+    if not storage.exists(file_key):
+        # Fallback check raw key
+        file_key = file_id
+
+    data_bytes, meta = storage.read(file_key)
+    filename = meta.filename if meta else "download.bin"
+    content_type = meta.content_type if meta else "application/octet-stream"
     disposition = "inline" if inline else f'attachment; filename="{filename}"'
 
     return StreamingResponse(
@@ -111,7 +118,7 @@ async def download_project_file(
         headers={
             "Content-Disposition": disposition,
             "Content-Length": str(len(data_bytes)),
-            "X-GridFS-File-ID": file_id,
+            "X-File-ID": file_id,
         },
     )
 

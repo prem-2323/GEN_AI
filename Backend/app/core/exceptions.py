@@ -23,7 +23,7 @@ class DocumentValidationError(AppException):
     """Raised when an uploaded document fails format, size, or integrity checks."""
 
     def __init__(self, message: str, details: Optional[Dict[str, Any]] = None) -> None:
-        super().__init__(message=message, status_code=400, details=details)
+        super().__init__(message=message, status_code=422, details=details)
 
 
 class ExtractionError(AppException):

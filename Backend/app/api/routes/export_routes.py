@@ -14,7 +14,7 @@ from ...services.export.export_service import (
     list_project_exports,
     approve_deliverable,
 )
-from ...services.storage.gridfs_service import download_gridfs_file
+from ...storage import get_storage
 
 router = APIRouter(prefix="/api/projects/{project_id}", tags=["Phase 10 Export"])
 
@@ -32,7 +32,7 @@ async def export_deliverable(
     payload: ExportRequest,
     user: Any = Depends(get_current_user),
 ):
-    """Export a deliverable into a downloadable file format (pptx, docx, pdf, txt, mp3) stored in GridFS."""
+    """Export a deliverable into a downloadable file format (pptx, docx, pdf, txt, mp3) stored in storage."""
     uid = _extract_uid(user)
     record = await export_deliverable_artifact(
         uid=uid,
@@ -86,18 +86,25 @@ async def download_export_file(
     inline: bool = Query(False, description="View inline in browser if supported"),
     user: Any = Depends(get_current_user),
 ):
-    """Download export binary stream directly from MongoDB GridFS with strict tenant security."""
+    """Download export binary stream directly from storage with strict tenant security."""
     uid = _extract_uid(user)
     # 1. Load export metadata & verify ownership
     export = get_export_record(project_id, export_id, uid)
-    file_id = export.get("fileId")
+    file_id = export.get("storagePath") or export.get("fileId") or export.get("filePath")
     if not file_id:
         raise HTTPException(status_code=404, detail="File binary ID not found on export record.")
 
-    # 2. Download from GridFS
-    data_bytes, meta = download_gridfs_file(file_id, uid=uid)
-    filename = export.get("filename") or meta.get("filename", "export.bin")
-    content_type = export.get("mimeType") or meta.get("contentType", "application/octet-stream")
+    # 2. Download from storage
+    storage = get_storage()
+    if not storage.exists(file_id) and export.get("fileId") and storage.exists(export["fileId"]):
+        file_id = export["fileId"]
+
+    if not storage.exists(file_id):
+        raise HTTPException(status_code=404, detail="Export binary asset not found in storage.")
+
+    data_bytes, meta = storage.read(file_id)
+    filename = export.get("filename") or (meta.filename if meta else "export.bin")
+    content_type = export.get("mimeType") or (meta.content_type if meta else "application/octet-stream")
     disposition = "inline" if inline else f'attachment; filename="{filename}"'
 
     return StreamingResponse(

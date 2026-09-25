@@ -1,16 +1,6 @@
-"""UCKR engine (Phase 4) — the heart of the pipeline.
+"""UCKR engine (Phase 4) — database-independent persistence.
 
-    Source -> (Qwen text + Gemma vision) -> UCKR Builder -> UCKR -> MongoDB `uckr`
-
-Document:
-{
-  "_id": ..., "uckrId": "UCKR-...", "firebaseUid": ..., "userId": ...,
-  "projectId": ..., "sourceId": ..., "version": 1,
-  "facts": [{id, value, type, sourceDoc, page, section, confidence, quote, usedInDeliverables:[]}],
-  "entities": [...], "events": [...], "metrics": [...],
-  "relationships": [...], "actions": [...], "citations": [...],
-  "stats": {...}, "createdAt": ..., "provider": ...
-}
+    Source -> (Qwen text + Gemma vision) -> UCKR Builder -> UCKR -> `uckr` repository
 """
 from __future__ import annotations
 
@@ -20,9 +10,7 @@ import uuid
 from typing import Any, Optional
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
 from ..sources import source_service
 
@@ -33,7 +21,7 @@ _RISK_RE = re.compile(r"\b(risk|threat|vulnerab|attack|breach|critical|fail|loss
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def _classify_fact(value: str, has_number: bool, has_date: bool) -> str:
@@ -176,8 +164,8 @@ def build_uckr(
     coverage = round(100 * min(1.0, total_facts / 10), 1) if total_facts else 0.0
     return {
         "uckrId": f"UCKR-{uuid.uuid4().hex[:8].upper()}",
-        "firebaseUid": uid,
         "userId": uid,
+        "firebaseUid": uid,
         "projectId": project_id,
         "sourceId": source_id,
         "stats": {
@@ -207,15 +195,15 @@ def build_uckr(
 
 def save_uckr(uckr: dict) -> dict:
     """Persist with auto-incremented version per (projectId, sourceId)."""
-    col = get_mongo_db()["uckr"]
-    latest = col.find_one(
+    repo = get_repository("uckr")
+    latest = repo.find_one(
         {"projectId": uckr["projectId"], "sourceId": uckr["sourceId"]},
-        sort=[("version", DESCENDING)],
+        sort=[("version", -1)],
+        projection={"_id": 0},
     )
     uckr["version"] = int((latest or {}).get("version", 0)) + 1
     uckr["updatedAt"] = utcnow_iso()
-    col.insert_one({**uckr})
-    uckr.pop("_id", None)
+    repo.insert_one({**uckr})
     log.info("UCKR saved project=%s source=%s version=%d facts=%d",
              uckr["projectId"], uckr["sourceId"], uckr["version"], len(uckr["facts"]))
     return uckr
@@ -235,7 +223,8 @@ def build_and_save(
     uckr = build_uckr(norm, analysis, uid, project_id, source_id)
     saved = save_uckr(uckr)
     # cache analysis on the source for reuse
-    get_mongo_db()["sources"].update_one(
+    sources_repo = get_repository("sources")
+    sources_repo.update_one(
         {"$or": [{"sourceId": source_id}, {"id": source_id}]},
         {"$set": {"analysis": {"provider": analysis.get("provider"), "textHash": analysis.get("textHash"),
                                "result": analysis, "cachedAt": utcnow_iso()}}},
@@ -250,17 +239,18 @@ def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) 
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
         filt["sourceId"] = source_id
-    doc = get_mongo_db()["uckr"].find_one(filt, {"_id": 0}, sort=[("version", DESCENDING)])
+    repo = get_repository("uckr")
+    doc = repo.find_one(filt, sort=[("version", -1)], projection={"_id": 0})
     if doc:
         return doc
 
     # If not found, try to auto-build from existing analysis record or source
-    db = get_mongo_db()
+    ana_repo = get_repository("analysis")
     ana_filt = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
         ana_filt["sourceId"] = source_id
-    ana_doc = db["analysis"].find_one(ana_filt, {"_id": 0}, sort=[("updatedAt", DESCENDING)])
-    
+    ana_doc = ana_repo.find_one(ana_filt, sort=[("updatedAt", -1)], projection={"_id": 0})
+
     src = None
     if source_id:
         try:
@@ -268,7 +258,8 @@ def get_latest_uckr(project_id: str, uid: str, source_id: Optional[str] = None) 
         except Exception:
             pass
     if not src:
-        src_doc = db["sources"].find_one({"projectId": project_id, **_owner_filter(uid)}, {"_id": 0})
+        sources_repo = get_repository("sources")
+        src_doc = sources_repo.find_one({"projectId": project_id, **_owner_filter(uid)}, projection={"_id": 0})
         if src_doc:
             src = src_doc
 
@@ -295,10 +286,8 @@ def list_uckrs(project_id: str, uid: str, limit: int = 20) -> list[dict]:
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    cur = get_mongo_db()["uckr"].find(
-        {"projectId": project_id, **_owner_filter(uid)}, {"_id": 0}
-    ).sort("version", DESCENDING).limit(limit)
-    return list(cur)
+    repo = get_repository("uckr")
+    return repo.find({"projectId": project_id, **_owner_filter(uid)}, sort=[("version", -1)], limit=limit, projection={"_id": 0})
 
 
 # --- legacy shim (kept for old imports) ---
@@ -310,3 +299,4 @@ def extract_uckr_from_text(text: str) -> dict:
         {"pages": [{"pageNumber": 1, "text": text or ""}], "document": {"name": "inline-text"}},
         analysis, uid="legacy", project_id="legacy", source_id="legacy",
     )
+

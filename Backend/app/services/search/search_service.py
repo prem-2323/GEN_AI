@@ -1,42 +1,53 @@
-"""Search & retrieval (Phase 11) — scoped full-text-style search over the
-caller's own projects and sources. No vector DB: MongoDB regex search is
-enough until scale demands more.
-"""
+"""Search & retrieval (Phase 11) — scoped text search over the caller's own projects and sources."""
 from __future__ import annotations
 
 import re
 from typing import Optional
 
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def search(uid: str, q: str, kind: str = "all", limit: int = 20) -> dict:
     q = (q or "").strip()
     if not q:
         return {"query": "", "projects": [], "sources": []}
-    rx = re.compile(re.escape(q), re.IGNORECASE)
-    db = get_mongo_db()
+    rx_str = re.escape(q)
     out: dict = {"query": q}
+
     if kind in ("all", "project"):
-        out["projects"] = list(db["projects"].find(
-            {"$and": [_owner_filter(uid), {"$or": [
-                {"name": rx}, {"projectName": rx}, {"title": rx}, {"description": rx}]}]},
-            {"_id": 0},
-        ).sort("updatedAt", DESCENDING).limit(limit))
+        proj_repo = get_repository("projects")
+        query = {
+            "$and": [
+                _owner_filter(uid),
+                {"$or": [{"name": {"$regex": rx_str}}, {"projectName": {"$regex": rx_str}}, {"title": {"$regex": rx_str}}, {"description": {"$regex": rx_str}}]}
+            ]
+        }
+        out["projects"] = proj_repo.find(query, sort=[("updatedAt", -1)], limit=limit, projection={"_id": 0})
+
     if kind in ("all", "source"):
-        out["sources"] = list(db["sources"].find(
-            {"$and": [_owner_filter(uid), {"$or": [
-                {"file.originalName": rx},
-                {"normalized.text.content": rx},
-                {"normalized.document.name": rx}]}]},
-            {"_id": 0, "normalized": 0},
-        ).sort("updatedAt", DESCENDING).limit(limit))
+        src_repo = get_repository("sources")
+        query = {
+            "$and": [
+                _owner_filter(uid),
+                {"$or": [
+                    {"originalFilename": {"$regex": rx_str}},
+                    {"fileType": {"$regex": rx_str}},
+                    {"name": {"$regex": rx_str}},
+                    {"extractedText": {"$regex": rx_str}},
+                    {"file.originalName": {"$regex": rx_str}},
+                    {"file.storedName": {"$regex": rx_str}},
+                ]}
+            ]
+        }
+        sources = src_repo.find(query, sort=[("updatedAt", -1)], limit=limit, projection={"_id": 0})
+        for s in sources:
+            s.pop("normalized", None)
+        out["sources"] = sources
+
     return out
 
 
@@ -46,18 +57,26 @@ def project_overview(uid: str, project_id: str) -> dict:
     from ..sources import source_service
 
     project = get_project(project_id, uid)
-    db = get_mongo_db()
     filt_owner = _owner_filter(uid)
-    latest_uckr = db["uckr"].find_one({"projectId": project_id, **filt_owner},
-                                      {"_id": 0}, sort=[("version", DESCENDING)])
+
+    uckr_repo = get_repository("uckr")
+    latest_uckr = uckr_repo.find_one({"projectId": project_id, **filt_owner}, sort=[("version", -1)], projection={"_id": 0})
+
+    deliv_repo = get_repository("deliverables")
+    deliverables = deliv_repo.find({"projectId": project_id, **filt_owner}, sort=[("createdAt", -1)], limit=50, projection={"_id": 0})
+
+    val_repo = get_repository("validations")
+    validations = val_repo.find({"projectId": project_id, **filt_owner}, sort=[("checkedAt", -1)], limit=10, projection={"_id": 0})
+
+    job_repo = get_repository("jobs")
+    jobs = job_repo.find({"projectId": project_id, **filt_owner}, sort=[("createdAt", -1)], limit=10, projection={"_id": 0})
+
     return {
         "project": project,
         "sources": source_service.list_sources(uid, project_id, limit=50),
         "uckr": latest_uckr,
-        "deliverables": list(db["deliverables"].find(
-            {"projectId": project_id, **filt_owner}, {"_id": 0}).sort("createdAt", DESCENDING).limit(50)),
-        "validations": list(db["validations"].find(
-            {"projectId": project_id, **filt_owner}, {"_id": 0}).sort("checkedAt", DESCENDING).limit(10)),
-        "jobs": list(db["jobs"].find(
-            {"projectId": project_id, **filt_owner}, {"_id": 0}).sort("createdAt", DESCENDING).limit(10)),
+        "deliverables": deliverables,
+        "validations": validations,
+        "jobs": jobs,
     }
+

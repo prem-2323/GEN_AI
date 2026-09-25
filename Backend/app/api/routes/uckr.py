@@ -13,14 +13,16 @@ from ...services.uckr.uckr_builder import (
     list_uckr_versions,
 )
 from ...services.validation.validation_service import validate_deliverable
-from ...config.mongo import get_recent_temp_records, log_temp_timestamp
+from ...storage.repository import JSONDocumentRepository
 from ...config.settings import get_settings
-from ...utils.helpers import is_valid_id
+from ...utils.helpers import is_valid_id, utcnow_iso
 
 router = APIRouter(tags=["uckr"])
 uckr_router = APIRouter(prefix="/api/uckr", tags=["uckr"])
 validation_router = APIRouter(prefix="/api/validation", tags=["validation"])
 temp_router = APIRouter(prefix="/api/temp", tags=["temp-logs"])
+
+temp_repo = JSONDocumentRepository("temp")
 
 
 def _check_id(val: str, name: str = "ID") -> None:
@@ -151,14 +153,9 @@ async def validate_output(payload: Dict[str, Any], user: dict = Depends(get_curr
 
 @temp_router.get("")
 async def list_temp_logs(limit: int = 50):
-    settings = get_settings()
-    records = get_recent_temp_records(limit=limit)
+    records = temp_repo.find({}, limit=limit, sort=[("createdAt", -1)])
     return {
         "ok": True,
-        "database": settings.mongodb_db_name,
-        "collection": "temp",
-        "ttlHours": settings.temp_ttl_hours,
-        "intervalMinutes": settings.temp_log_interval_minutes,
         "count": len(records),
         "records": records,
     }
@@ -166,5 +163,7 @@ async def list_temp_logs(limit: int = 50):
 
 @temp_router.post("/trigger")
 async def trigger_temp_log():
-    res = log_temp_timestamp()
-    return {"ok": "error" not in res, "result": res}
+    now = utcnow_iso()
+    doc = {"id": f"temp_{now}", "createdAt": now, "message": "Manual temp trigger"}
+    saved = temp_repo.save(doc)
+    return {"ok": True, "result": saved}

@@ -6,8 +6,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from ...auth import get_current_user
-from ...config.firebase import get_firestore_db
-from ...config.mongo import upsert_user_to_mongo
+from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
 
 router = APIRouter(tags=["auth"])
@@ -45,16 +44,8 @@ async def get_me(user: dict = Depends(get_current_user)):
         "updatedAt": now,
     }
 
-    # Save to Firestore
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            fs.collection("users").document(uid).set(profile, merge=True)
-        except Exception:
-            pass
-
-    # Save to MongoDB Atlas
-    upsert_user_to_mongo(profile)
+    users_repo = get_repository("users")
+    users_repo.update_one({"userId": uid}, {"$set": profile}, upsert=True)
 
     return profile
 
@@ -75,15 +66,8 @@ async def sync_me(payload: UserProfileSync, user: dict = Depends(get_current_use
         "updatedAt": now,
     }
 
-    # Save to Firestore
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            fs.collection("users").document(uid).set(profile, merge=True)
-        except Exception:
-            pass
-
-    # Save to MongoDB Atlas
-    upsert_user_to_mongo(profile)
+    users_repo = get_repository("users")
+    users_repo.update_one({"userId": uid}, {"$set": profile}, upsert=True)
 
     return profile
+

@@ -6,9 +6,8 @@ import uuid
 from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
 
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...models.deliverable import DeliverableRecord, TransformationConfig
 from ...models.validation import (
     DeliverableValidationResult,
@@ -34,7 +33,7 @@ log = logging.getLogger("gen-transform.consistency_service")
 def _project_filter(project_id: str, user_uid: str) -> Dict[str, Any]:
     return {
         "$and": [
-            {"$or": [{"_id": project_id}, {"id": project_id}, {"projectId": project_id}]},
+            {"$or": [{"id": project_id}, {"projectId": project_id}]},
             {"$or": [{"userId": user_uid}, {"firebaseUid": user_uid}]},
         ]
     }
@@ -60,7 +59,7 @@ def validate_single_deliverable(
     deliverable_doc: Dict[str, Any],
 ) -> DeliverableValidationResult:
     """Executes all 7 consistency checks against a single deliverable."""
-    deliv_id = str(deliverable_doc.get("_id") or deliverable_doc.get("id", "deliv"))
+    deliv_id = str(deliverable_doc.get("id") or deliverable_doc.get("deliverableId", "deliv"))
     deliv_type = deliverable_doc.get("type", "unknown")
     content = deliverable_doc.get("content", {})
     deliv_text = _flatten_content(content)
@@ -101,38 +100,34 @@ def validate_project_sources(
     user: Dict[str, Any],
 ) -> ValidationRecord:
     """Validates project deliverables against canonical UCKR."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
     # 1. Verify Project
-    proj = None
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
     if proj is None:
         raise HTTPException(status_code=403, detail="Project not found or access denied.")
 
     # 2. Load Canonical UCKR
+    uckr_repo = get_repository("uckr")
     uckr_query: Dict[str, Any] = {"projectId": project_id, "sourceId": source_id}
     if req.uckrVersion:
         uckr_query["version"] = req.uckrVersion
 
-    uckr_doc = None
-    if db is not None:
-        uckr_doc = db.uckr.find_one(uckr_query, sort=[("version", DESCENDING)])
+    uckr_doc = uckr_repo.find_one(uckr_query, sort=[("version", -1)], projection={"_id": 0})
 
     if not uckr_doc:
         raise HTTPException(status_code=404, detail="Canonical UCKR document not found.")
 
     # 3. Load Deliverables
+    deliv_repo = get_repository("deliverables")
     deliv_query: Dict[str, Any] = {"projectId": project_id}
     if req.deliverableIds:
-        deliv_query["_id"] = {"$in": req.deliverableIds}
+        deliv_query["$or"] = [{"id": {"$in": req.deliverableIds}}, {"deliverableId": {"$in": req.deliverableIds}}]
 
-    deliverables = []
-    if db is not None:
-        deliverables = list(db.deliverables.find(deliv_query, sort=[("createdAt", DESCENDING)]))
+    deliverables = deliv_repo.find(deliv_query, sort=[("createdAt", -1)], projection={"_id": 0})
 
     if not deliverables:
         raise HTTPException(status_code=404, detail="No deliverables found to validate.")
@@ -152,11 +147,13 @@ def validate_project_sources(
     now = utcnow_iso()
 
     doc = {
-        "_id": val_id,
+        "validationId": val_id,
+        "id": val_id,
+        "userId": user_uid,
         "firebaseUid": user_uid,
         "projectId": project_id,
         "sourceId": source_id,
-        "uckrId": str(uckr_doc.get("_id") or uckr_doc.get("id")),
+        "uckrId": str(uckr_doc.get("id") or uckr_doc.get("uckrId")),
         "uckrVersion": uckr_doc.get("version", 1),
         "deliverableIds": deliv_ids,
         "results": [r.model_dump() for r in results],
@@ -167,35 +164,30 @@ def validate_project_sources(
         "updatedAt": now,
     }
 
-    if db is not None:
-        try:
-            db.validations.insert_one(doc)
-            log.info("Persisted validation %s (status=%s, consistency=%s%%)", val_id, overall_status, scores.consistency)
-        except Exception as exc:
-            log.warning("Failed to persist validation to MongoDB: %s", exc)
+    val_repo = get_repository("validations")
+    val_repo.insert_one(doc)
+    log.info("Persisted validation %s (status=%s, consistency=%s%%)", val_id, overall_status, scores.consistency)
 
     return ValidationRecord.model_validate(doc)
 
 
 def get_latest_validation(project_id: str, source_id: str, user: Dict[str, Any]) -> Dict[str, Any]:
     """Retrieves the latest validation audit report for a project source."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
-    if db is not None:
-        proj = db.projects.find_one(_project_filter(project_id, user_uid))
-        if proj is None:
-            raise HTTPException(status_code=403, detail="Project not found or access denied.")
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
+    if proj is None:
+        raise HTTPException(status_code=403, detail="Project not found or access denied.")
 
-        doc = db.validations.find_one({"projectId": project_id, "sourceId": source_id}, sort=[("createdAt", DESCENDING)])
-        if not doc:
-            raise HTTPException(status_code=404, detail="No validation record found for this source.")
-        doc["id"] = str(doc.get("_id"))
-        return doc
-
-    raise HTTPException(status_code=404, detail="No validation record found.")
+    val_repo = get_repository("validations")
+    doc = val_repo.find_one({"projectId": project_id, "sourceId": source_id}, sort=[("createdAt", -1)], projection={"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="No validation record found for this source.")
+    doc["id"] = str(doc.get("id") or doc.get("validationId"))
+    return doc
 
 
 def regenerate_deliverable_with_feedback(
@@ -205,25 +197,27 @@ def regenerate_deliverable_with_feedback(
     user: Dict[str, Any],
 ) -> Dict[str, Any]:
     """Regenerates a deliverable incorporating validation error feedback and re-validates."""
-    db = get_mongo_db()
     user_uid = user.get("uid") or user.get("userId") or user.get("firebaseUid")
     if not user_uid:
         raise HTTPException(status_code=401, detail="Authentication required.")
 
-    if db is None:
-        raise HTTPException(status_code=500, detail="Database connection unavailable.")
-
-    proj = db.projects.find_one(_project_filter(project_id, user_uid))
+    proj_repo = get_repository("projects")
+    proj = proj_repo.find_one(_project_filter(project_id, user_uid), projection={"_id": 0})
     if proj is None:
         raise HTTPException(status_code=403, detail="Project not found or access denied.")
 
-    old_deliv = db.deliverables.find_one({"_id": deliverable_id, "projectId": project_id})
+    deliv_repo = get_repository("deliverables")
+    old_deliv = deliv_repo.find_one(
+        {"$or": [{"id": deliverable_id}, {"deliverableId": deliverable_id}], "projectId": project_id},
+        projection={"_id": 0},
+    )
     if not old_deliv:
         raise HTTPException(status_code=404, detail="Deliverable not found.")
 
     source_id = old_deliv.get("sourceId")
     uckr_version = old_deliv.get("uckrVersion", 1)
-    uckr_doc = db.uckr.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version})
+    uckr_repo = get_repository("uckr")
+    uckr_doc = uckr_repo.find_one({"projectId": project_id, "sourceId": source_id, "version": uckr_version}, projection={"_id": 0})
     if not uckr_doc:
         raise HTTPException(status_code=404, detail="Canonical UCKR not found for regeneration.")
 
@@ -244,9 +238,9 @@ def regenerate_deliverable_with_feedback(
     # Re-validate the newly generated deliverable
     val_res = validate_single_deliverable(uckr_doc, new_deliv.model_dump(by_alias=True))
 
-    # Update existing deliverable in MongoDB
-    db.deliverables.update_one(
-        {"_id": deliverable_id},
+    # Update existing deliverable in repository
+    deliv_repo.update_one(
+        {"$or": [{"id": deliverable_id}, {"deliverableId": deliverable_id}]},
         {"$set": {
             "content": new_deliv.content,
             "usedFactIds": new_deliv.usedFactIds,
@@ -264,3 +258,4 @@ def regenerate_deliverable_with_feedback(
         "content": new_deliv.content,
         "validation": val_res.model_dump(),
     }
+

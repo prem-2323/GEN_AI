@@ -27,6 +27,5 @@ async def health():
         "status": "healthy",
         "name": settings.app_name,
         "environment": settings.environment,
-        "firebaseProjectId": settings.firebase_project_id,
-        "mongoDb": settings.mongodb_db_name,
     }
+

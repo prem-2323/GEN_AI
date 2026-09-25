@@ -1,15 +1,14 @@
-"""Export Service — governance, generation, GridFS persistence, and lineage tracking (Phase 10)."""
+"""Export Service — governance, generation, file persistence, and lineage tracking (Phase 10)."""
 from __future__ import annotations
 
 import logging
 import uuid
 from typing import Any, Dict, List, Optional
 from fastapi import HTTPException
-from pymongo import DESCENDING
 
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
+from ...storage.service import save_output
 from ...utils.helpers import utcnow_iso
-from ..storage.gridfs_service import upload_gridfs_file, download_gridfs_file, delete_gridfs_file
 from .export_manager import get_export_manager
 from .schemas import ExportRecord
 
@@ -17,11 +16,11 @@ log = logging.getLogger("gen-transform.export.service")
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def _deliv_filter(deliverable_id: str, uid: str, project_id: Optional[str] = None) -> dict:
-    match_id = {"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}, {"_id": deliverable_id}]}
+    match_id = {"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]}
     match_owner = _owner_filter(uid)
     clauses = [match_id, match_owner]
     if project_id:
@@ -37,16 +36,16 @@ async def export_deliverable_artifact(
     require_approval: bool = False,
     custom_title: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Governance pipeline to export a deliverable into a downloadable file stored in GridFS."""
-    db = get_mongo_db()
+    """Governance pipeline to export a deliverable into a downloadable file stored in file storage."""
     fmt = fmt.lower().strip(".")
 
     # 1. Load deliverable & verify ownership
-    deliv = db["deliverables"].find_one(_deliv_filter(deliverable_id, uid, project_id), {"_id": 0})
+    deliv_repo = get_repository("deliverables")
+    deliv = deliv_repo.find_one(_deliv_filter(deliverable_id, uid, project_id), projection={"_id": 0})
     if not deliv:
-        deliv = db["deliverables"].find_one(_deliv_filter(deliverable_id, uid), {"_id": 0})
+        deliv = deliv_repo.find_one(_deliv_filter(deliverable_id, uid), projection={"_id": 0})
     if not deliv:
-        other = db["deliverables"].find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}, {"_id": deliverable_id}]})
+        other = deliv_repo.find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]}, projection={"_id": 0})
         if other:
             raise HTTPException(status_code=403, detail="Access denied. You do not own this deliverable.")
         raise HTTPException(status_code=404, detail="Deliverable not found.")
@@ -56,14 +55,15 @@ async def export_deliverable_artifact(
 
     # 2. Load associated UCKR knowledge base for lineage
     uckr_v = deliv.get("uckrVersion", 1)
-    uckr = db["uckr"].find_one(
+    uckr_repo = get_repository("uckr")
+    uckr = uckr_repo.find_one(
         {"$and": [{"projectId": project_id}, {"version": uckr_v}, _owner_filter(uid)]},
-        {"_id": 0},
+        projection={"_id": 0},
     )
     if not uckr:
-        uckr = db["uckr"].find_one(
+        uckr = uckr_repo.find_one(
             {"$and": [{"projectId": project_id}, _owner_filter(uid)]},
-            sort=[("version", DESCENDING)],
+            sort=[("version", -1)],
             projection={"_id": 0},
         )
 
@@ -71,8 +71,10 @@ async def export_deliverable_artifact(
     if require_approval:
         is_approved = bool((deliv.get("approval") or {}).get("approved", False))
         if not is_approved:
-            qual = db["quality"].find_one(
-                {"$or": [{"deliverableId": deliv_id}, {"id": deliv_id}, {"deliverableId": deliverable_id}]}
+            qual_repo = get_repository("quality")
+            qual = qual_repo.find_one(
+                {"$or": [{"deliverableId": deliv_id}, {"id": deliv_id}]},
+                projection={"_id": 0},
             )
             if qual and qual.get("approval", {}).get("approved", False):
                 is_approved = True
@@ -95,27 +97,24 @@ async def export_deliverable_artifact(
         log.error("Failed to generate export %s for %s: %s", fmt, deliv_id, exc)
         raise HTTPException(status_code=500, detail=f"Export generation failed: {exc}")
 
-    # 5. Persist binary into MongoDB GridFS
-    file_id = upload_gridfs_file(
+    # 5. Persist binary into FileStorage
+    file_id, rel_path = save_output(
         uid=uid,
         project_id=project_id,
         filename=filename,
         data=file_bytes,
-        content_type=mime_type,
-        file_type="export",
         deliverable_id=deliv_id,
-        source_id=deliv.get("sourceId"),
-        extra_meta={"exportFormat": fmt, "uckrVersion": uckr_v},
+        export_type=fmt,
     )
 
-    # 6. Save metadata to MongoDB `exports` collection
+    # 6. Save metadata to `exports` repository
     export_id = f"exp_{deliv_id}_{fmt}_{uuid.uuid4().hex[:6]}"
     now = utcnow_iso()
     export_doc = {
-        "_id": export_id,
         "exportId": export_id,
-        "firebaseUid": uid,
+        "id": export_id,
         "userId": uid,
+        "firebaseUid": uid,
         "projectId": project_id,
         "sourceId": deliv.get("sourceId"),
         "deliverableId": deliv_id,
@@ -126,36 +125,38 @@ async def export_deliverable_artifact(
         "mimeType": mime_type,
         "fileId": file_id,
         "fileSize": len(file_bytes),
+        "storagePath": rel_path,
         "status": "completed",
         "createdAt": now,
         "updatedAt": now,
     }
 
-    db["exports"].update_one(
+    exports_repo = get_repository("exports")
+    exports_repo.update_one(
         {"exportId": export_id},
-        {"$set": {k: v for k, v in export_doc.items() if k != "_id"}, "$setOnInsert": {"_id": export_id}},
+        {"$set": export_doc},
         upsert=True,
     )
 
     # Update deliverable record with latest export link
-    db["deliverables"].update_one(
+    deliv_repo.update_one(
         {"$or": [{"deliverableId": deliv_id}, {"id": deliv_id}]},
         {"$set": {f"exports.{fmt}": file_id, "latestExportId": export_id, "updatedAt": now}},
     )
 
-    log.info("Completed Phase 10 export: id=%s deliv=%s fmt=%s gridfs_fileId=%s bytes=%d", export_id, deliv_id, fmt, file_id, len(file_bytes))
+    log.info("Completed Phase 10 export: id=%s deliv=%s fmt=%s fileId=%s bytes=%d", export_id, deliv_id, fmt, file_id, len(file_bytes))
     return export_doc
 
 
 def get_export_record(project_id: str, export_id: str, uid: str) -> Dict[str, Any]:
     """Retrieve metadata of a specific export."""
-    db = get_mongo_db()
-    doc = db["exports"].find_one(
-        {"$and": [{"exportId": export_id}, _owner_filter(uid)]},
-        {"_id": 0},
+    exports_repo = get_repository("exports")
+    doc = exports_repo.find_one(
+        {"$and": [{"$or": [{"exportId": export_id}, {"id": export_id}]}, _owner_filter(uid)]},
+        projection={"_id": 0},
     )
     if not doc:
-        other = db["exports"].find_one({"exportId": export_id})
+        other = exports_repo.find_one({"$or": [{"exportId": export_id}, {"id": export_id}]}, projection={"_id": 0})
         if other:
             raise HTTPException(status_code=403, detail="Access denied. You do not own this export.")
         raise HTTPException(status_code=404, detail="Export record not found.")
@@ -164,44 +165,45 @@ def get_export_record(project_id: str, export_id: str, uid: str) -> Dict[str, An
 
 def list_project_exports(project_id: str, uid: str, limit: int = 50) -> List[Dict[str, Any]]:
     """List all exports for a project."""
-    db = get_mongo_db()
-    cursor = db["exports"].find(
+    exports_repo = get_repository("exports")
+    return exports_repo.find(
         {"$and": [{"projectId": project_id}, _owner_filter(uid)]},
-        {"_id": 0},
-    ).sort("createdAt", DESCENDING).limit(limit)
-    return list(cursor)
+        sort=[("createdAt", -1)],
+        limit=limit,
+        projection={"_id": 0},
+    )
 
 
 def approve_deliverable(project_id: str, deliverable_id: str, uid: str) -> Dict[str, Any]:
     """Mark a deliverable as approved in both deliverables and quality collections."""
-    db = get_mongo_db()
-    deliv = db["deliverables"].find_one(_deliv_filter(deliverable_id, uid, project_id), {"_id": 0})
+    deliv_repo = get_repository("deliverables")
+    deliv = deliv_repo.find_one(_deliv_filter(deliverable_id, uid, project_id), projection={"_id": 0})
     if not deliv:
-        deliv = db["deliverables"].find_one(_deliv_filter(deliverable_id, uid), {"_id": 0})
+        deliv = deliv_repo.find_one(_deliv_filter(deliverable_id, uid), projection={"_id": 0})
     if not deliv:
         raise HTTPException(status_code=404, detail="Deliverable not found.")
 
     deliv_id = deliv.get("deliverableId") or deliv.get("id") or deliverable_id
     now = utcnow_iso()
-    
-    db["deliverables"].update_one(
-        {"$or": [{"_id": deliv_id}, {"deliverableId": deliv_id}, {"id": deliv_id}]},
+
+    deliv_repo.update_one(
+        {"$or": [{"deliverableId": deliv_id}, {"id": deliv_id}]},
         {"$set": {"approval": {"status": "approved", "approved": True, "approvedAt": now}, "updatedAt": now}},
     )
-    db["quality"].update_one(
-        {"$or": [{"_id": deliv_id}, {"deliverableId": deliv_id}, {"id": deliv_id}]},
+    qual_repo = get_repository("quality")
+    qual_repo.update_one(
+        {"$or": [{"deliverableId": deliv_id}, {"id": deliv_id}]},
         {
             "$set": {
                 "deliverableId": deliv_id,
                 "id": deliv_id,
                 "projectId": project_id,
-                "firebaseUid": uid,
                 "userId": uid,
+                "firebaseUid": uid,
                 "approval": {"status": "approved", "approved": True, "approvedAt": now},
                 "updatedAt": now,
             },
             "$setOnInsert": {
-                "_id": f"qual_{deliv_id}",
                 "qualityId": f"qual_{deliv_id}",
                 "createdAt": now,
             },
@@ -209,3 +211,4 @@ def approve_deliverable(project_id: str, deliverable_id: str, uid: str) -> Dict[
         upsert=True,
     )
     return {"ok": True, "deliverableId": deliv_id, "approved": True, "approvedAt": now}
+

@@ -1,7 +1,7 @@
 """Export engine (Phase 10) — deliverable content -> real files.
 
-MongoDB stores the content; storage holds the actual files:
-    storage/outputs/{uid}/{projectId}/{deliverableId}.{md,json,pptx}
+Storage holds the actual files:
+    storage/documents/{projectId}/generated/{deliverableId}.{md,json,pptx}
 The `storagePath` is recorded back on the deliverable document.
 """
 from __future__ import annotations
@@ -12,15 +12,15 @@ from typing import Any
 
 from fastapi import HTTPException
 
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
+from ...storage.service import save_output
 from ...utils.helpers import utcnow_iso
-from ..storage.storage_service import save_output
 
 log = logging.getLogger("gen-transform.export")
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def _to_markdown(dtype: str, content: dict) -> str:
@@ -85,14 +85,15 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
     fmt = fmt.lower()
     if fmt not in ("md", "json", "pptx"):
         raise HTTPException(status_code=422, detail="Format must be one of: md, json, pptx.")
-    db = get_mongo_db()
-    doc = db["deliverables"].find_one({"deliverableId": deliverable_id, **_owner_filter(uid)})
+
+    deliv_repo = get_repository("deliverables")
+    doc = deliv_repo.find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}], **_owner_filter(uid)}, projection={"_id": 0})
     if not doc:
-        other = db["deliverables"].find_one({"deliverableId": deliverable_id}, {"deliverableId": 1})
+        other = deliv_repo.find_one({"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]}, projection={"_id": 0})
         if other:
             raise HTTPException(status_code=403, detail="Access denied. You do not own this deliverable.")
         raise HTTPException(status_code=404, detail="Deliverable not found.")
-    doc.pop("_id", None)
+
     get_project(doc["projectId"], uid)
 
     dtype = doc.get("type", "output")
@@ -105,7 +106,7 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
         data = _to_markdown(dtype, content if isinstance(content, dict) else {"text": content}).encode("utf-8")
 
     file_id, rel = save_output(uid, doc["projectId"], f"{deliverable_id}.{fmt}", data, deliverable_id=deliverable_id, export_type=fmt)
-    
+
     export_id = f"exp_{deliverable_id}_{fmt}"
     mime_map = {
         "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -117,8 +118,9 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
         "mp4": "video/mp4",
     }
     export_doc = {
-        "_id": export_id,
         "exportId": export_id,
+        "id": export_id,
+        "userId": uid,
         "firebaseUid": uid,
         "projectId": doc["projectId"],
         "sourceId": doc.get("sourceId"),
@@ -132,17 +134,19 @@ def export_deliverable(uid: str, deliverable_id: str, fmt: str = "md") -> dict:
         "storagePath": rel,
         "createdAt": utcnow_iso(),
     }
-    db["exports"].update_one(
-        {"exportId": export_id, "$or": [{"firebaseUid": uid}, {"userId": uid}]},
+    exports_repo = get_repository("exports")
+    exports_repo.update_one(
+        {"exportId": export_id},
         {"$set": export_doc},
         upsert=True,
     )
 
-    db["deliverables"].update_one(
-        {"deliverableId": deliverable_id},
+    deliv_repo.update_one(
+        {"$or": [{"deliverableId": deliverable_id}, {"id": deliverable_id}]},
         {"$set": {"storagePath": rel, "fileId": file_id, "updatedAt": utcnow_iso(),
                   f"exports.{fmt}": rel}},
     )
-    log.info("exported %s as %s -> %s (gridfs_id=%s)", deliverable_id, fmt, rel, file_id)
+    log.info("exported %s as %s -> %s (file_id=%s)", deliverable_id, fmt, rel, file_id)
     return {"ok": True, "deliverableId": deliverable_id, "format": fmt,
             "storagePath": rel, "fileId": file_id, "bytes": len(data)}
+

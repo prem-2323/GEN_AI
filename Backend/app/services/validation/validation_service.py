@@ -2,7 +2,7 @@
 the UCKR it was generated from. Nothing is hardcoded: all scores are
 computed from text overlap between deliverable content and UCKR facts.
 
-Persisted to MongoDB `validations`:
+Persisted to `validations` repository:
 {projectId, uckrVersion, results{factPreservation, citationCoverage,
  unsupportedClaims, inconsistencies}, status: pass|warning|fail, checkedAt}
 """
@@ -14,9 +14,7 @@ import uuid
 from typing import Any
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
 
 log = logging.getLogger("gen-transform.validation")
@@ -89,13 +87,16 @@ def validate_project(uid: str, project_id: str) -> dict:
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    db = get_mongo_db()
-    filt_owner = {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
-    uckr = db["uckr"].find_one({"projectId": project_id, **filt_owner}, sort=[("version", DESCENDING)])
+    filt_owner = {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
+
+    uckr_repo = get_repository("uckr")
+    uckr = uckr_repo.find_one({"projectId": project_id, **filt_owner}, sort=[("version", -1)], projection={"_id": 0})
     if not uckr:
         raise HTTPException(status_code=404, detail="No UCKR found — run analysis first.")
-    deliverables = list(db["deliverables"].find(
-        {"projectId": project_id, "uckrVersion": uckr.get("version"), **filt_owner}, {"_id": 0}))
+
+    deliv_repo = get_repository("deliverables")
+    deliverables = deliv_repo.find(
+        {"projectId": project_id, "uckrVersion": uckr.get("version"), **filt_owner}, projection={"_id": 0})
     if not deliverables:
         raise HTTPException(status_code=404, detail="No deliverables for the current UCKR version.")
 
@@ -109,10 +110,10 @@ def validate_project(uid: str, project_id: str) -> dict:
     now = utcnow_iso()
     val_id = f"val-{uuid.uuid4().hex[:12]}"
     doc = {
-        "_id": val_id,
+        "id": val_id,
         "validationId": val_id,
-        "firebaseUid": uid,
         "userId": uid,
+        "firebaseUid": uid,
         "projectId": project_id,
         "sourceId": uckr.get("sourceId", ""),
         "uckrId": uckr.get("uckrId") or uckr.get("id", ""),
@@ -125,10 +126,11 @@ def validate_project(uid: str, project_id: str) -> dict:
         "checkedAt": now,
         "createdAt": now,
     }
-    db["validations"].insert_one({**doc})
-    doc.pop("_id", None)
+    val_repo = get_repository("validations")
+    val_repo.insert_one(doc)
 
-    # Save Phase 9 Quality collection entries for each deliverable
+    # Save Quality repository entries for each deliverable
+    qual_repo = get_repository("quality")
     for d, pt in zip(deliverables, per_type):
         did = d.get("deliverableId") or d.get("id", "")
         if not did:
@@ -142,8 +144,9 @@ def validate_project(uid: str, project_id: str) -> dict:
         overall = round((fp + cc + consistency + grounding + completeness) / 5, 1)
 
         qual_doc = {
-            "_id": qual_id,
             "qualityId": qual_id,
+            "id": qual_id,
+            "userId": uid,
             "firebaseUid": uid,
             "projectId": project_id,
             "deliverableId": did,
@@ -161,8 +164,8 @@ def validate_project(uid: str, project_id: str) -> dict:
             },
             "createdAt": now,
         }
-        db["quality"].update_one(
-            {"deliverableId": did, "$or": [{"firebaseUid": uid}, {"userId": uid}]},
+        qual_repo.update_one(
+            {"deliverableId": did, "$or": [{"userId": uid}, {"firebaseUid": uid}]},
             {"$set": qual_doc},
             upsert=True,
         )
@@ -175,10 +178,13 @@ def list_validations(uid: str, project_id: str, limit: int = 20) -> list[dict]:
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    cur = get_mongo_db()["validations"].find(
-        {"projectId": project_id, "$or": [{"firebaseUid": uid}, {"userId": uid}]}, {"_id": 0}
-    ).sort("checkedAt", DESCENDING).limit(limit)
-    return list(cur)
+    val_repo = get_repository("validations")
+    return val_repo.find(
+        {"projectId": project_id, "$or": [{"userId": uid}, {"firebaseUid": uid}]},
+        sort=[("checkedAt", -1)],
+        limit=limit,
+        projection={"_id": 0},
+    )
 
 
 # --- legacy shim (kept for old route shape) ---
@@ -188,6 +194,6 @@ def validate_deliverable(deliverable_type: str, content: Any, source_text: str) 
     res = check_deliverable({"facts": facts}, deliverable_type, content or {})
     return {"valid": res["factPreservation"] >= 50 and res["unsupportedClaims"] == 0,
             "groundingScore": round(res["factPreservation"] / 100, 3),
-            "issues": ([f"unsupported claims: {res['unsupportedClaims']}" ] if res["unsupportedClaims"] else [])
+            "issues": ([f"unsupported claims: {res['unsupportedClaims']}"] if res["unsupportedClaims"] else [])
                       + ([f"unverifiable numbers: {res['inconsistencies'][:5]}"] if res["inconsistencies"] else []),
             "metrics": res}

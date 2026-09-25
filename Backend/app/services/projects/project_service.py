@@ -1,4 +1,4 @@
-"""Project service — CRUD with strict Firebase UID ownership and Firestore persistence."""
+"""Project service — CRUD with application-level user ownership and database-independent repository."""
 from __future__ import annotations
 
 import logging
@@ -7,8 +7,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import HTTPException
-from ...config.firebase import get_firestore_db
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 
 log = logging.getLogger("gen-transform.project_service")
 
@@ -71,79 +70,24 @@ def create_project(data: dict, uid: str) -> dict:
         if k not in known:
             doc[k] = v
 
-    # 1. Firestore persistence
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            fs.collection("projects").document(pid).set(doc)
-        except Exception as exc:
-            log.warning("Firestore save failed: %s", exc)
-
-    # 2. MongoDB Atlas persistence
-    try:
-        mongo_db = get_mongo_db()
-        mongo_db["projects"].update_one(
-            {"id": pid},
-            {"$set": doc},
-            upsert=True,
-        )
-    except Exception as exc:
-        log.warning("MongoDB projects save fallback: %s", exc)
+    repo = get_repository("projects")
+    repo.update_one({"id": pid}, {"$set": doc}, upsert=True)
 
     return _doc_to_out(pid, doc)
 
 
 def list_projects(uid: str, limit: int = 50) -> List[dict]:
-    """List projects owned by the user (User A sees only User A projects)."""
-    projects = []
-
-    # 1. Try Firestore first
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            query = fs.collection("projects").where("userId", "==", uid).limit(limit).stream()
-            for d in query:
-                data = d.to_dict()
-                projects.append(_doc_to_out(d.id, data))
-            if projects:
-                projects.sort(key=lambda p: p.get("updatedAt", ""), reverse=True)
-                return projects
-        except Exception as exc:
-            log.warning("Firestore list query failed: %s", exc)
-
-    # 2. Try MongoDB Atlas
-    try:
-        mongo_db = get_mongo_db()
-        cursor = mongo_db["projects"].find({"userId": uid}, {"_id": 0}).sort("updatedAt", -1).limit(limit)
-        for doc in cursor:
-            projects.append(_doc_to_out(doc.get("id") or doc.get("projectId"), doc))
-    except Exception as exc:
-        log.warning("MongoDB list projects failed: %s", exc)
-
-    return projects
+    """List projects owned by the user."""
+    repo = get_repository("projects")
+    query = {"$or": [{"userId": uid}, {"firebaseUid": uid}]} if uid else {}
+    docs = repo.find(query, sort=[("updatedAt", -1)], limit=limit, projection={"_id": 0})
+    return [_doc_to_out(doc.get("id") or doc.get("projectId"), doc) for doc in docs]
 
 
 def get_project(pid: str, uid: str) -> dict:
     """Retrieve a single project, verifying ownership."""
-    doc: Optional[dict] = None
-
-    # 1. Check Firestore
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            snap = fs.collection("projects").document(pid).get()
-            if snap.exists:
-                doc = snap.to_dict()
-        except Exception as exc:
-            log.warning("Firestore get project failed: %s", exc)
-
-    # 2. Check MongoDB Atlas if not found
-    if doc is None:
-        try:
-            mongo_db = get_mongo_db()
-            doc = mongo_db["projects"].find_one({"$or": [{"id": pid}, {"projectId": pid}]}, {"_id": 0})
-        except Exception as exc:
-            log.warning("MongoDB get project failed: %s", exc)
+    repo = get_repository("projects")
+    doc = repo.find_one({"$or": [{"id": pid}, {"projectId": pid}]}, projection={"_id": 0})
 
     if not doc:
         if pid in ("proj_default", "default") or pid.startswith("proj-") or pid.startswith("proj_"):
@@ -159,10 +103,12 @@ def get_project(pid: str, uid: str) -> dict:
                 "createdAt": _now(),
                 "updatedAt": _now(),
             }
+            repo.update_one({"id": pid}, {"$set": doc}, upsert=True)
         else:
             raise HTTPException(status_code=404, detail="Project not found.")
 
-    if doc.get("userId") and doc.get("userId") != uid and uid not in ("local_dev_user", "anonymous"):
+    doc_owner = doc.get("userId") or doc.get("firebaseUid")
+    if doc_owner and doc_owner != uid and uid not in ("local_dev_user", "anonymous"):
         raise HTTPException(status_code=403, detail="Access denied. You do not own this project.")
 
     return _doc_to_out(pid, doc)
@@ -175,6 +121,7 @@ def update_project(pid: str, patch: dict, uid: str) -> dict:
 
     cleaned = {k: v for k, v in patch.items() if v is not None}
     cleaned.pop("userId", None)  # Cannot reassign owner
+    cleaned.pop("firebaseUid", None)
     cleaned.pop("id", None)
     cleaned.pop("projectId", None)
 
@@ -184,24 +131,8 @@ def update_project(pid: str, patch: dict, uid: str) -> dict:
     updated["projectName"] = pn
     updated["title"] = title
 
-    # Save to Firestore
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            fs.collection("projects").document(pid).set(updated, merge=True)
-        except Exception as exc:
-            log.warning("Firestore update failed: %s", exc)
-
-    # Save to MongoDB
-    try:
-        mongo_db = get_mongo_db()
-        mongo_db["projects"].update_one(
-            {"$or": [{"id": pid}, {"projectId": pid}]},
-            {"$set": updated},
-            upsert=True,
-        )
-    except Exception as exc:
-        log.warning("MongoDB update failed: %s", exc)
+    repo = get_repository("projects")
+    repo.update_one({"$or": [{"id": pid}, {"projectId": pid}]}, {"$set": updated}, upsert=True)
 
     return _doc_to_out(pid, updated)
 
@@ -210,22 +141,14 @@ def delete_project(pid: str, uid: str) -> bool:
     """Delete project after ownership verification (cascades to pipeline data)."""
     get_project(pid, uid)  # Will raise 404 or 403 if invalid
 
-    fs = get_firestore_db()
-    if fs is not None:
-        try:
-            fs.collection("projects").document(pid).delete()
-        except Exception as exc:
-            log.warning("Firestore delete failed: %s", exc)
+    repo = get_repository("projects")
+    repo.delete_many({"$or": [{"id": pid}, {"projectId": pid}]})
 
-    try:
-        mongo_db = get_mongo_db()
-        mongo_db["projects"].delete_many({"$or": [{"id": pid}, {"projectId": pid}]})
-        # Cascade: remove this owner's pipeline data for the project (no orphans).
-        owner = {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
-        for col in ("sources", "uckr", "deliverables", "validations", "jobs"):
-            mongo_db[col].delete_many({"$and": [{"projectId": pid}, owner]})
-    except Exception as exc:
-        log.warning("MongoDB delete failed: %s", exc)
+    # Cascade: remove this owner's pipeline data for the project
+    owner = {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
+    for col_name in ("sources", "uckr", "deliverables", "validations", "jobs", "extracted_content", "analysis", "quality", "exports"):
+        col_repo = get_repository(col_name)
+        col_repo.delete_many({"$and": [{"projectId": pid}, owner]})
 
     return True
 
@@ -233,29 +156,15 @@ def delete_project(pid: str, uid: str) -> bool:
 def get_project_workspace(pid: str, uid: str) -> dict:
     """Retrieve the unified project workspace aggregating all persistence collections."""
     proj = get_project(pid, uid)
-    mongo_db = get_mongo_db()
-    owner_filter = {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
-    
-    sources = list(mongo_db["sources"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    extracted = list(mongo_db["extracted_content"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    analysis = list(mongo_db["analysis"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    uckr = list(mongo_db["uckr"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    deliverables = list(mongo_db["deliverables"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    validations = list(mongo_db["validations"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    quality = list(mongo_db["quality"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    exports = list(mongo_db["exports"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
-    jobs = list(mongo_db["jobs"].find({"projectId": pid, **owner_filter}, {"_id": 0}))
+    owner_filter = {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
-    return {
-        "project": proj,
-        "sources": sources,
-        "extracted_content": extracted,
-        "analysis": analysis,
-        "uckr": uckr,
-        "deliverables": deliverables,
-        "validations": validations,
-        "quality": quality,
-        "exports": exports,
-        "jobs": jobs,
-    }
+    cols = ("sources", "extracted_content", "analysis", "uckr", "deliverables", "validations", "quality", "exports", "jobs")
+    workspace_data = {"project": proj}
+
+    for col in cols:
+        col_repo = get_repository(col)
+        workspace_data[col] = col_repo.find({"projectId": pid, **owner_filter}, projection={"_id": 0})
+
+    return workspace_data
+
 

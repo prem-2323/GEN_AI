@@ -11,9 +11,7 @@ import uuid
 from typing import Any, Optional
 
 from fastapi import HTTPException
-from pymongo import DESCENDING
-
-from ...config.mongo import get_mongo_db
+from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
 from ..uckr import pipeline_uckr as uckr_service
 
@@ -24,7 +22,7 @@ VALID_TYPES = ("linkedin", "twitter", "advisory", "executive_summary",
 
 
 def _owner_filter(uid: str) -> dict:
-    return {"$or": [{"firebaseUid": uid}, {"userId": uid}]}
+    return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
 def _top(uckr: dict, key: str, n: int) -> list[dict]:
@@ -126,13 +124,13 @@ def generate(
     if dtype not in VALID_TYPES:
         raise HTTPException(status_code=422, detail=f"Unknown type. Valid: {list(VALID_TYPES)}.")
     project = get_project(project_id, uid)
+    uckr_repo = get_repository("uckr")
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if uckr_version is not None:
         filt["version"] = uckr_version
-    uckr = get_mongo_db()["uckr"].find_one(filt, sort=[("version", DESCENDING)])
+    uckr = uckr_repo.find_one(filt, sort=[("version", -1)], projection={"_id": 0})
     if not uckr:
         raise HTTPException(status_code=404, detail="No UCKR found — run analysis first.")
-    uckr.pop("_id", None)
 
     content = _gen(dtype, uckr, config or {})
     _mark_used(uckr, dtype)
@@ -144,11 +142,10 @@ def generate(
         if f.get("factId") or f.get("id")
     ]
     doc = {
-        "_id": deliv_id,
         "id": deliv_id,
         "deliverableId": deliv_id,
-        "firebaseUid": uid,
         "userId": uid,
+        "firebaseUid": uid,
         "projectId": project_id,
         "sourceId": uckr.get("sourceId", ""),
         "uckrVersion": uckr.get("version", 1),
@@ -162,15 +159,13 @@ def generate(
         "createdAt": now,
         "updatedAt": now,
     }
-    col = get_mongo_db()["deliverables"]
-    col.update_one({"_id": deliv_id}, {"$set": doc}, upsert=True)
-    # record grounding usage on the UCKR
-    get_mongo_db()["uckr"].update_one(
+    deliv_repo = get_repository("deliverables")
+    deliv_repo.update_one({"id": deliv_id}, {"$set": doc}, upsert=True)
+    uckr_repo.update_one(
         {"uckrId": uckr.get("uckrId")}, {"$set": {"facts": uckr.get("facts", [])}}
     )
-    res_doc = {**doc}
     log.info("deliverable generated project=%s type=%s uckrV=%s", project_id, dtype, doc["uckrVersion"])
-    return res_doc
+    return doc
 
 
 def generate_many(uid: str, project_id: str, types: list[str], config: Optional[dict] = None) -> list[dict]:
@@ -178,13 +173,13 @@ def generate_many(uid: str, project_id: str, types: list[str], config: Optional[
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    uckr = get_mongo_db()["uckr"].find_one(
-        {"projectId": project_id, **_owner_filter(uid)}, sort=[("version", DESCENDING)]
+    uckr_repo = get_repository("uckr")
+    uckr = uckr_repo.find_one(
+        {"projectId": project_id, **_owner_filter(uid)}, sort=[("version", -1)], projection={"_id": 0}
     )
     if not uckr:
         raise HTTPException(status_code=404, detail="No UCKR found — run analysis first.")
     out = [generate(uid, project_id, int(uckr.get("version", 1)), t, config) for t in types]
-    # also update the project's embedded deliverables snapshot for the frontend
     try:
         from ..projects.project_service import update_project
 
@@ -199,10 +194,8 @@ def list_deliverables(uid: str, project_id: str) -> list[dict]:
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
-    cur = get_mongo_db()["deliverables"].find(
-        {"projectId": project_id, **_owner_filter(uid)}, {"_id": 0}
-    ).sort("createdAt", DESCENDING)
-    return list(cur)
+    deliv_repo = get_repository("deliverables")
+    return deliv_repo.find({"projectId": project_id, **_owner_filter(uid)}, sort=[("createdAt", -1)], projection={"_id": 0})
 
 
 # --- legacy shim (kept for old route shape) ---
@@ -221,3 +214,4 @@ def run_pipeline(source: dict, config: dict, selected_outputs: list) -> dict:
             deliverables[t] = _gen(t, uckr, config or {})
     return {"status": "completed", "deliverables": deliverables,
             "analysis": {"summary": analysis.get("summary", "")}, "uckr": uckr}
+
