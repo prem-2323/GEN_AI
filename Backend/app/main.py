@@ -135,6 +135,8 @@ app.include_router(models_router)
 app.include_router(distillation_router)
 app.include_router(active_params_router, prefix="/api/active-params", tags=["Active Parameters"])
 app.include_router(transformation_engine_router)
+from .api.routes.provenance import router as provenance_router
+app.include_router(provenance_router)
 
 
 
