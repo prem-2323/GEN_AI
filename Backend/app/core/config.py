@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     # Development Flags
     dev_bypass_auth: bool = True
 
+    # Neo4j Graph Database Configuration (Phase 5)
+    neo4j_uri: str = "bolt://localhost:7687"
+    neo4j_username: str = "neo4j"
+    neo4j_password: str = "password"
+    neo4j_database: str = "neo4j"
+    neo4j_enabled: bool = True
+
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
         env_file_encoding="utf-8",

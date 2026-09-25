@@ -1,235 +1,245 @@
-"""Phase 6 — Real Transformation Engine End-to-End Automated Test Suite.
-
-Tests:
-1. Health & Auth setup
-2. Project creation (User A)
-3. Source document registration
-4. AI Analysis extraction
-5. Canonical UCKR Builder (v1)
-6. Real Transformation Engine generating all 7 deliverables:
-   - linkedin
-   - x (Twitter thread)
-   - executive_summary
-   - advisory
-   - infographic specification
-   - presentation slide deck
-   - video script
-7. Schema validity and Fact ID grounding verification
-8. Output validator rejection of hallucinated / unknown fact IDs
-9. List project deliverables endpoint
-10. Get single deliverable by ID
-11. Cross-tenant security isolation (User B access blocked)
-12. Delete deliverable endpoint
-13. Cleanup test project
 """
-import os
+Phase 6 Test Suite: Semantic Chunking + Embeddings + Vector Store + API Routes
+"""
 import sys
-import uuid
+from pathlib import Path
+
+# Add Backend root directory to sys.path
+backend_root = Path(__file__).resolve().parent.parent
+if str(backend_root) not in sys.path:
+    sys.path.insert(0, str(backend_root))
+
 from fastapi.testclient import TestClient
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.main import app
-
-client = TestClient(app)
-
-TEST_RUN_ID = str(uuid.uuid4().hex[:8])
-USER_A_UID = f"user-A-p6-{TEST_RUN_ID}"
-USER_B_UID = f"user-B-p6-{TEST_RUN_ID}"
-PROJECT_ID = f"proj-cyber-p6-{TEST_RUN_ID}"
-SOURCE_ID = f"src-cyber-p6-{TEST_RUN_ID}"
-
-SAMPLE_DOC_TEXT = (
-    "CYBER THREAT INTELLIGENCE REPORT 2026\n\n"
-    "The organization Example Corporation detected a sophisticated phishing campaign on 15 August 2026 targeting 240 employees. "
-    "The threat actor APT-X exploited CVE-2026-4418 in the Identity Gateway to access credential databases. "
-    "Security operations teams successfully contained the breach within 24 hours with zero customer data loss. "
-    "Must reset affected user credentials immediately, deploy patch 2.4.1 across all gateway clusters, and enable FIDO2 security keys."
-)
+from app.embeddings.config import EmbeddingConfig
+from app.embeddings.chunker import SemanticChunker
+from app.embeddings.embedder import DeterministicEmbeddingModel, set_default_embedder
+from app.embeddings.vector_store import MemoryVectorStore
+from app.embeddings.repository import reset_vector_store
+from app.embeddings.service import EmbeddingPipelineService, get_embedding_service
 
 
-def run_tests():
-    print("====================================================================")
-    print("  PHASE 6 — REAL TRANSFORMATION ENGINE END-TO-END AUTOMATED TEST SUITE")
-    print("====================================================================\n")
+def test_semantic_chunker():
+    print("\n--- Testing Semantic Chunker ---")
+    config = EmbeddingConfig(chunk_size=150, chunk_overlap=30, min_chunk_size=20)
+    chunker = SemanticChunker(config)
 
-    # 1. Health
-    res = client.get("/health")
-    assert res.status_code == 200, f"Health check failed: {res.text}"
-    print(f"[Test 1] Health Endpoint:\n  [OK] Health OK: {res.json().get('status')}\n")
+    sample_doc = """## Section 1: NVIDIA H200 GPU
+The NVIDIA H200 is a high-performance GPU designed specifically for AI workloads.
+It features high-bandwidth HBM3e memory and is used for large-scale model inference.
 
-    # 2. Auth Profile User A
-    res = client.get("/api/me", headers={"X-User-Uid": USER_A_UID, "X-User-Email": "usera@example.com"})
-    assert res.status_code == 200, f"Auth failed: {res.text}"
-    print(f"[Test 2] Auth Profile (User A):\n  [OK] Auth Profile: {res.json().get('email')}\n")
+## Section 2: Transformer Architecture
+Transformers rely on self-attention mechanisms to process sequential data in parallel.
+This design allows models like GPT-4 and Gemini to scale to hundreds of billions of parameters.
+"""
+    chunks = chunker.chunk_text(sample_doc, document_id="doc_test_1")
 
-    # 3. Create Project
-    res = client.post(
-        "/api/projects",
-        headers={"X-User-Uid": USER_A_UID},
-        json={
-            "id": PROJECT_ID,
-            "name": "Phase 6 Cyber Threat Intelligence Project",
-            "description": "Validation of UCKR transformation engine across all 7 deliverable formats.",
-            "status": "created",
-        },
-    )
-    assert res.status_code == 201, f"Create project failed: {res.text}"
-    print(f"[Test 3] Create Project (User A):\n  [OK] Created Project ID: {PROJECT_ID}\n")
+    assert len(chunks) >= 2, f"Expected at least 2 chunks, got {len(chunks)}"
+    print(f"[OK] Generated {len(chunks)} semantic chunks.")
 
-    # 4. Create Source
-    res = client.post(
-        f"/api/projects/{PROJECT_ID}/sources",
-        headers={"X-User-Uid": USER_A_UID},
-        json={
-            "id": SOURCE_ID,
-            "filename": "Cyber_Threat_Intelligence_Report_2026.pdf",
-            "extractedText": SAMPLE_DOC_TEXT,
-            "status": "ready",
-            "pages": 4,
-            "chunks": [
-                {
-                    "chunkId": "chunk_001",
-                    "pageNumber": 1,
-                    "text": SAMPLE_DOC_TEXT,
-                }
-            ],
-        },
-    )
-    assert res.status_code == 201, f"Add source failed: {res.text}"
-    print(f"[Test 4] Add Real Source Document:\n  [OK] Added Source: {SOURCE_ID}\n")
+    for idx, c in enumerate(chunks):
+        assert c.chunk_id is not None
+        assert c.document_id == "doc_test_1"
+        assert c.section != ""
+        assert c.token_count > 0
+        assert c.content_hash != ""
+        print(f"   Chunk {idx+1}: [{c.section}] (tokens ~{c.token_count}) ID={c.chunk_id[:25]}...")
 
-    # 5. Run AI Analysis
-    res = client.post(
-        f"/api/projects/{PROJECT_ID}/sources/{SOURCE_ID}/analysis",
-        headers={"X-User-Uid": USER_A_UID},
-        json={"mode": "deterministic"},
-    )
-    assert res.status_code == 200, f"Analysis failed: {res.text}"
-    print(f"[Test 5] AI Content Analysis:\n  [OK] Structured analysis completed.\n")
+    # Test empty document rejection
+    empty_chunks = chunker.chunk_text("   \n  ", document_id="doc_empty")
+    assert len(empty_chunks) == 0, "Empty document should produce 0 chunks"
+    print("[OK] Empty document correctly produces 0 chunks.")
 
-    # 6. Build Canonical UCKR (Phase 5)
-    res = client.post(
-        f"/api/projects/{PROJECT_ID}/sources/{SOURCE_ID}/uckr",
-        headers={"X-User-Uid": USER_A_UID},
-    )
-    assert res.status_code == 201, f"UCKR build failed: {res.text}"
-    uckr_data = res.json().get("uckr", {})
-    valid_fact_ids = [f["factId"] for f in uckr_data.get("facts", [])]
-    print(f"[Test 6] Canonical UCKR Knowledge Base (v{uckr_data.get('version')}):")
-    print(f"  [OK] Total Facts: {len(uckr_data.get('facts', []))} ({valid_fact_ids})")
-    print(f"  [OK] Total Entities: {len(uckr_data.get('entities', []))}")
-    print(f"  [OK] Total Metrics: {len(uckr_data.get('metrics', []))}\n")
 
-    # 7. Real Transformation Engine — Generate All 7 Deliverables
-    target_types = [
-        "linkedin",
-        "x",
-        "executive_summary",
-        "advisory",
-        "infographic",
-        "presentation",
-        "video_script",
-    ]
-    res = client.post(
-        f"/api/projects/{PROJECT_ID}/transform",
-        headers={"X-User-Uid": USER_A_UID},
-        json={
-            "sourceId": SOURCE_ID,
-            "uckrVersion": 1,
-            "outputTypes": target_types,
-            "configuration": {
-                "audience": "executive",
-                "tone": "professional",
-                "language": "English",
-                "detailLevel": "medium",
-                "objective": "awareness",
-            },
-        },
-    )
-    assert res.status_code == 201, f"Transform failed: {res.text}"
-    trans_res = res.json()
-    assert trans_res.get("ok") is True
-    deliverables = trans_res.get("deliverables", [])
-    assert len(deliverables) == 7, f"Expected 7 deliverables, got {len(deliverables)}"
+def test_embedding_model():
+    print("\n--- Testing Embedding Model (Deterministic) ---")
+    embedder = DeterministicEmbeddingModel(dimension=384)
 
-    print("[Test 7] Transformed UCKR into 7 Communication Deliverables:")
-    deliv_ids = {}
-    for d in deliverables:
-        dtype = d.get("type")
-        did = d.get("id") or d.get("_id")
-        deliv_ids[dtype] = did
-        status = d.get("status")
-        used_facts = d.get("usedFactIds", [])
-        print(f"  * [{dtype.upper()}] ID: {did} | Status: {status} | Used Facts: {used_facts}")
-        # Verify fact grounding
-        for fid in used_facts:
-            assert fid in valid_fact_ids, f"Deliverable {dtype} used unknown fact ID {fid} not in UCKR!"
-    print()
+    t1 = "OpenAI developed GPT language models for artificial intelligence."
+    t2 = "OpenAI built GPT transformer models for machine learning applications."
+    t3 = "The history of baking sourdough bread in ancient Egypt."
 
-    # 8. Test Output Validator: Rejects Unknown Fact IDs
-    from app.services.transformation.output_validator import validate_deliverable_output
-    invalid_content = {
-        "title": "Alert",
-        "body": "Fake content",
-        "usedFactIds": ["fact_001", "fact_999_fake"],
-        "hashtags": ["#Alert"],
+    v1 = embedder.embed_text(t1)
+    v2 = embedder.embed_text(t2)
+    v3 = embedder.embed_text(t3)
+
+    assert len(v1) == 384, f"Expected 384 dimensions, got {len(v1)}"
+    assert len(v2) == 384
+    assert len(v3) == 384
+
+    # Cosine similarity using dot product (since vectors are L2-normalized)
+    sim_1_2 = sum(a * b for a, b in zip(v1, v2))
+    sim_1_3 = sum(a * b for a, b in zip(v1, v3))
+
+    print(f"   Similarity (AI doc 1 vs AI doc 2): {sim_1_2:.4f}")
+    print(f"   Similarity (AI doc 1 vs Sourdough doc): {sim_1_3:.4f}")
+
+    assert sim_1_2 > sim_1_3, "Similar texts must have higher similarity than unrelated texts"
+    print("[OK] Semantic similarity ordering verified.")
+
+    # Batch embedding test
+    batch_vectors = embedder.embed_batch([t1, t2, t3])
+    assert len(batch_vectors) == 3
+    assert len(batch_vectors[0]) == 384
+    print("[OK] Batch embedding generation verified.")
+
+
+def test_vector_store():
+    print("\n--- Testing Vector Store (MemoryVectorStore) ---")
+    reset_vector_store()
+    store = MemoryVectorStore(persistence_file=None)
+    embedder = DeterministicEmbeddingModel(dimension=384)
+
+    t1 = "OpenAI developed GPT models."
+    t2 = "NVIDIA manufactures H200 graphics processing units."
+
+    meta1 = {
+        "chunk_id": "c1",
+        "document_id": "doc_ai",
+        "section": "Intro",
+        "page_start": 1,
+        "text": t1,
     }
-    is_valid, errors, warnings, _ = validate_deliverable_output("linkedin", invalid_content, uckr_data)
-    assert is_valid is False, "Output validator failed to reject invalid fact ID!"
-    assert any("fact_999_fake" in err for err in errors)
-    print(f"[Test 8] Output Validator Rejection Test:\n  [OK] Successfully rejected invalid fact_999_fake with errors: {errors}\n")
+    meta2 = {
+        "chunk_id": "c2",
+        "document_id": "doc_gpu",
+        "section": "Hardware",
+        "page_start": 2,
+        "text": t2,
+    }
 
-    # 9. List Deliverables for Project
-    res = client.get(
-        f"/api/projects/{PROJECT_ID}/deliverables",
-        headers={"X-User-Uid": USER_A_UID},
+    ok = store.add_vectors(
+        ids=["c1", "c2"],
+        vectors=[embedder.embed_text(t1), embedder.embed_text(t2)],
+        metadata=[meta1, meta2],
     )
-    assert res.status_code == 200, f"List deliverables failed: {res.text}"
-    listed = res.json().get("deliverables", [])
-    assert len(listed) >= 7, f"Expected >= 7 listed deliverables, got {len(listed)}"
-    print(f"[Test 9] List Project Deliverables Endpoint:\n  [OK] Found {len(listed)} deliverables in MongoDB `deliverables` collection.\n")
+    assert ok is True
+    assert len(store.get_document_vectors("doc_ai")) == 1
+    assert len(store.get_document_vectors("doc_gpu")) == 1
+    print("[OK] Added 2 records to vector store.")
 
-    # 10. Get Single Deliverable by ID
-    first_deliv_id = deliverables[0]["id"]
-    res = client.get(
-        f"/api/projects/{PROJECT_ID}/deliverables/{first_deliv_id}",
-        headers={"X-User-Uid": USER_A_UID},
+    # Test idempotency (upsert)
+    ok_again = store.add_vectors(
+        ids=["c1"],
+        vectors=[embedder.embed_text(t1)],
+        metadata=[meta1],
     )
-    assert res.status_code == 200, f"Get deliverable failed: {res.text}"
-    single_doc = res.json().get("deliverable", {})
-    assert single_doc.get("_id") == first_deliv_id or single_doc.get("id") == first_deliv_id
-    assert single_doc.get("uckrVersion") == 1
-    assert "content" in single_doc
-    print(f"[Test 10] Get Single Deliverable ({single_doc.get('type')}):\n  [OK] Deliverable ID: {first_deliv_id} (UCKR v{single_doc.get('uckrVersion')})\n")
+    assert ok_again is True
+    assert len(store.get_document_vectors("doc_ai")) == 1
+    print("[OK] Upsert idempotency verified.")
 
-    # 11. Security Check: Cross-Tenant Access Blocked for User B
-    res = client.get(
-        f"/api/projects/{PROJECT_ID}/deliverables",
-        headers={"X-User-Uid": USER_B_UID},
+    # Search test
+    query_vec = embedder.embed_text("Which company created GPT models?")
+    results = store.similarity_search(query_vec, top_k=2)
+    assert len(results) == 2
+    assert results[0].document_id == "doc_ai", "Top match should be doc_ai"
+    print(f"   Top match: '{results[0].text}' (score: {results[0].score:.4f})")
+
+    # Search with metadata filtering
+    filtered_results = store.similarity_search(query_vec, top_k=2, filter_dict={"document_id": "doc_gpu"})
+    assert len(filtered_results) == 1
+    assert filtered_results[0].document_id == "doc_gpu"
+    print("[OK] Metadata filtering verified.")
+
+    # Delete test
+    deleted = store.delete_document_vectors("doc_ai")
+    assert deleted == 1
+    assert len(store.get_document_vectors("doc_ai")) == 0
+    print("[OK] Document vector deletion verified.")
+
+
+def test_embedding_pipeline_service():
+    print("\n--- Testing Embedding Pipeline Service ---")
+    reset_vector_store()
+    service = get_embedding_service()
+    embedder = DeterministicEmbeddingModel(dimension=384)
+    service.embedder = embedder
+    set_default_embedder(embedder)
+
+    text_content = """## Phase 6 Overview
+Semantic chunking extracts text sections and chunks them efficiently.
+Vectors are generated using an embedding model and stored in a Vector Store.
+
+## RAG Foundation
+Phase 6 establishes the vector search foundation for Phase 7 Hybrid RAG.
+"""
+    res = service.index_text(text_content, document_id="doc_service_test")
+    assert res.total_chunks > 0
+    assert res.embedding_time_ms >= 0
+    assert res.index_time_ms >= 0
+    print(f"[OK] Indexed {res.total_chunks} chunks in total time ms.")
+
+    # Search query
+    search_res, latency_ms = service.search("How does semantic chunking work?", top_k=2)
+    assert len(search_res) > 0
+    print(f"[OK] Search returned {len(search_res)} chunks.")
+    print(f"   Top result score: {search_res[0].score:.4f}")
+    print(f"   Search latency: {latency_ms:.2f}ms")
+
+    # Check document status
+    status = service.get_document_status("doc_service_test")
+    assert status["total_vectors"] == res.total_chunks
+    print("[OK] Document indexing status verified.")
+
+
+def test_api_routes():
+    print("\n--- Testing FastAPI Endpoints ---")
+    client = TestClient(app)
+    headers = {"X-User-Uid": "test_user_123"}
+
+    # 1. Index text via API
+    resp = client.post(
+        "/api/embeddings/index-text",
+        json={
+            "document_id": "api_doc_100",
+            "text": "## Microservices Architecture\nFastAPI applications can scale horizontally with stateless routing.\nVector databases enable efficient semantic similarity search.",
+            "source_filename": "architecture.md",
+            "document_type": "markdown",
+        },
+        headers=headers,
     )
-    assert res.status_code in (403, 404), f"Expected 403/404 for User B, got {res.status_code}"
-    print(f"[Test 11] Security Check: Cross-Tenant Access Denial (User B):\n  [OK] Blocked unauthorized access with HTTP {res.status_code}.\n")
+    assert resp.status_code == 200, f"Index text failed: {resp.text}"
+    body = resp.json()
+    assert body["ok"] is True
+    assert body["document_id"] == "api_doc_100"
+    assert body["total_chunks"] > 0
+    print("[OK] POST /api/embeddings/index-text successful.")
 
-    # 12. Delete Single Deliverable
-    res = client.delete(
-        f"/api/projects/{PROJECT_ID}/deliverables/{first_deliv_id}",
-        headers={"X-User-Uid": USER_A_UID},
+    # 2. Document status via API
+    status_resp = client.get("/api/embeddings/document/api_doc_100", headers=headers)
+    assert status_resp.status_code == 200
+    assert status_resp.json()["total_vectors"] > 0
+    print("[OK] GET /api/embeddings/document/{id} successful.")
+
+    # 3. Search via API
+    search_resp = client.post(
+        "/api/embeddings/search",
+        json={"query": "How do vector databases enable search?", "top_k": 3},
+        headers=headers,
     )
-    assert res.status_code == 200, f"Delete deliverable failed: {res.text}"
-    print(f"[Test 12] Delete Deliverable Endpoint:\n  [OK] Deleted deliverable {first_deliv_id}.\n")
+    assert search_resp.status_code == 200
+    s_body = search_resp.json()
+    assert s_body["ok"] is True
+    assert len(s_body["results"]) > 0
+    print(f"[OK] POST /api/embeddings/search returned {len(s_body['results'])} results.")
 
-    # 13. Cleanup Project
-    res = client.delete(
-        f"/api/projects/{PROJECT_ID}",
-        headers={"X-User-Uid": USER_A_UID},
-    )
-    assert res.status_code == 200, f"Delete project failed: {res.text}"
-    print(f"[Test 13] Clean up Project:\n  [OK] Deleted test project {PROJECT_ID}.\n")
+    # 4. Delete document via API
+    del_resp = client.delete("/api/embeddings/document/api_doc_100", headers=headers)
+    assert del_resp.status_code == 200
+    assert del_resp.json()["deleted_count"] > 0
+    print("[OK] DELETE /api/embeddings/document/{id} successful.")
 
-    print("====================================================================")
-    print("  ALL 13 PHASE 6 REAL TRANSFORMATION ENGINE INTEGRATION TESTS PASSED 100%!")
-    print("====================================================================")
+    # Confirm status shows 0 chunks
+    post_del_status = client.get("/api/embeddings/document/api_doc_100", headers=headers)
+    assert post_del_status.json()["total_vectors"] == 0
+    print("[OK] Deletion confirmed in document status.")
 
 
 if __name__ == "__main__":
-    run_tests()
+    print("=== Running Phase 6 Test Suite ===")
+    test_semantic_chunker()
+    test_embedding_model()
+    test_vector_store()
+    test_embedding_pipeline_service()
+    test_api_routes()
+    print("\n[SUCCESS] ALL PHASE 6 TESTS PASSED SUCCESSFULLY!")

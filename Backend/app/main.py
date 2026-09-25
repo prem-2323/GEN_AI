@@ -41,6 +41,8 @@ from .api.routes.uckr import router as uckr_full_router, uckr_router, validation
 from .api.routes.direct_text_routes import router as direct_text_router
 from .api.routes.export_routes import router as export_routes_router
 from .api.routes.doclink import router as doclink_full_router, doclink_router
+from .api.routes.graph import router as neo4j_health_router, graph_router
+from .api.routes.embeddings import router as embeddings_router
 
 # Initialize centralized logging
 setup_logging()
@@ -111,3 +113,6 @@ app.include_router(direct_text_router)
 app.include_router(export_routes_router)
 app.include_router(doclink_full_router)
 app.include_router(doclink_router)
+app.include_router(neo4j_health_router)
+app.include_router(graph_router)
+app.include_router(embeddings_router)
