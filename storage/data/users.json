@@ -1,0 +1,22 @@
+[
+  {
+    "userId": "user-A-phase4-uid",
+    "uid": "user-A-phase4-uid",
+    "email": "userA@example.com",
+    "displayName": "userA",
+    "photoURL": "",
+    "authProvider": "google.com",
+    "createdAt": "2026-09-25T10:08:19.688985+00:00",
+    "updatedAt": "2026-09-25T10:08:19.688985+00:00"
+  },
+  {
+    "userId": "phase2-user-A",
+    "uid": "phase2-user-A",
+    "email": "a@example.com",
+    "displayName": "a",
+    "photoURL": "",
+    "authProvider": "google.com",
+    "createdAt": "2026-09-25T10:12:22.701867+00:00",
+    "updatedAt": "2026-09-25T10:12:22.701867+00:00"
+  }
+]

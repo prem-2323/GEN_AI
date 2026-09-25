@@ -1,0 +1,316 @@
+[
+  {
+    "document_id": "src-cyber-p4-001",
+    "documentId": "src-cyber-p4-001",
+    "sourceId": "src-cyber-p4-001",
+    "projectId": "proj-cyber-p4-001",
+    "document_name": "Pasted_Source_Text.txt",
+    "version": 1,
+    "status": "completed",
+    "provider": "deterministic",
+    "chunked": false,
+    "chunks": [
+      {
+        "chunk_id": "chunk_001",
+        "document_id": "src-cyber-p4-001",
+        "page": 1,
+        "section": "",
+        "index": 1,
+        "text": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+        "char_start": 0,
+        "char_end": 84,
+        "word_count": 9
+      }
+    ],
+    "entities": [
+      {
+        "entity_id": "ent_001",
+        "text": "Analysis",
+        "canonical_name": "Analysis",
+        "surface_forms": [],
+        "type": "DOCUMENT",
+        "confidence": 0.82,
+        "mentions": 1,
+        "evidence": [
+          {
+            "document_id": "src-cyber-p4-001",
+            "source_id": "src-cyber-p4-001",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+            "char_start": null,
+            "char_end": null
+          }
+        ],
+        "aliases_resolved": []
+      },
+      {
+        "entity_id": "ent_002",
+        "text": "CVE-2026-4418",
+        "canonical_name": "CVE-2026-4418",
+        "surface_forms": [],
+        "type": "IDENTIFIER",
+        "confidence": 0.95,
+        "mentions": 1,
+        "evidence": [
+          {
+            "document_id": "src-cyber-p4-001",
+            "source_id": "src-cyber-p4-001",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+            "char_start": null,
+            "char_end": null
+          }
+        ],
+        "aliases_resolved": []
+      }
+    ],
+    "facts": [
+      {
+        "fact_id": "fact_001",
+        "statement": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+        "subject": "Analysis",
+        "subject_id": "ent_001",
+        "predicate": "states",
+        "object": "of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+        "object_id": null,
+        "time": null,
+        "fact_type": "RISK",
+        "confidence": 0.75,
+        "evidence": [
+          {
+            "document_id": "src-cyber-p4-001",
+            "source_id": "src-cyber-p4-001",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "rel_001",
+        "source": "Analysis",
+        "source_id": "ent_001",
+        "relation": "RELATED_TO",
+        "target": "CVE-2026-4418",
+        "target_id": "ent_002",
+        "confidence": 0.65,
+        "evidence": [
+          {
+            "document_id": "src-cyber-p4-001",
+            "source_id": "src-cyber-p4-001",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      }
+    ],
+    "statistics": {
+      "totalChunks": 1,
+      "totalEntities": 2,
+      "totalFacts": 1,
+      "totalRelations": 1,
+      "totalEvidence": 4,
+      "mergedEntities": 0,
+      "duplicateEntitiesRemoved": 0,
+      "duplicateFactsRemoved": 0,
+      "duplicateRelationsRemoved": 0,
+      "rejectedItems": 0,
+      "evidenceCoverage": 100.0,
+      "entityTypes": {
+        "DOCUMENT": 1,
+        "IDENTIFIER": 1
+      },
+      "relationTypes": {
+        "RELATED_TO": 1
+      }
+    },
+    "validation": {
+      "valid": true,
+      "status": "valid",
+      "documentId": "src-cyber-p4-001",
+      "stats": {
+        "entities": 2,
+        "facts": 1,
+        "relations": 1,
+        "chunks": 1
+      },
+      "errors": [],
+      "warnings": [],
+      "rejectedEntities": [],
+      "rejectedFacts": [],
+      "rejectedRelations": [],
+      "orphanRelations": [],
+      "duplicateIds": [],
+      "invalidTypes": [],
+      "missingEvidence": [],
+      "evidenceCoverage": 100.0,
+      "checks": {
+        "unique_ids": true,
+        "valid_entity_types": true,
+        "evidence_coverage": true,
+        "relationship_integrity": true,
+        "has_entities": true,
+        "has_facts": true,
+        "has_relations": true,
+        "no_self_relations": true
+      },
+      "validated_at": "2026-09-25T10:08:26.112919+00:00"
+    },
+    "graph": {
+      "document_id": "src-cyber-p4-001",
+      "nodes": [
+        {
+          "id": "ent_001",
+          "label": "DOCUMENT",
+          "name": "Analysis",
+          "type": "DOCUMENT",
+          "confidence": 0.82,
+          "properties": {
+            "surface_forms": [],
+            "mentions": 1,
+            "aliases_resolved": []
+          }
+        },
+        {
+          "id": "ent_002",
+          "label": "IDENTIFIER",
+          "name": "CVE-2026-4418",
+          "type": "IDENTIFIER",
+          "confidence": 0.95,
+          "properties": {
+            "surface_forms": [],
+            "mentions": 1,
+            "aliases_resolved": []
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "rel_001",
+          "source": "ent_001",
+          "type": "RELATED_TO",
+          "target": "ent_002",
+          "confidence": 0.65,
+          "properties": {
+            "source_name": "Analysis",
+            "target_name": "CVE-2026-4418"
+          },
+          "evidence": [
+            {
+              "document_id": "src-cyber-p4-001",
+              "source_id": "src-cyber-p4-001",
+              "chunk_id": "chunk_001",
+              "page": 1,
+              "paragraph": null,
+              "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        }
+      ],
+      "statistics": {
+        "node_count": 2,
+        "edge_count": 1
+      },
+      "persisted": false
+    },
+    "uckr": {
+      "document_id": "src-cyber-p4-001",
+      "documentId": "src-cyber-p4-001",
+      "sourceId": "src-cyber-p4-001",
+      "projectId": "proj-cyber-p4-001",
+      "phase": "phase_4_doclink",
+      "provider": "deterministic",
+      "entities": [
+        {
+          "id": "ent_001",
+          "canonicalName": "Analysis",
+          "type": "DOCUMENT",
+          "confidence": 0.82,
+          "aliases": [],
+          "mentions": 1
+        },
+        {
+          "id": "ent_002",
+          "canonicalName": "CVE-2026-4418",
+          "type": "IDENTIFIER",
+          "confidence": 0.95,
+          "aliases": [],
+          "mentions": 1
+        }
+      ],
+      "facts": [
+        {
+          "id": "fact_001",
+          "statement": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+          "subject": "Analysis",
+          "predicate": "states",
+          "object": "of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+          "time": null,
+          "factType": "RISK",
+          "confidence": 0.75,
+          "sourceRefs": [
+            {
+              "document_id": "src-cyber-p4-001",
+              "source_id": "src-cyber-p4-001",
+              "chunk_id": "chunk_001",
+              "page": 1,
+              "paragraph": null,
+              "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "id": "rel_001",
+          "source": "Analysis",
+          "sourceId": "ent_001",
+          "relation": "RELATED_TO",
+          "target": "CVE-2026-4418",
+          "targetId": "ent_002",
+          "confidence": 0.65
+        }
+      ],
+      "statistics": {
+        "totalChunks": 1,
+        "totalEntities": 2,
+        "totalFacts": 1,
+        "totalRelations": 1,
+        "totalEvidence": 4,
+        "mergedEntities": 0,
+        "duplicateEntitiesRemoved": 0,
+        "duplicateFactsRemoved": 0,
+        "duplicateRelationsRemoved": 0,
+        "rejectedItems": 0,
+        "evidenceCoverage": 100.0,
+        "entityTypes": {
+          "DOCUMENT": 1,
+          "IDENTIFIER": 1
+        },
+        "relationTypes": {
+          "RELATED_TO": 1
+        }
+      },
+      "generated_at": "2026-09-25T10:08:26.112919+00:00"
+    },
+    "created_at": "2026-09-25T10:08:26.112919+00:00",
+    "updated_at": "2026-09-25T10:08:26.112919+00:00"
+  }
+]

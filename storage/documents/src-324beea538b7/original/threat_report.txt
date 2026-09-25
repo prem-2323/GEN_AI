@@ -1,0 +1,7 @@
+Threat Intelligence Report Q3 2026.
+Acme Corp detected 47 phishing attempts targeting the finance team in September 2026.
+The security team must patch all edge servers within 14 days.
+On September 12, 2026, a malware sample exploited CVE-2026-1234 affecting 12 servers.
+Analysts should review firewall logs and ensure multi-factor authentication is enforced.
+Estimated potential loss is 2.5 million dollars if the breach succeeds.
+The board meeting on October 5, 2026 will review the incident response plan.
