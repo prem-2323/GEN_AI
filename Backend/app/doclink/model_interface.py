@@ -79,7 +79,7 @@ class NullDocLinkLLM:
 class OllamaDocLinkLLM:
     """Local Ollama provider (Qwen role) with strict-JSON chat formatting."""
 
-    def __init__(self, model: str = "", host: str = "", timeout: float = 60.0) -> None:
+    def __init__(self, model: str = "", host: str = "", timeout: float = 3.0) -> None:
         settings = get_settings()
         self.model = model or settings.text_model
         self.host = host or settings.ollama_base_url

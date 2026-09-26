@@ -1,1 +1,495 @@
-[]
+[
+  {
+    "id": "del-48a68d533817",
+    "deliverableId": "del-48a68d533817",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "linkedin",
+    "content": {
+      "hook": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+      "body": "\u2022 DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.\n\u2022 This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.\n\u2022 The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.\n\u2022 This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.\n\u2022 Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains.",
+      "callToAction": "How is your team navigating this transition? Share your perspectives below.",
+      "hashtags": [
+        "#AI",
+        "#Leadership",
+        "#Innovation",
+        "#Strategy"
+      ],
+      "characterCount": 1288,
+      "targetAudience": "executive",
+      "tone": "Professional",
+      "language": "English"
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:10.797205+00:00",
+    "updatedAt": "2026-09-26T06:17:10.797205+00:00"
+  },
+  {
+    "id": "del-6ae69d746fc5",
+    "deliverableId": "del-6ae69d746fc5",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "twitter",
+    "content": {
+      "singlePost": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, In",
+      "thread": [
+        {
+          "index": 1,
+          "text": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, ",
+          "charCount": 270
+        },
+        {
+          "index": 2,
+          "text": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.",
+          "charCount": 228
+        },
+        {
+          "index": 3,
+          "text": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+          "charCount": 207
+        },
+        {
+          "index": 4,
+          "text": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+          "charCount": 223
+        },
+        {
+          "index": 5,
+          "text": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains.",
+          "charCount": 156
+        }
+      ]
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:10.940808+00:00",
+    "updatedAt": "2026-09-26T06:17:10.940808+00:00"
+  },
+  {
+    "id": "del-39cc1d88b44b",
+    "deliverableId": "del-39cc1d88b44b",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "advisory",
+    "content": {
+      "advisoryId": "ADV-74C5CB",
+      "title": "Security Advisory: DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+      "severity": "MEDIUM",
+      "dateIssued": "2026-09-26",
+      "situation": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywor",
+      "keyInformation": [
+        "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.",
+        "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.",
+        "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+        "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+        "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains.",
+        "Introduction\nFood waste is a pressing problem globally and in India, which pre-\nsentssignificantenvironmentalandsocioeconomicchallenges.InIndia,\nwithitsgrowingurbanizationandpopulation,approximately1.3billion\ntonnes of food is wasted annually."
+      ],
+      "threatImpact": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.; The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+      "recommendedActions": [
+        {
+          "phase": "Immediate",
+          "steps": [
+            "Establish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages",
+            "Need to be",
+            "Monitor banana ripeness, offering a practical solution to the",
+            "Monitor temperature, humidity and grain"
+          ]
+        }
+      ],
+      "entities": [
+        "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand",
+        "Rajini",
+        "Persis Voolab",
+        "Department",
+        "Government Degree College"
+      ],
+      "complianceReferences": []
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:11.115088+00:00",
+    "updatedAt": "2026-09-26T06:17:11.115088+00:00"
+  },
+  {
+    "id": "del-d1571f52e658",
+    "deliverableId": "del-d1571f52e658",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "executive_summary",
+    "content": {
+      "priority": "High",
+      "keyFindingsCount": 5,
+      "recommendationsCount": 4,
+      "executiveOverview": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywor",
+      "keyFindings": [
+        {
+          "metric": "3billion",
+          "title": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+          "description": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it."
+        },
+        {
+          "metric": "0.5",
+          "title": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine lea",
+          "description": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry."
+        },
+        {
+          "metric": "12",
+          "title": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 mic",
+          "description": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages."
+        },
+        {
+          "metric": "1,2",
+          "title": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with the",
+          "description": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality."
+        },
+        {
+          "metric": "40",
+          "title": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvanceme",
+          "description": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains."
+        }
+      ],
+      "implications": [
+        "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+        "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+        "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains."
+      ],
+      "strategicActions": [
+        "Establish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages",
+        "Need to be",
+        "Monitor banana ripeness, offering a practical solution to the",
+        "Monitor temperature, humidity and grain"
+      ]
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:11.278155+00:00",
+    "updatedAt": "2026-09-26T06:17:11.278155+00:00"
+  },
+  {
+    "id": "del-4e713e0e7bf4",
+    "deliverableId": "del-4e713e0e7bf4",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "infographic",
+    "content": {
+      "keyMessage": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+      "keyStatistics": [
+        {
+          "value": "3billion",
+          "label": "Metric 1",
+          "subtext": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detect"
+        },
+        {
+          "value": "0.5",
+          "label": "Metric 2",
+          "subtext": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detect"
+        },
+        {
+          "value": "12",
+          "label": "Metric 3",
+          "subtext": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detect"
+        },
+        {
+          "value": "1,2",
+          "label": "Metric 4",
+          "subtext": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detect"
+        }
+      ],
+      "supportingPoints": [
+        {
+          "iconName": "shield",
+          "title": "This study presents a\nnovel framework that merges Internet o",
+          "description": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry."
+        },
+        {
+          "iconName": "shield",
+          "title": "The study employed temperature, humidity, and gas emission s",
+          "description": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages."
+        },
+        {
+          "iconName": "shield",
+          "title": "This\nframework employedvarious machinelearning algorithmstod",
+          "description": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality."
+        },
+        {
+          "iconName": "shield",
+          "title": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectiona",
+          "description": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains."
+        }
+      ],
+      "callToAction": "Share this briefing with your team.",
+      "layoutRecommendation": "Vertical",
+      "visualStyle": "Corporate"
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:11.460271+00:00",
+    "updatedAt": "2026-09-26T06:17:11.460271+00:00"
+  },
+  {
+    "id": "del-1e4090b75aa7",
+    "deliverableId": "del-1e4090b75aa7",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "presentation",
+    "content": {
+      "deckTitle": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+      "totalSlides": 6,
+      "slides": [
+        {
+          "slideNumber": 1,
+          "title": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+          "bullets": [
+            "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.",
+            "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.",
+            "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+            "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality."
+          ],
+          "visualRecommendation": "Title visual",
+          "speakerNotes": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywor"
+        },
+        {
+          "slideNumber": 2,
+          "title": "This study presents a\nnovel framework that merges Internet of Things (",
+          "bullets": [
+            "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry."
+          ],
+          "visualRecommendation": "Supporting chart",
+          "speakerNotes": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry."
+        },
+        {
+          "slideNumber": 3,
+          "title": "The study employed temperature, humidity, and gas emission sensors alo",
+          "bullets": [
+            "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages."
+          ],
+          "visualRecommendation": "Supporting chart",
+          "speakerNotes": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages."
+        },
+        {
+          "slideNumber": 4,
+          "title": "This\nframework employedvarious machinelearning algorithmstodetect ripe",
+          "bullets": [
+            "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality."
+          ],
+          "visualRecommendation": "Supporting chart",
+          "speakerNotes": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality."
+        },
+        {
+          "slideNumber": 5,
+          "title": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethew",
+          "bullets": [
+            "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains."
+          ],
+          "visualRecommendation": "Supporting chart",
+          "speakerNotes": "Thebenefitsofthisresearchextendbeyondfruitripenessdetectionandpavethewayforfutureadvancementsin\nautomating quality assessment in agricultural supply chains."
+        },
+        {
+          "slideNumber": 6,
+          "title": "Recommended actions",
+          "bullets": [
+            "Establish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages",
+            "Need to be",
+            "Monitor banana ripeness, offering a practical solution to the",
+            "Monitor temperature, humidity and grain"
+          ],
+          "visualRecommendation": "Checklist visual",
+          "speakerNotes": ""
+        }
+      ],
+      "events": [
+        {
+          "title": "Ludwig-Ohm\net al., [4] investigated on strawberries, apples, lettuce, and carrots and\nfound out that, on average, 25 % of vegetables, 15 % t",
+          "timestamp": null
+        },
+        {
+          "title": "Contents lists available at ScienceDirect\ne-Prime - Advances in Electrical\nEngineering, Electronics and Energy\njournal homepage: www.elsevie",
+          "timestamp": "15 March 2024"
+        },
+        {
+          "title": "Case study Objectives & Outcomes References\nIoT based Intelligent Cold chain\ntracking system\nMaintains product quality by\ntracking temperatu",
+          "timestamp": null
+        },
+        {
+          "title": "[24]\nFruitSense \u2013 Ripeness detection\nsystem\nIt investigated the post-harvest\nfreshness of papaya and\nwatermelon by measuring CO2,\nwater vapo",
+          "timestamp": null
+        }
+      ]
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:11.632670+00:00",
+    "updatedAt": "2026-09-26T06:17:11.632670+00:00"
+  },
+  {
+    "id": "del-446f26c2d8b2",
+    "deliverableId": "del-446f26c2d8b2",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "sourceId": "src-3ae255b0911f",
+    "uckrVersion": 1,
+    "type": "video",
+    "content": {
+      "title": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A cas",
+      "aspectRatio": "16:9",
+      "style": "Professional",
+      "totalDurationSeconds": 80,
+      "script": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.\n\nThis study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.\n\nThe study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.\n\nThis\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+      "scenes": [
+        {
+          "sceneNumber": 1,
+          "title": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluatio",
+          "durationSeconds": 20,
+          "sceneDescription": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.",
+          "visualRecommendation": "Kinetic text over imagery",
+          "narration": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywords:\nInternet of Things\nCold chain\nFruit quality prediction\nCatBoost classifier\nABSTRACT\nFood waste is a significant global problem that demands immediate action to reduce it.",
+          "onScreenText": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detect"
+        },
+        {
+          "sceneNumber": 2,
+          "title": "This study presents a\nnovel framework that merges Internet o",
+          "durationSeconds": 20,
+          "sceneDescription": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.",
+          "visualRecommendation": "Kinetic text over imagery",
+          "narration": "This study presents a\nnovel framework that merges Internet of Things (IoT) and machine learning (ML) technologies to detect fruit\nripenessandspoilage,whichisessentialinminimizinglossesinthecoldchainprocessoffreshproduceindustry.",
+          "onScreenText": "This study presents a\nnovel framework that merges Internet of Things (IoT) and m"
+        },
+        {
+          "sceneNumber": 3,
+          "title": "The study employed temperature, humidity, and gas emission s",
+          "durationSeconds": 20,
+          "sceneDescription": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+          "visualRecommendation": "Kinetic text over imagery",
+          "narration": "The study employed temperature, humidity, and gas emission sensors along with an ESP32 microcontroller to\nestablish a unique framework that achieved exceptional accuracy in predicting banana ripeness stages.",
+          "onScreenText": "The study employed temperature, humidity, and gas emission sensors along with an"
+        },
+        {
+          "sceneNumber": 4,
+          "title": "This\nframework employedvarious machinelearning algorithmstod",
+          "durationSeconds": 20,
+          "sceneDescription": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+          "visualRecommendation": "Kinetic text over imagery",
+          "narration": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages, with theCatBoost classifier\nexhibiting exceptional performance, demonstrating its dependability and effectiveness in assessing fruit quality.",
+          "onScreenText": "This\nframework employedvarious machinelearning algorithmstodetect ripenessstages"
+        }
+      ],
+      "subtitlesSrt": ""
+    },
+    "usedFactIds": [
+      "fact_001",
+      "fact_002",
+      "fact_003",
+      "fact_004",
+      "fact_005"
+    ],
+    "configuration": {
+      "targetAudience": "Agricultural Scientists, Logistics Directors & Cold Chain Managers",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Detailed",
+      "objective": "Inform"
+    },
+    "status": "completed",
+    "storagePath": null,
+    "createdAt": "2026-09-26T06:17:11.782269+00:00",
+    "updatedAt": "2026-09-26T06:17:11.782269+00:00"
+  }
+]

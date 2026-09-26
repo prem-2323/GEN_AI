@@ -1,18 +1,9 @@
-"""RFTC Prompt Builder for UCKR to Deliverables Transformation.
-
-Enforces:
-ROLE: Specialist content creator / analyst
-TASK: Transform canonical UCKR into target output format
-REFERENCE: Strictly the provided UCKR knowledge base
-TONE: Configured tone
-FORMAT: Valid JSON adhering to target schema
-CONSTRAINTS: Zero hallucination, no modified numbers/dates, attach usedFactIds.
-"""
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from ...models.deliverable import TransformationConfig
+from ..ai.prompts import OUTPUT_INSTRUCTIONS
 
 
 def format_uckr_context(uckr: Dict[str, Any]) -> str:
@@ -27,8 +18,8 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     facts = uckr.get("facts", [])
     lines.append(f"FACTS ({len(facts)} items):")
     for idx, f in enumerate(facts, 1):
-        fid = f.get("factId", f"fact_{idx:03d}")
-        stmt = f.get("statement", "")
+        fid = f.get("factId", f.get("id", f"fact_{idx:03d}"))
+        stmt = f.get("statement", f.get("value", f.get("text", "")))
         ftype = f.get("type", "fact")
         lines.append(f"  [{fid}] ({ftype}): {stmt}")
     lines.append("")
@@ -37,9 +28,9 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     entities = uckr.get("entities", [])
     lines.append(f"ENTITIES ({len(entities)} items):")
     for idx, e in enumerate(entities, 1):
-        eid = e.get("entityId", f"entity_{idx:03d}")
-        name = e.get("canonicalName", "")
-        etype = e.get("type", "ENTITY")
+        eid = e.get("entityId", f.get("id", f"entity_{idx:03d}"))
+        name = e.get("canonicalName", e.get("name", ""))
+        etype = e.get("type", e.get("category", "ENTITY"))
         aliases = e.get("aliases", [])
         alias_str = f" (Aliases: {', '.join(aliases)})" if aliases else ""
         lines.append(f"  [{eid}] {name} ({etype}){alias_str}")
@@ -50,10 +41,10 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     if events:
         lines.append(f"EVENTS ({len(events)} items):")
         for idx, ev in enumerate(events, 1):
-            evid = ev.get("eventId", f"event_{idx:03d}")
+            evid = ev.get("eventId", f.get("id", f"event_{idx:03d}"))
             evtype = ev.get("eventType", "EVENT")
-            desc = ev.get("description", "")
-            date = ev.get("date", "N/A")
+            desc = ev.get("description", ev.get("title", ""))
+            date = ev.get("date", ev.get("timestamp", "N/A"))
             lines.append(f"  [{evid}] {evtype}: {desc} (Date: {date})")
         lines.append("")
 
@@ -62,7 +53,7 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     if metrics:
         lines.append(f"METRICS ({len(metrics)} items):")
         for idx, m in enumerate(metrics, 1):
-            mid = m.get("metricId", f"metric_{idx:03d}")
+            mid = m.get("metricId", f.get("id", f"metric_{idx:03d}"))
             val = m.get("value", "")
             unit = m.get("unit", "")
             ctx = m.get("context", "")
@@ -74,8 +65,8 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     if claims:
         lines.append(f"CLAIMS ({len(claims)} items):")
         for idx, c in enumerate(claims, 1):
-            cid = c.get("claimId", f"claim_{idx:03d}")
-            stmt = c.get("statement", "")
+            cid = c.get("claimId", f.get("id", f"claim_{idx:03d}"))
+            stmt = c.get("statement", c.get("claim", ""))
             attr = c.get("attribution", "Source")
             lines.append(f"  [{cid}] {stmt} (Attribution: {attr})")
         lines.append("")
@@ -85,10 +76,10 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     if actions:
         lines.append(f"ACTIONS ({len(actions)} items):")
         for idx, a in enumerate(actions, 1):
-            aid = a.get("actionId", f"action_{idx:03d}")
-            act = a.get("action", "")
-            actor = a.get("actor", "")
-            status = a.get("status", "RECOMMENDED")
+            aid = a.get("actionId", f.get("id", f"action_{idx:03d}"))
+            act = a.get("action", a.get("text", ""))
+            actor = a.get("actor", a.get("owner", ""))
+            status = a.get("status", a.get("priority", "RECOMMENDED"))
             lines.append(f"  [{aid}] {act} (Actor: {actor}, Status: {status})")
         lines.append("")
 
@@ -97,10 +88,10 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
     if relationships:
         lines.append(f"RELATIONSHIPS ({len(relationships)} items):")
         for idx, r in enumerate(relationships, 1):
-            rid = r.get("relationshipId", f"rel_{idx:03d}")
-            src = r.get("sourceEntityId", "")
-            rel = r.get("relationshipType", "RELATED_TO")
-            tgt = r.get("targetEntityId", "")
+            rid = r.get("relationshipId", f.get("id", f"rel_{idx:03d}"))
+            src = r.get("sourceEntityId", r.get("source", ""))
+            rel = r.get("relationshipType", r.get("relation", "RELATED_TO"))
+            tgt = r.get("targetEntityId", r.get("target", ""))
             lines.append(f"  [{rid}] {src} -> {rel} -> {tgt}")
         lines.append("")
 
@@ -109,117 +100,143 @@ def format_uckr_context(uckr: Dict[str, Any]) -> str:
 
 def get_schema_for_type(dtype: str) -> str:
     """Returns the JSON schema specification for the given deliverable type."""
-    if dtype == "linkedin":
+    normalized_type = dtype.lower()
+    if normalized_type in ("linkedin", "li"):
         return json.dumps({
             "title": "Concise post headline",
             "body": "Multi-paragraph post formatted for LinkedIn with spacing and bullet points",
-            "hashtags": ["#CyberSecurity", "#ThreatIntel"],
+            "content": "Professional LinkedIn post text with an engaging opening, clear paragraphs, and relevant hashtags.",
+            "hashtags": ["#AgriTech", "#Innovation"],
             "usedFactIds": ["fact_001", "fact_002"]
         }, indent=2)
-    elif dtype == "x":
+    elif normalized_type in ("x", "twitter"):
         return json.dumps({
+            "content": "Complete, concise X/Twitter post or thread text.",
             "posts": [
                 {
                     "postNumber": 1,
-                    "text": "1/3 First tweet in thread containing key hook and findings...",
+                    "text": "1/3 First tweet in thread containing key hook and findings (<=280 chars)...",
                     "usedFactIds": ["fact_001"]
                 },
                 {
                     "postNumber": 2,
-                    "text": "2/3 Second tweet detailing impact metrics...",
+                    "text": "2/3 Second tweet detailing impact metrics (<=280 chars)...",
                     "usedFactIds": ["fact_002"]
                 },
                 {
                     "postNumber": 3,
-                    "text": "3/3 Concluding takeaways and recommendations...",
+                    "text": "3/3 Concluding takeaways and recommendations (<=280 chars)...",
                     "usedFactIds": []
                 }
             ]
         }, indent=2)
-    elif dtype == "executive_summary":
+    elif normalized_type in ("summary", "executive_summary"):
         return json.dumps({
             "title": "Executive Summary Title",
             "summary": "High-level strategic briefing paragraph",
+            "content": "Concise, grounded summary derived strictly from the source text.",
             "keyFindings": ["Finding 1 with exact numbers", "Finding 2"],
             "keyRisks": ["Strategic risk 1", "Operational risk 2"],
             "recommendedActions": ["Immediate mitigation step 1", "Strategic policy change 2"],
             "usedFactIds": ["fact_001", "fact_002"]
         }, indent=2)
-    elif dtype == "advisory":
+    elif normalized_type in ("advisory", "advisory_memo"):
         return json.dumps({
             "title": "Security / Technical Advisory Title",
-            "severity": "HIGH",  # CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN
+            "severity": "HIGH",
             "summary": "Technical overview of the advisory",
+            "content": "CONFIDENTIAL - ADVISORY MEMO\n\nSubject: ...\n\n1. EXECUTIVE SUMMARY\n...\n2. KEY FINDINGS\n...\n3. KEY RISKS & CONSIDERATIONS\n...\n4. RECOMMENDATIONS\n...\n5. IMPLEMENTATION / TIMELINE\n...\n6. COST / RESOURCE REQUIREMENTS\n...\n7. NEXT STEPS\n...\n8. CONCLUSION\n...",
             "affectedEntities": ["System A", "Product B"],
             "observations": ["Technical observation 1", "Technical observation 2"],
             "recommendations": ["Remediation step 1", "Patch requirement 2"],
-            "references": ["CVE-2026-4418", "Source Document Ref"],
+            "references": ["Ref-001", "Source Document Ref"],
             "usedFactIds": ["fact_001", "fact_002"]
         }, indent=2)
-    elif dtype == "infographic":
+    elif normalized_type in ("email", "announcement"):
         return json.dumps({
-            "title": "Infographic Title",
+            "content": "Subject: [Engaging Email Subject]\n\nDear Team / Partners,\n\n[Body text with key announcement points, executive takeaways, call to action, and formal sign-off]."
+        }, indent=2)
+    elif normalized_type in ("infographic", "infographics"):
+        return json.dumps({
+            "title": "Headline derived strictly from source",
+            "main_message": "Core takeaway message from source",
+            "key_statistics": [
+                {
+                    "value": "98.90%",
+                    "label": "CatBoost Classification Accuracy"
+                }
+            ],
             "sections": [
-                {"heading": "Incident Overview", "content": "Key context..."},
-                {"heading": "Impact Assessment", "content": "Detailed impact metrics..."}
+                {
+                    "heading": "Section Heading",
+                    "content": "Section Content derived from source"
+                }
             ],
-            "keyNumbers": [
-                {"value": 240, "label": "Employees targeted"},
-                {"value": "100%", "label": "Containment rate"}
-            ],
+            "supporting_text": "Contextual summary from source",
+            "visual_hierarchy": "Guidance on primary vs secondary visual focus areas",
+            "icon_recommendations": ["cpu", "activity"],
+            "color_recommendations": ["#10B981", "#6366F1"],
+            "layout_recommendation": "Vertical timeline / process flow",
             "usedFactIds": ["fact_001", "fact_002"]
         }, indent=2)
-    elif dtype == "presentation":
+    elif normalized_type in ("presentation", "deck", "slides"):
         return json.dumps({
-            "title": "Presentation Deck Title",
+            "presentation_title": "Main Presentation Title",
+            "subtitle": "Subtitle or Deck Summary",
             "slides": [
                 {
-                    "slideNumber": 1,
-                    "title": "Executive Overview",
-                    "bullets": ["Point 1", "Point 2"],
+                    "slide_number": 1,
+                    "title": "Title Slide Title",
+                    "layout": "title",
+                    "subtitle": "Cover Subtitle",
+                    "content": [],
+                    "speaker_notes": "Welcome audience to the presentation.",
+                    "visual_recommendation": "Modern graphic concept",
                     "usedFactIds": ["fact_001"]
                 },
                 {
-                    "slideNumber": 2,
-                    "title": "Key Findings & Metrics",
-                    "bullets": ["Finding 1", "Finding 2"],
+                    "slide_number": 2,
+                    "title": "Key Market Insights",
+                    "layout": "bullet_points",
+                    "content": [
+                        "Key insight bullet point 1",
+                        "Key insight bullet point 2"
+                    ],
+                    "speaker_notes": "Detailed spoken narration for this slide.",
+                    "visual_recommendation": "Bar chart comparing key growth metrics",
                     "usedFactIds": ["fact_002"]
                 },
                 {
-                    "slideNumber": 3,
-                    "title": "Recommended Action Plan",
-                    "bullets": ["Action 1", "Action 2"],
+                    "slide_number": 3,
+                    "title": "Strategic Roadmap",
+                    "layout": "two_column",
+                    "column_left": ["Action step 1", "Action step 2"],
+                    "column_right": ["Expected outcome 1", "Expected outcome 2"],
+                    "speaker_notes": "Explain how operational actions lead to outcomes.",
+                    "visual_recommendation": "Two-column grid layout with accent borders",
                     "usedFactIds": []
                 }
             ]
         }, indent=2)
-    elif dtype == "video_script":
+    elif normalized_type in ("video_script", "video"):
         return json.dumps({
-            "title": "Video Explainer Script Title",
-            "durationSeconds": 60,
-            "scenes": [
+            "video_title": "Catchy professional title derived strictly from source content",
+            "duration": "60 seconds",
+            "storyboard": [
                 {
-                    "sceneNumber": 1,
-                    "durationSeconds": 15,
-                    "narration": "Spoken dialogue for scene 1...",
-                    "visualDescription": "Motion graphic showing threat landscape and stats...",
+                    "scene": 1,
+                    "duration": "0-10 sec",
+                    "visuals": "Detailed description of B-roll or visual elements matching source topic",
+                    "narration": "Voiceover script text for this scene derived strictly from source",
+                    "on_screen_text": "Concise key text callout",
+                    "subtitle": "Subtitle text for accessibility",
+                    "transition": "Fade to next scene",
                     "usedFactIds": ["fact_001"]
-                },
-                {
-                    "sceneNumber": 2,
-                    "durationSeconds": 25,
-                    "narration": "Spoken dialogue for scene 2...",
-                    "visualDescription": "Infographic callout highlighting 240 affected accounts...",
-                    "usedFactIds": ["fact_002"]
-                },
-                {
-                    "sceneNumber": 3,
-                    "durationSeconds": 20,
-                    "narration": "Concluding call to action...",
-                    "visualDescription": "Closing title slide with advisory links...",
-                    "usedFactIds": []
                 }
-            ]
+            ],
+            "music_recommendation": "Suggested background music genre, tempo, and mood",
+            "voice_over_direction": "Tone, pacing, emotion, and accent guidance for voiceover",
+            "thumbnail_recommendation": "Description for engaging video thumbnail concept"
         }, indent=2)
     return "{}"
 
@@ -228,14 +245,42 @@ def build_transformation_prompt(
     dtype: str,
     uckr: Dict[str, Any],
     cfg: TransformationConfig,
+    source_content: Optional[str] = None,
 ) -> str:
-    """Builds a complete, rigorous RFTC prompt for the LLM."""
+    """Builds a complete, rigorous RFTC prompt for the LLM using OUTPUT_INSTRUCTIONS rules."""
     context = format_uckr_context(uckr)
+    normalized_type = dtype.lower()
     schema = get_schema_for_type(dtype)
+
+    # Get specific output instruction rules
+    rule_key = "summary" if normalized_type in ("summary", "executive_summary") else (
+        "twitter" if normalized_type in ("x", "twitter") else (
+            "video_script" if normalized_type in ("video", "video_script") else (
+                "presentation" if normalized_type in ("presentation", "deck", "slides") else (
+                    "infographic" if normalized_type in ("infographic", "infographics") else (
+                        "advisory" if normalized_type in ("advisory", "advisory_memo") else (
+                            "email" if normalized_type in ("email", "announcement") else "linkedin"
+                        )
+                    )
+                )
+            )
+        )
+    )
+    instruction_text = OUTPUT_INSTRUCTIONS.get(rule_key, "")
 
     lang_constraint = ""
     if cfg.language and cfg.language.strip().lower() not in ("english", "en"):
         lang_constraint = f"\n5. MANDATORY TARGET LANGUAGE: The entire content (all titles, headlines, summaries, hooks, call to action, descriptions, bullet points, recommendations, narration, notes, and text values) MUST BE WRITTEN FLUENTLY IN {cfg.language.upper()} (e.g. if Tamil, write in Tamil script தமிழ்; if Hindi, write in Devanagari script हिन्दी). Do NOT output English content text when {cfg.language} is requested. JSON structural keys must remain in English."
+
+    # If video_script format template has placeholder variables, substitute them
+    if rule_key == "video_script" and "{source_content}" in instruction_text:
+        src_text = source_content or uckr.get("summary") or context[:2000]
+        instruction_text = instruction_text.format(
+            source_content=src_text,
+            uckr_facts=context,
+            target_audience=cfg.audience,
+            requested_duration="60 seconds",
+        )
 
     prompt = f"""[ROLE]
 You are a senior communications and intelligence transformation specialist. Your mission is to generate professional {dtype.upper()} deliverables derived EXCLUSIVELY from the canonical Unified Content Knowledge Representation (UCKR) provided below.
@@ -247,6 +292,9 @@ Generate a complete, high-quality '{dtype}' output matching the user's configura
 - Language: {cfg.language}
 - Detail Level: {cfg.detailLevel}
 - Objective: {cfg.objective}
+
+[SPECIFIC OUTPUT FORMAT RULES & INSTRUCTIONS]
+{instruction_text}
 
 [REFERENCE KNOWLEDGE (CANONICAL UCKR)]
 {context}
@@ -263,3 +311,4 @@ Generate a complete, high-quality '{dtype}' output matching the user's configura
 ```
 """
     return prompt
+

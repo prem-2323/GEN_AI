@@ -1525,13 +1525,230 @@ ${config.customNotes ? `Notes: ${config.customNotes}\n` : ''}${analysis ? `Analy
       }Content:\n${source.extractedText.slice(0, 10000)}${langMandate}`;
 
       const prompts: Record<OutputType, string> = {
-        linkedin: `${context}\nReturn STRICT JSON for a LinkedIn post: { "hook": string, "body": string, "callToAction": string, "hashtags": string[], "characterCount": number, "targetAudience": string }. Use only verified facts.`,
-        twitter: `${context}\nReturn STRICT JSON for X/Twitter: { "singlePost": string (<=280 chars), "thread": [{ "index": number, "text": string, "charCount": number }] }. Use only verified facts.`,
-        advisory: `${context}\nReturn STRICT JSON for an advisory: { "advisoryId": string, "title": string, "severity": "CRITICAL"|"HIGH"|"MEDIUM"|"INFORMATIONAL", "dateIssued": string, "situation": string, "keyInformation": string[], "threatImpact": string, "recommendedActions": [{ "phase": string, "steps": string[] }], "complianceReferences": string[] }.`,
-        executive_summary: `${context}\nReturn STRICT JSON for an executive summary: { "priority": "High"|"Critical"|"Medium"|"Low", "keyFindingsCount": number, "recommendationsCount": number, "executiveOverview": string, "keyFindings": [{ "metric"?: string, "title": string, "description": string }], "implications": string[], "strategicActions": string[] }.`,
-        infographic: `${context}\nReturn STRICT JSON for an infographic: { "keyMessage": string, "keyStatistics": [{ "value": string, "label": string, "subtext": string }], "supportingPoints": [{ "iconName": string, "title": string, "description": string }], "callToAction": string, "layoutRecommendation": "Vertical"|"Horizontal"|"Timeline"|"Process"|"Comparison", "visualStyle": "Corporate"|"Minimal"|"Editorial"|"Technology" }.`,
-        presentation: `${context}\nReturn STRICT JSON for a slide deck: { "deckTitle": string, "totalSlides": number, "slides": [{ "slideNumber": number, "title": string, "subtitle"?: string, "bullets": string[], "visualRecommendation": string, "speakerNotes": string }] }. 4-6 slides.`,
-        video: `${context}\nReturn STRICT JSON for a video package: { "title": string, "aspectRatio": "16:9"|"9:16"|"1:1", "style": "Professional"|"News"|"Documentary"|"Corporate", "totalDurationSeconds": number, "script": string, "scenes": [{ "sceneNumber": number, "title": string, "durationSeconds": number, "sceneDescription": string, "visualRecommendation": string, "narration": string, "onScreenText": string }], "subtitlesSrt": string }. 3-5 scenes.`,
+        linkedin: `${context}
+Create a professional LinkedIn post.
+Return ONLY valid JSON matching this exact structure:
+{
+  "content": "Professional LinkedIn post text with an engaging opening, clear paragraphs, and relevant hashtags.",
+  "hook": "Engaging hook line",
+  "body": "Clear paragraphs with key insights and findings",
+  "callToAction": "Call to action prompt",
+  "hashtags": ["#Tag1", "#Tag2"],
+  "characterCount": 500,
+  "targetAudience": "${config.targetAudience}"
+}`,
+        twitter: `${context}
+Create an engaging, concise X/Twitter post or multi-tweet thread.
+Each individual tweet must contain complete sentences and adhere to a 280-character limit.
+If the content requires multiple points or exceeds 280 characters, format it as a numbered thread (e.g., 1/2, 2/2) with double newlines between tweets. Never end mid-sentence or cut words off.
+Return ONLY valid JSON matching this exact structure:
+{
+  "content": "Complete, concise X/Twitter post or thread text.",
+  "singlePost": "Single punchy post under 280 chars",
+  "thread": [
+    { "index": 1, "text": "1/3 First complete tweet under 280 chars...", "charCount": 120 }
+  ]
+}`,
+        advisory: `${context}
+Transform the source content into a formal Advisory Memo. Do not copy the source verbatim and do not simply summarize it. Rewrite and reorganize the information using clear professional language while preserving every supported fact, name, number, date, cost, timeline, and requirement. Do not invent facts, statistics, recommendations, or unsupported information. Identify implications, risks, considerations, recommendations, and next steps only when they are mentioned or clearly supported by the source. Remove unnecessary repetition.
+
+Use this structure in the content:
+CONFIDENTIAL - ADVISORY MEMO
+Subject: [Relevant subject]
+1. EXECUTIVE SUMMARY
+2. KEY FINDINGS
+3. KEY RISKS & CONSIDERATIONS
+4. RECOMMENDATIONS
+5. IMPLEMENTATION / TIMELINE
+6. COST / RESOURCE REQUIREMENTS
+7. NEXT STEPS
+8. CONCLUSION
+
+Return ONLY valid JSON matching this exact structure:
+{
+  "content": "Formal advisory memo using all requested sections.",
+  "advisoryId": "ADV-${Math.floor(100000 + Math.random() * 900000)}",
+  "title": "Advisory Memo Title",
+  "severity": "HIGH",
+  "dateIssued": "${new Date().toISOString().split('T')[0]}",
+  "situation": "Executive summary of situation",
+  "keyInformation": ["Key finding 1", "Key finding 2"],
+  "threatImpact": "Risks and considerations",
+  "recommendedActions": [{ "phase": "Immediate Guidance", "steps": ["Action 1"] }],
+  "complianceReferences": ["Standard Framework Ref"]
+}`,
+        executive_summary: `${context}
+Summarize ONLY the information provided in the source text.
+Rules:
+1. Do not add facts, opinions, assumptions, recommendations, or conclusions that are not present in the source.
+2. Do not invent business, organizational, strategic, financial, or technical implications.
+3. Do not use generic filler such as 'aligned with organizational objectives' or 'actionable advancements.'
+4. Preserve the original meaning and context.
+5. Remove repetition and unnecessary details.
+6. If a section such as Strategic Implication, Recommendations, or Conclusion is not supported by the source, OMIT that section.
+7. Do not force the output into a fixed template.
+8. Keep the summary concise.
+9. Every important statement in the output must be traceable to the source text.
+
+Return ONLY valid JSON matching this exact structure:
+{
+  "content": "Concise, grounded summary derived strictly from the source text.",
+  "priority": "High",
+  "keyFindingsCount": 4,
+  "recommendationsCount": 2,
+  "executiveOverview": "Concise grounded overview derived from source",
+  "keyFindings": [{ "metric": "Key Point 1", "title": "Finding title", "description": "Grounded finding description" }],
+  "implications": ["Supported risk or implication"],
+  "strategicActions": ["Action mandate 1"]
+}`,
+        infographic: `${context}
+You are an Infographic Specification Generator.
+Your job is to transform ONLY the CURRENT SOURCE CONTENT into a structured infographic specification.
+STRICT GROUNDING RULES:
+1. Use ONLY information present in the current source content and explicitly provided UCKR facts.
+2. NEVER use information from previous requests, examples, templates, demonstrations, memory, or default content.
+3. NEVER introduce a different domain.
+4. Every claim in the output must be supported by the source or UCKR.
+5. Extract important numerical facts into key_statistics (costs, percentages, dates, durations, quantities, counts, targets).
+6. If a field cannot be supported by the source, use an empty array or a neutral value rather than inventing information.
+7. icon_recommendations must be relevant to the actual source topic.
+8. Do not generate generic benefits unless explicitly stated or directly supported by the source.
+9. Output must describe CURRENT SOURCE, not an example.
+10. Verify every claim against source/UCKR facts.
+
+Return ONLY valid JSON matching this schema:
+{
+  "title": "Headline derived strictly from source",
+  "main_message": "Core takeaway message from source",
+  "key_statistics": [
+    { "value": "100%", "label": "Key statistic label", "subtext": "Context" }
+  ],
+  "sections": [
+    { "heading": "Section Heading", "content": "Section Content derived from source" }
+  ],
+  "supporting_text": "Contextual summary from source",
+  "visual_hierarchy": "Guidance on primary vs secondary visual focus areas",
+  "icon_recommendations": ["sparkles", "activity"],
+  "color_recommendations": ["#10B981", "#6366F1"],
+  "layout_recommendation": "Vertical",
+  "keyMessage": "Core takeaway headline",
+  "supportingPoints": [
+    { "iconName": "sparkles", "title": "Point title", "description": "Point detail" }
+  ],
+  "callToAction": "Share this infographic overview"
+}`,
+        presentation: `${context}
+Create structured content for a PowerPoint presentation.
+Return ONLY valid JSON with exactly this structure:
+{
+  "presentation_title": "Main Presentation Title",
+  "subtitle": "Subtitle or Deck Summary",
+  "deckTitle": "Main Presentation Title",
+  "totalSlides": 4,
+  "slides": [
+    {
+      "slide_number": 1,
+      "slideNumber": 1,
+      "title": "Title Slide Title",
+      "layout": "title",
+      "subtitle": "Cover Subtitle",
+      "content": [],
+      "bullets": ["Key point 1", "Key point 2"],
+      "speaker_notes": "Welcome audience to the presentation.",
+      "speakerNotes": "Welcome audience to the presentation.",
+      "visual_recommendation": "Modern graphic concept",
+      "visualRecommendation": "Modern graphic concept"
+    },
+    {
+      "slide_number": 2,
+      "slideNumber": 2,
+      "title": "Key Market Insights",
+      "layout": "bullet_points",
+      "content": [
+        "Key insight bullet point 1",
+        "Key insight bullet point 2"
+      ],
+      "bullets": [
+        "Key insight bullet point 1",
+        "Key insight bullet point 2"
+      ],
+      "speaker_notes": "Detailed spoken narration for this slide.",
+      "speakerNotes": "Detailed spoken narration for this slide.",
+      "visual_recommendation": "Bar chart comparing key growth metrics",
+      "visualRecommendation": "Bar chart comparing key growth metrics"
+    },
+    {
+      "slide_number": 3,
+      "slideNumber": 3,
+      "title": "Strategic Roadmap",
+      "layout": "two_column",
+      "column_left": ["Action step 1", "Action step 2"],
+      "column_right": ["Expected outcome 1", "Expected outcome 2"],
+      "bullets": ["Action step 1", "Expected outcome 1"],
+      "speaker_notes": "Explain how operational actions lead to outcomes.",
+      "speakerNotes": "Explain how operational actions lead to outcomes.",
+      "visual_recommendation": "Two-column grid layout with accent borders",
+      "visualRecommendation": "Two-column grid layout with accent borders"
+    }
+  ]
+}`,
+        video: `${context}
+You are a professional video storyboard generator.
+IMPORTANT RULES:
+1. The SOURCE CONTENT is the ONLY source for factual information.
+2. The TARGET AUDIENCE must influence tone and complexity only. NEVER use audience description as subject matter.
+3. 'video_script' is a format instruction. NEVER mention 'we are creating a video script' in narration.
+4. Do NOT describe the transformation request in the video.
+5. Do NOT introduce information from examples, templates, memory, or unrelated domains.
+6. Every factual statement must be supported by SOURCE CONTENT or UCKR fact.
+7. Extract important facts, numbers, dates, costs, timelines, features, risks, benefits, and recommendations.
+8. Each scene must communicate a DIFFERENT meaningful point.
+9. Visual descriptions must correspond to actual source topic.
+10. On-screen text concise, no '...'.
+11. Match requested duration (60 seconds).
+12. Verify every narration against UCKR facts.
+
+Return ONLY valid JSON matching this schema:
+{
+  "video_title": "Catchy professional title derived strictly from source content",
+  "title": "Catchy professional title derived strictly from source content",
+  "duration": "60 seconds",
+  "aspectRatio": "16:9",
+  "style": "Professional",
+  "totalDurationSeconds": 60,
+  "storyboard": [
+    {
+      "scene": 1,
+      "sceneNumber": 1,
+      "duration": "0-15 sec",
+      "durationSeconds": 15,
+      "visuals": "Detailed description of B-roll matching source topic",
+      "sceneDescription": "Detailed description of B-roll matching source topic",
+      "narration": "Voiceover script text derived strictly from source",
+      "on_screen_text": "Concise key text callout",
+      "onScreenText": "Concise key text callout",
+      "subtitle": "Subtitle text for accessibility",
+      "transition": "Fade to next scene",
+      "visualRecommendation": "Kinetic typography with topic backdrop"
+    }
+  ],
+  "scenes": [
+    {
+      "sceneNumber": 1,
+      "title": "Scene 1",
+      "durationSeconds": 15,
+      "sceneDescription": "Visual description",
+      "visualRecommendation": "Motion graphic",
+      "narration": "Voiceover script",
+      "onScreenText": "Key text"
+    }
+  ],
+  "script": "Full narration script",
+  "music_recommendation": "Suggested background music genre, tempo, and mood",
+  "voice_over_direction": "Tone, pacing, emotion, and accent guidance for voiceover",
+  "thumbnail_recommendation": "Description for engaging video thumbnail concept",
+  "subtitlesSrt": ""
+}`,
       };
 
       const res = await callGeminiJson(prompts[kind]);

@@ -358,13 +358,20 @@ export interface PresentationSlide {
   title: string;
   subtitle?: string;
   bullets: string[];
+  column_left?: string[];
+  column_right?: string[];
   visualRecommendation: string;
+  visual_recommendation?: string;
   speakerNotes: string;
+  speaker_notes?: string;
 }
 
 export interface PresentationDeliverable {
   deckTitle: string;
+  presentation_title?: string;
+  subtitle?: string;
   totalSlides: number;
+  theme?: string;
   slides: PresentationSlide[];
 }
 

@@ -1,14 +1,9 @@
-"""Phase 12 Transformation Engine — Prompt Builder.
-
-Constructs profile-driven generation prompts incorporating strict factual preservation
-rules, expected section structures, target audience, tone, language, and citation controls.
-"""
-
 from __future__ import annotations
 
 import logging
 from typing import Optional
 from .schemas import TransformationContext, TransformationProfile
+from ..services.ai.prompts import OUTPUT_INSTRUCTIONS
 
 log = logging.getLogger("gen-transform.transformation.prompt_builder")
 
@@ -42,13 +37,33 @@ class TransformationPromptBuilder:
         if context.instructions:
             lines.append(f"- Custom User Instructions: {context.instructions}")
 
-        # 3. Expected Output Structure
+        # 3. Specific Output Format Instructions & Rules
+        norm_type = profile.output_type.lower()
+        rule_key = "summary" if norm_type in ("summary", "executive_summary") else (
+            "twitter" if norm_type in ("x", "twitter") else (
+                "video_script" if norm_type in ("video", "video_script") else (
+                    "presentation" if norm_type in ("presentation", "deck", "slides") else (
+                        "infographic" if norm_type in ("infographic", "infographics") else (
+                            "advisory" if norm_type in ("advisory", "advisory_memo") else (
+                                "email" if norm_type in ("email", "announcement") else "linkedin"
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        instruction_text = OUTPUT_INSTRUCTIONS.get(rule_key, "")
+        if instruction_text:
+            lines.append("\n### FORMAT RULES & SPECIFICATIONS:")
+            lines.append(instruction_text)
+
+        # 4. Expected Output Structure
         lines.append("\n### MANDATORY OUTPUT STRUCTURE:")
         lines.append(f"Your output MUST contain the following sections formatted with clear Markdown headers:")
         for sec in profile.expected_structure:
             lines.append(f"  ## {sec.replace('_', ' ').title()}")
 
-        # 4. Critical Fact Preservation & Citation Rules
+        # 5. Critical Fact Preservation & Citation Rules
         lines.append("\n### CRITICAL FACT PRESERVATION & SAFETY RULES:")
         lines.append("1. ZERO HALLUCINATION: Rely STRICTLY on the supplied source evidence below. Do NOT invent claims.")
         lines.append("2. PRESERVE NUMERICAL VALUES: Exact numbers, percentages, quantities, and statistics MUST be preserved unchanged.")
@@ -58,7 +73,7 @@ class TransformationPromptBuilder:
         lines.append("   DO NOT invent or fabricate nonexistent citation IDs (such as [99] or unsupported references).")
         lines.append("6. INSUFFICIENT EVIDENCE: If the evidence does not contain sufficient facts to fulfill a required section, state '[Insufficient evidence for this section]' rather than inventing details.")
 
-        # 5. Citation Details & Source Evidence
+        # 6. Citation Details & Source Evidence
         lines.append("\n### SUPPLIED SOURCE EVIDENCE:")
         if context.citations:
             for cit in context.citations:
@@ -75,3 +90,4 @@ class TransformationPromptBuilder:
 
 
 __all__ = ["TransformationPromptBuilder"]
+

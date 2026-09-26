@@ -27,7 +27,7 @@ from ...models.text_schemas import (
 )
 from ...services.ai.qwen_service import generate_qwen_json
 from ...services.extraction.extraction_service import extract_content
-from ...services.presentation.pptx_generator import create_pptx_presentation
+from ...services.presentation.pptx_generator import create_pptx_presentation, THEME_PALETTES
 from ...services.audio.tts_service import (
     RECOMMENDED_VOICES,
     extract_video_script_narration,
@@ -262,6 +262,25 @@ Return a JSON object: {{ "reframed_content": "Clean, highly tailored reframed ve
 # ---------------------------------------------------------------------------
 # Presentation & PPTX Export
 # ---------------------------------------------------------------------------
+
+@router.get("/api/presentation/themes")
+@router.get("/presentation/themes", include_in_schema=False)
+def list_presentation_themes():
+    """List available PPTX theme palettes with hex colors for frontend preview."""
+    themes = []
+    for name, palette in THEME_PALETTES.items():
+        themes.append({
+            "id": name,
+            "label": name.replace("_", " ").title(),
+            "colors": {
+                key: "#%02x%02x%02x" % tuple(palette[key])
+                for key in ("dark_bg", "accent", "text_body", "box_bg", "card_border", "header")
+                if key in palette
+            },
+            "is_dark_theme": bool(palette.get("is_dark_theme", False)),
+        })
+    return {"themes": themes}
+
 
 @router.post("/api/presentation/generate-deck")
 @router.post("/presentation/generate-deck", include_in_schema=False)
