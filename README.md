@@ -447,6 +447,25 @@ Maintains complete regulatory auditability for every claim generated.
 ### 1. Clone Repository & Setup Virtual Environment
 ```bash
 # Clone the repository
+### Option A: One-Click Installation (Recommended)
+
+#### On Windows (Command Prompt):
+```cmd
+install_all.bat
+```
+
+#### On PowerShell:
+```powershell
+.\install_all.ps1
+```
+*(Automatically checks prerequisites, upgrades pip, installs all Python packages from `Backend/requirements.txt`, runs `npm install` in `Frontend`, sets up `.env` from template, and initializes storage folders).*
+
+---
+
+### Option B: Manual Step-by-Step Setup
+
+### 1. Setup Backend Environment
+```bash
 git clone https://github.com/prem-2323/GEN_AI.git
 cd gen-transform-ai
 

@@ -21,8 +21,16 @@ google-genai>=1.0
 neo4j>=5.0
 # Phase 3 Embedding Model
 sentence-transformers>=3.0
-# Phase 4 Vector Store
+# Phase 4 Vector Store & ML
 faiss-cpu>=1.7
 numpy>=1.24
+torch>=2.0.0
+# Phase 10 Audio / TTS
+edge-tts>=6.1.0
 # Phase 10 exports
 python-pptx>=1.0
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+anyio>=4.0.0
+
