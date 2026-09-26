@@ -82,11 +82,14 @@ async def transform_project(project_id: str, payload: dict[str, Any] = {},
     ]
     type_map = {"x": "twitter", "video_script": "video"}
     uckr_v = payload.get("uckrVersion")
+    source_id = payload.get("sourceId")
     cfg = payload.get("config") or payload.get("configuration")
     out = []
     for t in types:
         gen_type = type_map.get(t, t)
-        doc = transformation_service.generate(user["uid"], project_id, uckr_v, gen_type, cfg)
+        doc = transformation_service.generate(
+            user["uid"], project_id, uckr_v, gen_type, cfg, source_id
+        )
         doc["type"] = t
         out.append(doc)
     return {"ok": True, "projectId": project_id, "deliverables": out, "count": len(out)}

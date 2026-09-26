@@ -8,9 +8,11 @@ from typing import Any, Dict, Optional
 from fastapi import HTTPException
 
 from ...storage.repository import get_repository
+from ...storage.service import read_file_bytes
 from ...models.analysis import AnalysisRecord
 from .orchestrator import orchestrate_source_analysis, compute_content_hash
 from ..projects.project_service import get_project
+from ..sources import source_service
 
 log = logging.getLogger("gen-transform.analysis_service")
 
@@ -31,10 +33,13 @@ def analyze_source(
     # 1. Verify project ownership (raises 404 or 403)
     project = get_project(project_id, uid=user_id)
 
-    # 2. Extract text from project source if not passed directly
+    # 2. Resolve content from the requested source, not the project's latest source.
+    source_obj = source_service.get_source(source_id, user_id)
+    if source_obj.get("projectId") != project_id:
+        raise HTTPException(status_code=400, detail="Source does not belong to this project.")
+
     if not extracted_text:
-        source_obj = project.get("source") or project.get("sourceFile") or {}
-        extracted_text = source_obj.get("extractedText") or ""
+        extracted_text = source_obj.get("extractedText") or (source_obj.get("normalized", {}).get("text") or {}).get("content", "")
 
         if not extracted_text:
             ext_repo = get_repository("extracted_content")
@@ -48,16 +53,27 @@ def analyze_source(
                     extracted_text = "\n\n".join(p.get("text", "") for p in ext_doc.get("pages", []))
 
         if not extracted_text:
-            src_repo = get_repository("sources")
-            src_doc = src_repo.find_one({"$or": [{"sourceId": source_id}, {"id": source_id}]}, projection={"_id": 0})
-            if src_doc:
-                extracted_text = src_doc.get("extractedText") or src_doc.get("text") or ""
-
-        if not extracted_text:
             extracted_text = project.get("description") or project.get("title") or ""
 
     if not extracted_text.strip():
         raise HTTPException(status_code=400, detail="Source contains no extracted text to analyze.")
+
+    if extracted_images is None:
+        extracted_images = []
+        for image in (source_obj.get("normalized") or {}).get("images", []):
+            path = image.get("path")
+            if not path:
+                continue
+            try:
+                image_bytes, _ = read_file_bytes(path, uid=user_id)
+            except Exception as exc:
+                log.warning("Could not load source image %s: %s", image.get("imageId", ""), exc)
+                continue
+            extracted_images.append({
+                "id": image.get("imageId") or image.get("filename") or path,
+                "page": image.get("pageNumber"),
+                "bytes": image_bytes,
+            })
 
     # 3. Check deduplication hash in repository
     c_hash = compute_content_hash(extracted_text)

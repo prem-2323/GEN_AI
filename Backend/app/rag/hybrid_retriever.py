@@ -1,8 +1,8 @@
-"""Phase 5 — Hybrid Vector + Graph Retriever.
+"""Phase 5 & 6 — Hybrid Vector + Graph Retriever with QUBO Evidence Selection.
 
 Combines REAL Vector Retrieval (FAISS + BGE embeddings) with
 REAL Graph Retrieval (Neo4j parameterized Cypher) using
-Reciprocal Rank Fusion (RRF) and identifier deduplication.
+Reciprocal Rank Fusion (RRF) and REAL QUBO Candidate Evidence Selection.
 """
 from __future__ import annotations
 
@@ -11,6 +11,10 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 from ..core.config import get_settings
+from ..optimization.config import default_optimization_config
+from ..optimization.qubo_matrix import QUBOFormulator
+from ..optimization.schemas import CandidateFeatureVector
+from ..optimization.solvers import get_qubo_solver
 from .fusion import ReciprocalRankFusion, ResultFusion
 from .graph_retriever import GraphRetriever
 from .query_analyzer import QueryAnalyzer
@@ -21,7 +25,7 @@ log = logging.getLogger("gen-transform.rag.hybrid_retriever")
 
 
 class HybridRetriever:
-    """Orchestrates dual vector + graph retrieval with transparent RRF fusion."""
+    """Orchestrates dual vector + graph retrieval with RRF fusion and QUBO evidence selection."""
 
     def __init__(
         self,
@@ -37,15 +41,17 @@ class HybridRetriever:
         self.rrf_k = rrf_k if rrf_k is not None else getattr(self.settings, "rrf_k", 60)
         self.vector_top_k = getattr(self.settings, "vector_top_k", 10)
         self.graph_top_k = getattr(self.settings, "graph_top_k", 10)
+        self.qubo_config = default_optimization_config
 
     def retrieve(
         self,
         query: str,
         top_k: int = 5,
         document_id: Optional[str] = None,
+        enable_qubo: Optional[bool] = None,
     ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-        """Execute full hybrid retrieval pipeline.
-        
+        """Execute full hybrid retrieval pipeline + QUBO evidence selection.
+
         query
          ↓
         VectorRetriever (FAISS + BGE)
@@ -56,11 +62,14 @@ class HybridRetriever:
          ↓
         Deduplicate
          ↓
-        RRF
+        RRF Candidate Generation
          ↓
-        Final top-k evidence
+        QUBO Matrix Formulation & Optimization
+         ↓
+        Final top-k selected evidence with provenance
         """
         t_total_start = time.time()
+        use_qubo = enable_qubo if enable_qubo is not None else self.qubo_config.enabled
 
         # Step 1: Query Analysis
         analysis = self.query_analyzer.analyze(query)
@@ -96,16 +105,93 @@ class HybridRetriever:
 
         # Step 5: Reciprocal Rank Fusion & Deduplication
         t_fusion_start = time.time()
-        fused_items = self._rrf_fuse_and_deduplicate(
+        fused_candidates = self._rrf_fuse_and_deduplicate(
             vector_items=normalized_vector,
             graph_items=normalized_graph,
             k=self.rrf_k,
         )
         fusion_time_ms = round((time.time() - t_fusion_start) * 1000, 2)
 
-        # Step 6: Select Top-K
-        final_top_k = fused_items[:top_k]
-        for rank_idx, item in enumerate(final_top_k, start=1):
+        # Step 6: QUBO Evidence Subset Selection (if enabled)
+        t_qubo_start = time.time()
+        selected_evidence: List[Dict[str, Any]] = []
+        qubo_metadata: Dict[str, Any] = {}
+
+        if use_qubo and fused_candidates:
+            # Select top candidate pool (e.g., up to 20 candidates for QUBO)
+            qubo_pool = fused_candidates[:20]
+            feature_vectors = []
+
+            for item in qubo_pool:
+                cand_id = str(item.get("chunk_id") or item.get("id"))
+                v_score = float(item.get("vector_score") or item.get("score") or 0.8)
+                g_score = float(item.get("graph_score") or (0.8 if item.get("graph_rank") else 0.0))
+
+                feature_vectors.append(
+                    CandidateFeatureVector(
+                        candidate_id=cand_id,
+                        source_type=str(item.get("retrieval_method") or item.get("source")),
+                        document_id=str(item.get("document_id") or "doc_default"),
+                        text=str(item.get("text") or ""),
+                        relevance_score=v_score,
+                        graph_score=g_score,
+                        evidence_quality=0.9,
+                        metadata=item.get("metadata") or {},
+                    )
+                )
+
+            formulator = QUBOFormulator(self.qubo_config)
+            qubo_problem = formulator.build_qubo(
+                candidates=feature_vectors,
+                target_k=top_k,
+            )
+
+            solver = get_qubo_solver(
+                solver_name=self.qubo_config.solver,
+                candidate_count=len(feature_vectors),
+                config=self.qubo_config,
+            )
+            qubo_res = solver.solve(qubo_problem)
+
+            selected_set = set(qubo_res.selected_candidate_ids)
+            for original_rank, item in enumerate(qubo_pool, start=1):
+                item_id = str(item.get("chunk_id") or item.get("id"))
+                if item_id in selected_set:
+                    item_copy = dict(item)
+                    item_copy["original_rank"] = original_rank
+                    item_copy["semantic_score"] = float(item.get("vector_score") or item.get("score") or 0.0)
+                    item_copy["graph_score"] = float(item.get("graph_score") or (0.8 if item.get("graph_rank") else 0.0))
+                    item_copy["selected_by_qubo"] = True
+                    item_copy["qubo_score"] = float(qubo_res.total_energy)
+                    selected_evidence.append(item_copy)
+
+            qubo_time_ms = round((time.time() - t_qubo_start) * 1000, 2)
+            qubo_metadata = {
+                "qubo_enabled": True,
+                "qubo_solver_type": qubo_res.solver_type,
+                "qubo_total_energy": qubo_res.total_energy,
+                "qubo_objective_breakdown": qubo_res.objective_breakdown,
+                "qubo_optimization_time_ms": qubo_time_ms,
+                "quantum_backend_available": qubo_res.quantum_backend_available,
+            }
+
+        # Fallback to pure RRF top_k if QUBO produced empty set or was disabled
+        if not selected_evidence:
+            for original_rank, item in enumerate(fused_candidates[:top_k], start=1):
+                item_copy = dict(item)
+                item_copy["original_rank"] = original_rank
+                item_copy["semantic_score"] = float(item.get("vector_score") or item.get("score") or 0.0)
+                item_copy["graph_score"] = float(item.get("graph_score") or (0.8 if item.get("graph_rank") else 0.0))
+                item_copy["selected_by_qubo"] = False
+                selected_evidence.append(item_copy)
+            qubo_time_ms = round((time.time() - t_qubo_start) * 1000, 2)
+            qubo_metadata = {
+                "qubo_enabled": use_qubo,
+                "qubo_optimization_time_ms": qubo_time_ms,
+            }
+
+        # Step 7: Assign final rank and preserve full provenance
+        for rank_idx, item in enumerate(selected_evidence, start=1):
             item["final_rank"] = rank_idx
             item["rank"] = rank_idx
 
@@ -119,12 +205,13 @@ class HybridRetriever:
             "total_time": total_time_ms,
             "vector_candidates": len(vector_results),
             "graph_candidates": len(graph_results),
-            "fused_count": len(fused_items),
-            "top_k": len(final_top_k),
+            "fused_count": len(fused_candidates),
+            "top_k": len(selected_evidence),
             "rrf_k": self.rrf_k,
+            **qubo_metadata,
         }
 
-        return final_top_k, metrics
+        return selected_evidence, metrics
 
     def _normalize_candidates(
         self,
@@ -150,6 +237,8 @@ class HybridRetriever:
                 "retrieval_method": method,
                 "rank": rank,
                 "score": float(r.score),
+                "vector_score": float(r.score) if method == "vector" else 0.0,
+                "graph_score": float(r.score) if method == "graph" else 0.0,
                 "metadata": meta,
             })
         return normalized
@@ -161,12 +250,12 @@ class HybridRetriever:
         k: int = 60,
     ) -> List[Dict[str, Any]]:
         """Calculate transparent RRF score and deduplicate by stable identifiers."""
-        # Maps for quick lookup: identifier -> RRF accumulator
-        # Stable identifier keys: chunk_id, text signature, or source_id
         entry_map: Dict[str, Dict[str, Any]] = {}
         rrf_scores: Dict[str, float] = {}
         vector_ranks: Dict[str, int] = {}
         graph_ranks: Dict[str, int] = {}
+        vector_scores: Dict[str, float] = {}
+        graph_scores: Dict[str, float] = {}
 
         # 1. Process vector candidates
         for item in vector_items:
@@ -176,6 +265,7 @@ class HybridRetriever:
 
             v_rank = item["rank"]
             vector_ranks[canonical_key] = v_rank
+            vector_scores[canonical_key] = item["score"]
             contrib = 1.0 / (k + v_rank)
             rrf_scores[canonical_key] = rrf_scores.get(canonical_key, 0.0) + contrib
             if canonical_key not in entry_map:
@@ -189,6 +279,7 @@ class HybridRetriever:
 
             g_rank = item["rank"]
             graph_ranks[canonical_key] = g_rank
+            graph_scores[canonical_key] = item["score"]
             contrib = 1.0 / (k + g_rank)
             rrf_scores[canonical_key] = rrf_scores.get(canonical_key, 0.0) + contrib
             if canonical_key not in entry_map:
@@ -203,6 +294,8 @@ class HybridRetriever:
             item_copy["score"] = round(final_score, 6)
             item_copy["vector_rank"] = vector_ranks.get(key)
             item_copy["graph_rank"] = graph_ranks.get(key)
+            item_copy["vector_score"] = vector_scores.get(key, 0.0)
+            item_copy["graph_score"] = graph_scores.get(key, 0.0)
             item_copy["retrieval_method"] = (
                 "hybrid" if (key in vector_ranks and key in graph_ranks)
                 else base_item["retrieval_method"]

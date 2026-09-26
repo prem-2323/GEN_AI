@@ -15,6 +15,14 @@ Phase 1 Architectural Layout:
 """
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+# Ensure Backend directory is in sys.path for 'app.*' imports
+_backend_dir = Path(__file__).resolve().parent.parent
+if str(_backend_dir) not in sys.path:
+    sys.path.insert(0, str(_backend_dir))
+
 from contextlib import asynccontextmanager
 from typing import Any, Dict
 
@@ -135,6 +143,12 @@ app.include_router(active_params_router, prefix="/api/active-params", tags=["Act
 app.include_router(transformation_engine_router)
 from .api.routes.provenance import router as provenance_router
 app.include_router(provenance_router)
+from .api.routes.qubo import router as qubo_router
+app.include_router(qubo_router)
+from .api.routes.student import router as student_router
+app.include_router(student_router)
+
+
 
 
 

@@ -141,8 +141,45 @@ def run_phase3_tests():
     assert pdf_ext.get("fileType") == "pdf"
     assert len(pdf_ext.get("pages", [])) >= 1
     assert "CVE-2026-4418" in pdf_ext.get("content", "")
+    assert pdf_out.get("source", {}).get("sourceId") == pdf_ext.get("documentId")
+    assert pdf_out.get("source", {}).get("extractedText") == pdf_ext.get("content")
+    assert pdf_out.get("source", {}).get("processing", {}).get("stage") == "completed"
     pdf_doc_id = pdf_ext.get("documentId")
     print(f"[Test 2] PDF Ingestion & Extraction:\n  [OK] Extracted {len(pdf_ext['pages'])} pages, {len(pdf_ext['content'])} chars from PDF (doc_id={pdf_doc_id})")
+
+    # 2b. Verify the canonical source flows through DocLink, AI analysis, UCKR, and transformation.
+    doclink_res = client.post(
+        "/api/doclink/analyze",
+        headers={"X-User-Uid": USER_UID},
+        json={"document_id": pdf_doc_id, "projectId": PROJECT_ID, "useLlm": False},
+    )
+    assert doclink_res.status_code == 200, f"DocLink failed: {doclink_res.text}"
+    assert doclink_res.json().get("document_id") == pdf_doc_id
+    assert doclink_res.json().get("status") == "completed"
+
+    analysis_res = client.post(
+        f"/api/projects/{PROJECT_ID}/sources/{pdf_doc_id}/analysis",
+        headers={"X-User-Uid": USER_UID},
+        json={"extractedText": pdf_ext["content"]},
+    )
+    assert analysis_res.status_code == 200, f"AI analysis failed: {analysis_res.text}"
+    assert analysis_res.json().get("status") == "completed"
+
+    uckr_res = client.post(
+        f"/api/projects/{PROJECT_ID}/sources/{pdf_doc_id}/uckr",
+        headers={"X-User-Uid": USER_UID},
+    )
+    assert uckr_res.status_code == 201, f"UCKR build failed: {uckr_res.text}"
+    assert uckr_res.json().get("uckr", {}).get("sourceId") == pdf_doc_id
+
+    transform_res = client.post(
+        f"/api/projects/{PROJECT_ID}/transform",
+        headers={"X-User-Uid": USER_UID},
+        json={"sourceId": pdf_doc_id, "outputTypes": ["executive_summary"]},
+    )
+    assert transform_res.status_code == 201, f"Transformation failed: {transform_res.text}"
+    assert transform_res.json().get("deliverables", [{}])[0].get("sourceId") == pdf_doc_id
+    print("[Test 2b] Canonical pipeline:\n  [OK] DocLink, Qwen/Gemma analysis, UCKR, and transformation retained the source ID")
 
     # 3. Test DOCX Ingestion & Extraction
     docx_bytes = create_sample_docx_bytes()

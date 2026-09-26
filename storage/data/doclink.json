@@ -1,44 +1,55 @@
 [
   {
-    "document_id": "src-cyber-p4-001",
-    "documentId": "src-cyber-p4-001",
-    "sourceId": "src-cyber-p4-001",
-    "projectId": "proj-cyber-p4-001",
-    "document_name": "Pasted_Source_Text.txt",
+    "document_id": "src-485a5fa34c35",
+    "documentId": "src-485a5fa34c35",
+    "sourceId": "src-485a5fa34c35",
+    "projectId": "proj-phase3-00a9ebb4",
+    "document_name": "src-485a5fa34c35",
     "version": 1,
     "status": "completed",
     "provider": "deterministic",
-    "chunked": false,
+    "chunked": true,
     "chunks": [
       {
         "chunk_id": "chunk_001",
-        "document_id": "src-cyber-p4-001",
+        "document_id": "src-485a5fa34c35",
         "page": 1,
         "section": "",
         "index": 1,
-        "text": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+        "text": "CYBER THREAT INTELLIGENCE REPORT 2026\nOrganization X detected a ransomware campaign on 15 August 2026.\nThe attack exploited CVE-2026-4418 in Identity Gateway.",
         "char_start": 0,
-        "char_end": 84,
-        "word_count": 9
+        "char_end": 158,
+        "word_count": 22
+      },
+      {
+        "chunk_id": "chunk_002",
+        "document_id": "src-485a5fa34c35",
+        "page": 2,
+        "section": "",
+        "index": 1,
+        "text": "RECOMMENDED MITIGATION ACTIONS\nDeploy patch 2.4.1 immediately and reset affected user credentials.",
+        "char_start": 0,
+        "char_end": 98,
+        "word_count": 12
       }
     ],
     "entities": [
       {
         "entity_id": "ent_001",
-        "text": "Analysis",
-        "canonical_name": "Analysis",
+        "text": "CYBER THREAT INTELLIGENCE REPORT",
+        "canonical_name": "CYBER THREAT INTELLIGENCE REPORT",
         "surface_forms": [],
         "type": "DOCUMENT",
         "confidence": 0.82,
         "mentions": 1,
         "evidence": [
           {
-            "document_id": "src-cyber-p4-001",
-            "source_id": "src-cyber-p4-001",
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
             "chunk_id": "chunk_001",
             "page": 1,
             "paragraph": null,
-            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026\nOrganization X detected a ransomware campaign on 15 August 2026.",
             "char_start": null,
             "char_end": null
           }
@@ -47,6 +58,50 @@
       },
       {
         "entity_id": "ent_002",
+        "text": "Organization X",
+        "canonical_name": "Organization X",
+        "surface_forms": [],
+        "type": "ORGANIZATION",
+        "confidence": 0.95,
+        "mentions": 1,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026\nOrganization X detected a ransomware campaign on 15 August 2026.",
+            "char_start": null,
+            "char_end": null
+          }
+        ],
+        "aliases_resolved": []
+      },
+      {
+        "entity_id": "ent_003",
+        "text": "15 August 2026",
+        "canonical_name": "15 August 2026",
+        "surface_forms": [],
+        "type": "DATE",
+        "confidence": 0.95,
+        "mentions": 1,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026\nOrganization X detected a ransomware campaign on 15 August 2026.",
+            "char_start": null,
+            "char_end": null
+          }
+        ],
+        "aliases_resolved": []
+      },
+      {
+        "entity_id": "ent_004",
         "text": "CVE-2026-4418",
         "canonical_name": "CVE-2026-4418",
         "surface_forms": [],
@@ -55,12 +110,12 @@
         "mentions": 1,
         "evidence": [
           {
-            "document_id": "src-cyber-p4-001",
-            "source_id": "src-cyber-p4-001",
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
             "chunk_id": "chunk_001",
             "page": 1,
             "paragraph": null,
-            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities.",
+            "text_span": "The attack exploited CVE-2026-4418 in Identity Gateway.",
             "char_start": null,
             "char_end": null
           }
@@ -71,23 +126,71 @@
     "facts": [
       {
         "fact_id": "fact_001",
-        "statement": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
-        "subject": "Analysis",
-        "subject_id": "ent_001",
-        "predicate": "states",
-        "object": "of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+        "statement": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+        "subject": "INTELLIGENCE REPORT 2026 Organization X",
+        "subject_id": null,
+        "predicate": "detected",
+        "object": "a ransomware campaign",
         "object_id": null,
-        "time": null,
+        "time": "on 15 August 2026",
         "fact_type": "RISK",
-        "confidence": 0.75,
+        "confidence": 0.88,
         "evidence": [
           {
-            "document_id": "src-cyber-p4-001",
-            "source_id": "src-cyber-p4-001",
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
             "chunk_id": "chunk_001",
             "page": 1,
             "paragraph": null,
-            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      },
+      {
+        "fact_id": "fact_002",
+        "statement": "The attack exploited CVE-2026-4418 in Identity Gateway",
+        "subject": "The attack",
+        "subject_id": null,
+        "predicate": "exploited",
+        "object": "CVE-2026-4418 in Identity Gateway",
+        "object_id": null,
+        "time": null,
+        "fact_type": "RISK",
+        "confidence": 0.92,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "The attack exploited CVE-2026-4418 in Identity Gateway",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      },
+      {
+        "fact_id": "fact_003",
+        "statement": "RECOMMENDED MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
+        "subject": "RECOMMENDED",
+        "subject_id": null,
+        "predicate": "states",
+        "object": "MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
+        "object_id": null,
+        "time": null,
+        "fact_type": "ACTION",
+        "confidence": 0.75,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_002",
+            "page": 2,
+            "paragraph": null,
+            "text_span": "RECOMMENDED MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
             "char_start": null,
             "char_end": null
           }
@@ -97,20 +200,62 @@
     "relations": [
       {
         "relation_id": "rel_001",
-        "source": "Analysis",
+        "source": "CYBER THREAT INTELLIGENCE REPORT",
         "source_id": "ent_001",
         "relation": "RELATED_TO",
-        "target": "CVE-2026-4418",
+        "target": "Organization X",
         "target_id": "ent_002",
         "confidence": 0.65,
         "evidence": [
           {
-            "document_id": "src-cyber-p4-001",
-            "source_id": "src-cyber-p4-001",
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
             "chunk_id": "chunk_001",
             "page": 1,
             "paragraph": null,
-            "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      },
+      {
+        "relation_id": "rel_002",
+        "source": "CYBER THREAT INTELLIGENCE REPORT",
+        "source_id": "ent_001",
+        "relation": "RELATED_TO",
+        "target": "15 August 2026",
+        "target_id": "ent_003",
+        "confidence": 0.65,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+            "char_start": null,
+            "char_end": null
+          }
+        ]
+      },
+      {
+        "relation_id": "rel_003",
+        "source": "Organization X",
+        "source_id": "ent_002",
+        "relation": "RELATED_TO",
+        "target": "15 August 2026",
+        "target_id": "ent_003",
+        "confidence": 0.65,
+        "evidence": [
+          {
+            "document_id": "src-485a5fa34c35",
+            "source_id": "src-485a5fa34c35",
+            "chunk_id": "chunk_001",
+            "page": 1,
+            "paragraph": null,
+            "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
             "char_start": null,
             "char_end": null
           }
@@ -118,11 +263,11 @@
       }
     ],
     "statistics": {
-      "totalChunks": 1,
-      "totalEntities": 2,
-      "totalFacts": 1,
-      "totalRelations": 1,
-      "totalEvidence": 4,
+      "totalChunks": 2,
+      "totalEntities": 4,
+      "totalFacts": 3,
+      "totalRelations": 3,
+      "totalEvidence": 10,
       "mergedEntities": 0,
       "duplicateEntitiesRemoved": 0,
       "duplicateFactsRemoved": 0,
@@ -131,21 +276,23 @@
       "evidenceCoverage": 100.0,
       "entityTypes": {
         "DOCUMENT": 1,
+        "ORGANIZATION": 1,
+        "DATE": 1,
         "IDENTIFIER": 1
       },
       "relationTypes": {
-        "RELATED_TO": 1
+        "RELATED_TO": 3
       }
     },
     "validation": {
       "valid": true,
       "status": "valid",
-      "documentId": "src-cyber-p4-001",
+      "documentId": "src-485a5fa34c35",
       "stats": {
-        "entities": 2,
-        "facts": 1,
-        "relations": 1,
-        "chunks": 1
+        "entities": 4,
+        "facts": 3,
+        "relations": 3,
+        "chunks": 2
       },
       "errors": [],
       "warnings": [],
@@ -167,15 +314,15 @@
         "has_relations": true,
         "no_self_relations": true
       },
-      "validated_at": "2026-09-25T10:08:26.112919+00:00"
+      "validated_at": "2026-09-26T02:25:13.856176+00:00"
     },
     "graph": {
-      "document_id": "src-cyber-p4-001",
+      "document_id": "src-485a5fa34c35",
       "nodes": [
         {
           "id": "ent_001",
           "label": "DOCUMENT",
-          "name": "Analysis",
+          "name": "CYBER THREAT INTELLIGENCE REPORT",
           "type": "DOCUMENT",
           "confidence": 0.82,
           "properties": {
@@ -186,6 +333,30 @@
         },
         {
           "id": "ent_002",
+          "label": "ORGANIZATION",
+          "name": "Organization X",
+          "type": "ORGANIZATION",
+          "confidence": 0.95,
+          "properties": {
+            "surface_forms": [],
+            "mentions": 1,
+            "aliases_resolved": []
+          }
+        },
+        {
+          "id": "ent_003",
+          "label": "DATE",
+          "name": "15 August 2026",
+          "type": "DATE",
+          "confidence": 0.95,
+          "properties": {
+            "surface_forms": [],
+            "mentions": 1,
+            "aliases_resolved": []
+          }
+        },
+        {
+          "id": "ent_004",
           "label": "IDENTIFIER",
           "name": "CVE-2026-4418",
           "type": "IDENTIFIER",
@@ -205,17 +376,63 @@
           "target": "ent_002",
           "confidence": 0.65,
           "properties": {
-            "source_name": "Analysis",
-            "target_name": "CVE-2026-4418"
+            "source_name": "CYBER THREAT INTELLIGENCE REPORT",
+            "target_name": "Organization X"
           },
           "evidence": [
             {
-              "document_id": "src-cyber-p4-001",
-              "source_id": "src-cyber-p4-001",
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
               "chunk_id": "chunk_001",
               "page": 1,
               "paragraph": null,
-              "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+              "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        },
+        {
+          "id": "rel_002",
+          "source": "ent_001",
+          "type": "RELATED_TO",
+          "target": "ent_003",
+          "confidence": 0.65,
+          "properties": {
+            "source_name": "CYBER THREAT INTELLIGENCE REPORT",
+            "target_name": "15 August 2026"
+          },
+          "evidence": [
+            {
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
+              "chunk_id": "chunk_001",
+              "page": 1,
+              "paragraph": null,
+              "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        },
+        {
+          "id": "rel_003",
+          "source": "ent_002",
+          "type": "RELATED_TO",
+          "target": "ent_003",
+          "confidence": 0.65,
+          "properties": {
+            "source_name": "Organization X",
+            "target_name": "15 August 2026"
+          },
+          "evidence": [
+            {
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
+              "chunk_id": "chunk_001",
+              "page": 1,
+              "paragraph": null,
+              "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
               "char_start": null,
               "char_end": null
             }
@@ -223,22 +440,22 @@
         }
       ],
       "statistics": {
-        "node_count": 2,
-        "edge_count": 1
+        "node_count": 4,
+        "edge_count": 3
       },
       "persisted": false
     },
     "uckr": {
-      "document_id": "src-cyber-p4-001",
-      "documentId": "src-cyber-p4-001",
-      "sourceId": "src-cyber-p4-001",
-      "projectId": "proj-cyber-p4-001",
+      "document_id": "src-485a5fa34c35",
+      "documentId": "src-485a5fa34c35",
+      "sourceId": "src-485a5fa34c35",
+      "projectId": "proj-phase3-00a9ebb4",
       "phase": "phase_4_doclink",
       "provider": "deterministic",
       "entities": [
         {
           "id": "ent_001",
-          "canonicalName": "Analysis",
+          "canonicalName": "CYBER THREAT INTELLIGENCE REPORT",
           "type": "DOCUMENT",
           "confidence": 0.82,
           "aliases": [],
@@ -246,6 +463,22 @@
         },
         {
           "id": "ent_002",
+          "canonicalName": "Organization X",
+          "type": "ORGANIZATION",
+          "confidence": 0.95,
+          "aliases": [],
+          "mentions": 1
+        },
+        {
+          "id": "ent_003",
+          "canonicalName": "15 August 2026",
+          "type": "DATE",
+          "confidence": 0.95,
+          "aliases": [],
+          "mentions": 1
+        },
+        {
+          "id": "ent_004",
           "canonicalName": "CVE-2026-4418",
           "type": "IDENTIFIER",
           "confidence": 0.95,
@@ -256,21 +489,65 @@
       "facts": [
         {
           "id": "fact_001",
-          "statement": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
-          "subject": "Analysis",
-          "predicate": "states",
-          "object": "of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
-          "time": null,
+          "statement": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+          "subject": "INTELLIGENCE REPORT 2026 Organization X",
+          "predicate": "detected",
+          "object": "a ransomware campaign",
+          "time": "on 15 August 2026",
           "factType": "RISK",
-          "confidence": 0.75,
+          "confidence": 0.88,
           "sourceRefs": [
             {
-              "document_id": "src-cyber-p4-001",
-              "source_id": "src-cyber-p4-001",
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
               "chunk_id": "chunk_001",
               "page": 1,
               "paragraph": null,
-              "text_span": "Analysis of ransomware campaigns and identity gateway CVE-2026-4418 vulnerabilities",
+              "text_span": "CYBER THREAT INTELLIGENCE REPORT 2026 Organization X detected a ransomware campaign on 15 August 2026",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        },
+        {
+          "id": "fact_002",
+          "statement": "The attack exploited CVE-2026-4418 in Identity Gateway",
+          "subject": "The attack",
+          "predicate": "exploited",
+          "object": "CVE-2026-4418 in Identity Gateway",
+          "time": null,
+          "factType": "RISK",
+          "confidence": 0.92,
+          "sourceRefs": [
+            {
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
+              "chunk_id": "chunk_001",
+              "page": 1,
+              "paragraph": null,
+              "text_span": "The attack exploited CVE-2026-4418 in Identity Gateway",
+              "char_start": null,
+              "char_end": null
+            }
+          ]
+        },
+        {
+          "id": "fact_003",
+          "statement": "RECOMMENDED MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
+          "subject": "RECOMMENDED",
+          "predicate": "states",
+          "object": "MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
+          "time": null,
+          "factType": "ACTION",
+          "confidence": 0.75,
+          "sourceRefs": [
+            {
+              "document_id": "src-485a5fa34c35",
+              "source_id": "src-485a5fa34c35",
+              "chunk_id": "chunk_002",
+              "page": 2,
+              "paragraph": null,
+              "text_span": "RECOMMENDED MITIGATION ACTIONS Deploy patch 2.4.1 immediately and reset affected user credentials",
               "char_start": null,
               "char_end": null
             }
@@ -280,20 +557,38 @@
       "relations": [
         {
           "id": "rel_001",
-          "source": "Analysis",
+          "source": "CYBER THREAT INTELLIGENCE REPORT",
           "sourceId": "ent_001",
           "relation": "RELATED_TO",
-          "target": "CVE-2026-4418",
+          "target": "Organization X",
           "targetId": "ent_002",
+          "confidence": 0.65
+        },
+        {
+          "id": "rel_002",
+          "source": "CYBER THREAT INTELLIGENCE REPORT",
+          "sourceId": "ent_001",
+          "relation": "RELATED_TO",
+          "target": "15 August 2026",
+          "targetId": "ent_003",
+          "confidence": 0.65
+        },
+        {
+          "id": "rel_003",
+          "source": "Organization X",
+          "sourceId": "ent_002",
+          "relation": "RELATED_TO",
+          "target": "15 August 2026",
+          "targetId": "ent_003",
           "confidence": 0.65
         }
       ],
       "statistics": {
-        "totalChunks": 1,
-        "totalEntities": 2,
-        "totalFacts": 1,
-        "totalRelations": 1,
-        "totalEvidence": 4,
+        "totalChunks": 2,
+        "totalEntities": 4,
+        "totalFacts": 3,
+        "totalRelations": 3,
+        "totalEvidence": 10,
         "mergedEntities": 0,
         "duplicateEntitiesRemoved": 0,
         "duplicateFactsRemoved": 0,
@@ -302,15 +597,17 @@
         "evidenceCoverage": 100.0,
         "entityTypes": {
           "DOCUMENT": 1,
+          "ORGANIZATION": 1,
+          "DATE": 1,
           "IDENTIFIER": 1
         },
         "relationTypes": {
-          "RELATED_TO": 1
+          "RELATED_TO": 3
         }
       },
-      "generated_at": "2026-09-25T10:08:26.112919+00:00"
+      "generated_at": "2026-09-26T02:25:13.856176+00:00"
     },
-    "created_at": "2026-09-25T10:08:26.112919+00:00",
-    "updated_at": "2026-09-25T10:08:26.112919+00:00"
+    "created_at": "2026-09-26T02:25:13.856176+00:00",
+    "updated_at": "2026-09-26T02:25:13.856176+00:00"
   }
 ]

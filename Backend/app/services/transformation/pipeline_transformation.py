@@ -116,7 +116,8 @@ def _gen(dtype: str, uckr: dict, cfg: dict) -> dict:
 
 
 def generate(
-    uid: str, project_id: str, uckr_version: Optional[int], dtype: str, config: Optional[dict] = None
+    uid: str, project_id: str, uckr_version: Optional[int], dtype: str,
+    config: Optional[dict] = None, source_id: Optional[str] = None,
 ) -> dict:
     """Generate ONE deliverable from the project's UCKR and persist it."""
     from ..projects.project_service import get_project
@@ -126,6 +127,8 @@ def generate(
     project = get_project(project_id, uid)
     uckr_repo = get_repository("uckr")
     filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
+    if source_id:
+        filt["sourceId"] = source_id
     if uckr_version is not None:
         filt["version"] = uckr_version
     uckr = uckr_repo.find_one(filt, sort=[("version", -1)], projection={"_id": 0})
@@ -168,18 +171,25 @@ def generate(
     return doc
 
 
-def generate_many(uid: str, project_id: str, types: list[str], config: Optional[dict] = None) -> list[dict]:
+def generate_many(
+    uid: str, project_id: str, types: list[str], config: Optional[dict] = None,
+    source_id: Optional[str] = None,
+) -> list[dict]:
     """Generate all requested deliverables from the SAME UCKR version (Phase 5 fan-out)."""
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
     uckr_repo = get_repository("uckr")
-    uckr = uckr_repo.find_one(
-        {"projectId": project_id, **_owner_filter(uid)}, sort=[("version", -1)], projection={"_id": 0}
-    )
+    filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
+    if source_id:
+        filt["sourceId"] = source_id
+    uckr = uckr_repo.find_one(filt, sort=[("version", -1)], projection={"_id": 0})
     if not uckr:
         raise HTTPException(status_code=404, detail="No UCKR found — run analysis first.")
-    out = [generate(uid, project_id, int(uckr.get("version", 1)), t, config) for t in types]
+    out = [
+        generate(uid, project_id, int(uckr.get("version", 1)), t, config, source_id)
+        for t in types
+    ]
     try:
         from ..projects.project_service import update_project
 

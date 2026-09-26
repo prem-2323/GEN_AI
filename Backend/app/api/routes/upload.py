@@ -32,6 +32,8 @@ async def upload_project_source(
             content_bytes=contents,
             content_type=file.content_type or "",
         )
+    except HTTPException:
+        raise
     except AppException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
     except Exception as exc:
@@ -67,6 +69,8 @@ async def upload_source(
             "storagePath": f"documents/{doc.documentId}/original/{doc.filename}",
             "extracted": doc.model_dump(by_alias=True),
         }
+    except HTTPException:
+        raise
     except AppException as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.message)
     except Exception as exc:

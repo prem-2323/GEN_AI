@@ -216,3 +216,107 @@ async def retrieve_hybrid(req: HybridRetrieveRequest) -> HybridRetrieveResponse:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Hybrid retrieval failed: {str(exc)}",
         )
+
+
+# ──────────────────────────────────────────────────
+# POST /api/rag/answer — Phase 7 Final Grounded RAG
+# ──────────────────────────────────────────────────
+
+class GroundedAnswerRequest(BaseModel):
+    """Request for Phase 7 final grounded RAG answer generation."""
+    query: str = Field(..., min_length=1, description="Target question")
+    top_k: int = Field(5, ge=1, le=50, description="RRF candidate pool limit")
+    qubo_k: int = Field(3, ge=1, le=50, description="QUBO selected evidence count K")
+    enable_qubo: bool = Field(True, description="Enable QUBO evidence selection")
+    max_new_tokens: int = Field(256, ge=16, le=1024, description="Max tokens for student answer")
+
+
+class GroundedAnswerResponse(BaseModel):
+    """Response payload for POST /api/rag/answer."""
+    query: str
+    answer: str
+    citations: List[str]
+    evidence: List[Dict[str, Any]]
+    retrieval: Dict[str, Any]
+    qubo: Dict[str, Any]
+    model: Dict[str, Any]
+    grounding: Dict[str, Any]
+    total_latency_ms: float
+
+
+@router.get(
+    "/answer/status",
+    status_code=status.HTTP_200_OK,
+    summary="Get Phase 7 Grounded RAG Pipeline Status",
+)
+async def get_rag_answer_status():
+    """Return operational availability of grounded RAG pipeline."""
+    from ...services.student_service import get_student_service
+    student_status = get_student_service().get_status()
+    return {
+        "status": "ready",
+        "pipeline": "FAISS + Neo4j -> RRF -> QUBO -> QLoRA Student",
+        "student": student_status,
+    }
+
+
+@router.post(
+    "/answer",
+    response_model=GroundedAnswerResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Execute Phase 7 Final Grounded RAG Generation",
+    description=(
+        "Full Phase 7 pipeline: FAISS + Neo4j retrieval -> RRF fusion -> QUBO evidence selection -> "
+        "Context builder -> QLoRA student model -> Grounding & Citation validator."
+    ),
+)
+async def generate_grounded_answer(req: GroundedAnswerRequest) -> GroundedAnswerResponse:
+    """Execute complete grounded RAG question answering."""
+    if not req.query or not req.query.strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Search query cannot be empty.",
+        )
+
+    if len(req.query) > 1000:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Search query exceeds maximum length of 1000 characters.",
+        )
+
+    if req.qubo_k > req.top_k:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"qubo_k ({req.qubo_k}) cannot be greater than top_k ({req.top_k}).",
+        )
+
+    try:
+        from ...rag.grounded_rag import get_grounded_rag_service
+        service = get_grounded_rag_service()
+        res = service.answer_query(
+            query=req.query,
+            top_k=req.top_k,
+            qubo_k=req.qubo_k,
+            enable_qubo=req.enable_qubo,
+            max_new_tokens=req.max_new_tokens,
+        )
+
+        return GroundedAnswerResponse(
+            query=res["query"],
+            answer=res["answer"],
+            citations=res["citations"],
+            evidence=res["evidence"],
+            retrieval=res["retrieval"],
+            qubo=res["qubo"],
+            model=res["model"],
+            grounding=res["grounding"],
+            total_latency_ms=res["latency_breakdown_ms"]["total_ms"],
+        )
+
+    except Exception as exc:
+        log.exception("Error generating grounded RAG answer for '%s': %s", req.query, exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Grounded RAG answer generation failed: {str(exc)}",
+        )
+

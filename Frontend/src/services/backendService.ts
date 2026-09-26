@@ -62,6 +62,11 @@ export const backendApi = {
       method: 'POST',
       body: JSON.stringify({ forceRefresh, extractedText }),
     }),
+  analyzeDocLink: (projectId: string, sourceId: string) =>
+    req('/api/doclink/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ document_id: sourceId, projectId, useLlm: true }),
+    }),
   getPhase3Analysis: (projectId: string, sourceId: string) =>
     req(`/api/projects/${projectId}/sources/${sourceId}/analysis`),
   getPhase3Status: (projectId: string, sourceId: string) =>
@@ -88,10 +93,11 @@ export const backendApi = {
     req(`/api/projects/${projectId}/sources/${sourceId}/uckr`, { method: 'POST' }),
   getUckr: (projectId: string, sourceId?: string) =>
     req(`/api/projects/${projectId}/uckr${sourceId ? `?sourceId=${sourceId}` : ''}`),
-  transform: (projectId: string, types: string[], config?: Record<string, unknown>) =>
+  transform: (projectId: string, types: string[], config?: Record<string, unknown>, sourceId?: string) =>
     req(`/api/projects/${projectId}/transform`, {
       method: 'POST',
       body: JSON.stringify({
+        sourceId,
         outputTypes: types.map((type) => type === 'twitter' ? 'x' : type === 'video' ? 'video_script' : type),
         configuration: {
           audience: String(config?.audience || config?.targetAudience || 'executive').toLowerCase(),

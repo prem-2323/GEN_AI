@@ -1,2 +1,0 @@
-CONFIDENTIAL CYBER THREAT REPORT - AUGUST 2026
-Organization X detected a sophisticated ransomware outbreak on 15 August 2026. The attackers leveraged CVE-2026-4418 in the Identity Gateway, impacting 25 servers. Action required: Security teams must immediately apply Security Patch 2 and isolate legacy subnets.

@@ -13,6 +13,12 @@ from .schemas import GraphEvidence, RetrievalResult, SourceCitation
 log = logging.getLogger("gen-transform.rag.citations")
 
 
+def _get(obj, key, default=None):
+    if isinstance(obj, dict):
+        return obj.get(key, default)
+    return getattr(obj, key, default)
+
+
 class CitationTracker:
     """Extracts and formats structured SourceCitation and GraphEvidence records."""
 
@@ -26,11 +32,15 @@ class CitationTracker:
 
         citation_index = 1
         for cand in context_candidates:
-            if cand.source_type == "vector":
-                doc_id = cand.document_id or cand.evidence.get("document_id") or "doc"
-                chunk_id = cand.source_id
-                page = cand.evidence.get("page") or cand.metadata.get("page_number", 1)
-                title = cand.evidence.get("filename") or cand.metadata.get("source_filename") or doc_id
+            stype = _get(cand, "source_type")
+            evidence = _get(cand, "evidence", {}) or {}
+            metadata = _get(cand, "metadata", {}) or {}
+            doc_id = _get(cand, "document_id") or evidence.get("document_id") or "doc"
+
+            if stype == "vector":
+                chunk_id = _get(cand, "source_id") or ""
+                page = evidence.get("page") or metadata.get("page_number", 1)
+                title = evidence.get("filename") or metadata.get("source_filename") or doc_id
 
                 sources.append(
                     SourceCitation(
@@ -43,13 +53,12 @@ class CitationTracker:
                 )
                 citation_index += 1
 
-            elif cand.source_type == "graph":
-                src = str(cand.metadata.get("source") or cand.evidence.get("source") or "")
-                rel = str(cand.metadata.get("relation") or cand.evidence.get("relation") or "")
-                tgt = str(cand.metadata.get("target") or cand.evidence.get("target") or "")
-                doc_id = cand.document_id or cand.evidence.get("document_id")
-                conf = float(cand.score)
-                ev_text = cand.evidence.get("evidence_text") or cand.metadata.get("evidence_text")
+            elif stype == "graph":
+                src = str(metadata.get("source") or evidence.get("source") or "")
+                rel = str(metadata.get("relation") or evidence.get("relation") or "")
+                tgt = str(metadata.get("target") or evidence.get("target") or "")
+                conf = float(_get(cand, "score", 0.0) or 0.0)
+                ev_text = evidence.get("evidence_text") or metadata.get("evidence_text")
 
                 graph_evidence.append(
                     GraphEvidence(

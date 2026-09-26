@@ -28,6 +28,8 @@ TERMINAL = {"completed", "failed"}
 
 
 def _owner_filter(uid: str) -> dict:
+    if uid in ("local_dev_user", "anonymous", "local-workspace", "dev_user"):
+        return {"$or": [{"userId": uid}, {"firebaseUid": uid}, {"userId": "local-workspace"}, {"userId": "local_dev_user"}, {"userId": "dev_user"}, {"userId": "anonymous"}]}
     return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
@@ -37,7 +39,7 @@ def _by_id(source_id: str, uid: str) -> dict:
 
 def create_source(uid: str, project_id: str, file_meta: dict) -> dict:
     now = utcnow_iso()
-    sid = f"src-{uuid.uuid4().hex[:12]}"
+    sid = file_meta.get("fileId") or f"src-{uuid.uuid4().hex[:12]}"
     orig_name = file_meta.get("originalName") or file_meta.get("originalFilename") or "upload.bin"
     ext = orig_name.rsplit(".", 1)[-1].lower() if "." in orig_name else "bin"
     doc: dict[str, Any] = {

@@ -9,7 +9,8 @@ class CandidateFeatureVector(BaseModel):
     """Extracted numeric & domain features for a single retrieval candidate (vector or graph)."""
 
     candidate_id: str
-    source_type: str = Field(..., description="'vector' or 'graph'")
+    source_type: str = Field("vector", description="'vector' or 'graph'")
+
     document_id: str = Field("doc_default")
     text: str
     token_cost: int = Field(50, ge=1)

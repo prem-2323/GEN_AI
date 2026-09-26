@@ -1,0 +1,296 @@
+[
+  {
+    "id": "Q001",
+    "category": "Document Overview",
+    "document": "testreport.pdf",
+    "question": "What is the title and focus of the paper?",
+    "expected_evidence": [
+      {
+        "page": 1,
+        "keyword": "Developing an IoT and ML-driven platform for fruit ripeness evaluation"
+      }
+    ],
+    "expected_facts": [
+      "Developing an IoT and ML-driven platform for fruit ripeness evaluation and spoilage detection: A case study on bananas"
+    ]
+  },
+  {
+    "id": "Q002",
+    "category": "Document Overview",
+    "document": "testreport.pdf",
+    "question": "Who are the authors of the research paper and their affiliations?",
+    "expected_evidence": [
+      {
+        "page": 1,
+        "keyword": "Rajini M"
+      }
+    ],
+    "expected_facts": [
+      "Rajini M (Government Degree College, Ravulapalem) and Persis Voola (Adikavi Nannaya University, Rajahmundry)"
+    ]
+  },
+  {
+    "id": "Q003",
+    "category": "Technical Architecture",
+    "document": "testreport.pdf",
+    "question": "What microcontroller is used in the proposed prototype?",
+    "expected_evidence": [
+      {
+        "page": 4,
+        "keyword": "ESP32"
+      }
+    ],
+    "expected_facts": [
+      "ESP32 microcontroller"
+    ]
+  },
+  {
+    "id": "Q004",
+    "category": "Technical Architecture",
+    "document": "testreport.pdf",
+    "question": "What sensors were used in the IoT architecture?",
+    "expected_evidence": [
+      {
+        "page": 4,
+        "keyword": "SGP30"
+      },
+      {
+        "page": 9,
+        "keyword": "SHT30"
+      }
+    ],
+    "expected_facts": [
+      "SGP30 gas sensor and SHT30/SHT40 temperature and humidity sensor"
+    ]
+  },
+  {
+    "id": "Q005",
+    "category": "Technical Architecture",
+    "document": "testreport.pdf",
+    "question": "Which IoT platform was used for cloud data storage and visualization?",
+    "expected_evidence": [
+      {
+        "page": 5,
+        "keyword": "ThingSpeak"
+      }
+    ],
+    "expected_facts": [
+      "ThingSpeak IoT platform"
+    ]
+  },
+  {
+    "id": "Q006",
+    "category": "Methodology",
+    "document": "testreport.pdf",
+    "question": "What machine learning algorithms were evaluated?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "RFC, DTC, KNN, SVM, ADB, CBC"
+      }
+    ],
+    "expected_facts": [
+      "Random Forest Classifier (RFC), Decision Tree Classifier (DTC), KNN, SVM, AdaBoost (ADB), CatBoost Classifier (CBC)"
+    ]
+  },
+  {
+    "id": "Q007",
+    "category": "Model Metrics",
+    "document": "testreport.pdf",
+    "question": "What CatBoost performance values were reported?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "98.90 %"
+      }
+    ],
+    "expected_facts": [
+      "98.90% accuracy"
+    ]
+  },
+  {
+    "id": "Q008",
+    "category": "Dataset Information",
+    "document": "testreport.pdf",
+    "question": "How many ripeness classes were classified in the proposed framework?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "3"
+      }
+    ],
+    "expected_facts": [
+      "3 classes"
+    ]
+  },
+  {
+    "id": "Q009",
+    "category": "Dataset Information",
+    "document": "testreport.pdf",
+    "question": "What target fruit was used for the case study?",
+    "expected_evidence": [
+      {
+        "page": 1,
+        "keyword": "bananas"
+      }
+    ],
+    "expected_facts": [
+      "bananas"
+    ]
+  },
+  {
+    "id": "Q010",
+    "category": "Comparisons",
+    "document": "testreport.pdf",
+    "question": "How does the proposed framework accuracy compare to reference [36]?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "97.05 %"
+      }
+    ],
+    "expected_facts": [
+      "Proposed framework achieved 98.90% vs 97.05% in reference [36]"
+    ]
+  },
+  {
+    "id": "Q011",
+    "category": "Entity Extraction",
+    "document": "testreport.pdf",
+    "question": "Which journal published this research paper?",
+    "expected_evidence": [
+      {
+        "page": 4,
+        "keyword": "e-Prime"
+      }
+    ],
+    "expected_facts": [
+      "e-Prime - Advances in Electrical Engineering, Electronics and Energy"
+    ]
+  },
+  {
+    "id": "Q012",
+    "category": "Numerical Facts",
+    "document": "testreport.pdf",
+    "question": "What was the reported accuracy of reference [38] for detecting spoilage?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "96.15 %"
+      }
+    ],
+    "expected_facts": [
+      "96.15%"
+    ]
+  },
+  {
+    "id": "Q013",
+    "category": "Numerical Facts",
+    "document": "testreport.pdf",
+    "question": "What accuracy was achieved by reference [39] using camera and gas sensor array?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "94.69 %"
+      }
+    ],
+    "expected_facts": [
+      "94.69%"
+    ]
+  },
+  {
+    "id": "Q014",
+    "category": "Technical Architecture",
+    "document": "testreport.pdf",
+    "question": "What type of sensor is the SGP30?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "Gas sensor"
+      }
+    ],
+    "expected_facts": [
+      "Gas sensor"
+    ]
+  },
+  {
+    "id": "Q015",
+    "category": "Methodology",
+    "document": "testreport.pdf",
+    "question": "What main application domain is targeted by the proposed framework?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "Retail and Cold storage supply chain"
+      }
+    ],
+    "expected_facts": [
+      "Retail and Cold storage supply chain"
+    ]
+  },
+  {
+    "id": "Q016",
+    "category": "Questions where evidence is insufficient",
+    "document": "testreport.pdf",
+    "question": "What quantum computing algorithm was used for fruit ripeness detection?",
+    "expected_evidence": [],
+    "expected_facts": [
+      "The supplied evidence is insufficient to answer this query."
+    ]
+  },
+  {
+    "id": "Q017",
+    "category": "Questions where evidence is insufficient",
+    "document": "testreport.pdf",
+    "question": "What was the exact price of the ESP32 in US dollars mentioned in the text?",
+    "expected_evidence": [],
+    "expected_facts": [
+      "The supplied evidence is insufficient to answer this query."
+    ]
+  },
+  {
+    "id": "Q018",
+    "category": "Numerical Facts",
+    "document": "testreport.pdf",
+    "question": "What volume and issue number of e-Prime published this paper?",
+    "expected_evidence": [
+      {
+        "page": 4,
+        "keyword": "11 (2025) 100896"
+      }
+    ],
+    "expected_facts": [
+      "Volume 11 (2025) 100896"
+    ]
+  },
+  {
+    "id": "Q019",
+    "category": "Entity Extraction",
+    "document": "testreport.pdf",
+    "question": "Which university is author Persis Voola affiliated with?",
+    "expected_evidence": [
+      {
+        "page": 1,
+        "keyword": "Adikavi Nannaya University"
+      }
+    ],
+    "expected_facts": [
+      "Adikavi Nannaya University, Rajahmundry, A.P, India"
+    ]
+  },
+  {
+    "id": "Q020",
+    "category": "Document Overview",
+    "document": "testreport.pdf",
+    "question": "What is the declared data availability policy of this study?",
+    "expected_evidence": [
+      {
+        "page": 9,
+        "keyword": "Data will be made available on request."
+      }
+    ],
+    "expected_facts": [
+      "Data will be made available on request."
+    ]
+  }
+]

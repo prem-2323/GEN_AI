@@ -130,7 +130,15 @@ def test_graph_retriever():
             ),
         ],
     )
-    graph_svc.ingest_doclink_result(payload)
+    try:
+        graph_svc.ingest_doclink_result(payload)
+    except ConnectionError as exc:
+        print(f"  [WARN] Real Neo4j offline ({exc}); using MockNeo4jGraphStore for test_graph_retriever.")
+        import app.graph.repository
+        mock_repo = app.graph.repository.MockNeo4jGraphStore()
+        app.graph.repository._GLOBAL_GRAPH_REPO = mock_repo
+        graph_svc._repo = mock_repo
+        graph_svc.ingest_doclink_result(payload)
 
     graph_retriever = GraphRetriever(service=graph_svc)
     analyzer = QueryAnalyzer()

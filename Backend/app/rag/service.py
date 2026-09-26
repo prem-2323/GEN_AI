@@ -86,13 +86,20 @@ class RAGGenerationEngine:
             log.debug("Gemini RAG generation skipped (%s)", exc)
             return None
 
-    def _generate_grounded_fallback(self, candidates: List[RetrievalResult]) -> str:
+    def _generate_grounded_fallback(self, candidates: List[Any]) -> str:
         """Deterministic, grounded answer synthesizer built directly from verified evidence."""
         if not candidates:
             return "The retrieved evidence does not contain sufficient information to answer this question."
 
-        doc_candidates = [c for c in candidates if c.source_type == "vector"]
-        graph_candidates = [c for c in candidates if c.source_type == "graph"]
+        def _get(c: Any, field: str, default: Any = "") -> Any:
+            if isinstance(c, dict):
+                return c.get(field, default)
+            return getattr(c, field, default)
+
+        doc_candidates = [c for c in candidates if _get(c, "source_type") == "vector" or _get(c, "source") in ("vector", "pdf", "file")]
+        graph_candidates = [c for c in candidates if _get(c, "source_type") == "graph"]
+        if not doc_candidates and not graph_candidates:
+            doc_candidates = candidates
 
         lines: List[str] = ["Based on the retrieved vector chunks and knowledge graph evidence:\n"]
 
@@ -100,16 +107,18 @@ class RAGGenerationEngine:
             lines.append("Document Evidence:")
             citation_idx = 1
             for dc in doc_candidates:
-                snippet = dc.text.strip().replace("\n", " ")
-                lines.append(f"- {snippet} [{citation_idx}]")
+                txt = str(_get(dc, "text", "")).strip().replace("\n", " ")
+                lines.append(f"- {txt} [{citation_idx}]")
                 citation_idx += 1
 
         if graph_candidates:
             lines.append("\nKnowledge Graph Relationships:")
             for gc in graph_candidates:
-                src = gc.metadata.get("source") or gc.evidence.get("source")
-                rel = gc.metadata.get("relation") or gc.evidence.get("relation")
-                tgt = gc.metadata.get("target") or gc.evidence.get("target")
+                meta = _get(gc, "metadata", {}) or {}
+                ev = _get(gc, "evidence", {}) or {}
+                src = _get(gc, "source") or meta.get("source") or ev.get("source") or "Entity"
+                rel = str(meta.get("relation") or ev.get("relation") or "related_to")
+                tgt = meta.get("target") or ev.get("target") or "Target"
                 lines.append(f"- {src} {rel.replace('_', ' ').lower()} {tgt}.")
 
         return "\n".join(lines)

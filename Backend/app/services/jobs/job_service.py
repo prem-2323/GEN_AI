@@ -147,7 +147,9 @@ def run_full_transformation(job_id: str, uid: str) -> None:
             uckr_repo.update_one({"uckrId": uckr["uckrId"]}, {"$set": {"visuals": visuals}})
 
         _update(job_id, stage="generating_outputs", progress=80)
-        made = transformation_service.generate_many(uid, project_id, outputs, params.get("config"))
+        made = transformation_service.generate_many(
+            uid, project_id, outputs, params.get("config"), source_id
+        )
 
         _update(job_id, stage="validating", progress=92)
         try:

@@ -552,7 +552,8 @@ export function validateDeliverableGrounding(
 const inFlightAnalysisMap = new Map<string, Promise<AIAnalysis>>();
 const inFlightUckrMap = new Map<string, Promise<UckrKnowledgeBase>>();
 
-export async function analyzeSourceContent(source: SourceFile, projectId: string = 'proj_default'): Promise<AIAnalysis> {
+export async function analyzeSourceContent(source: SourceFile, projectId?: string): Promise<AIAnalysis> {
+  projectId = projectId || source.projectId || 'proj_default';
   const text = source.extractedText?.trim();
   if (!text) {
     throw new Error('No source text to analyze. Upload or paste source content first.');
@@ -568,7 +569,7 @@ export async function analyzeSourceContent(source: SourceFile, projectId: string
     if (backendEnabled) {
       try {
         const srcId = source.id || 'SRC_001';
-        const anaRes = await backendApi.startPhase3Analysis(projectId, srcId, true, source.extractedText).catch(() => null);
+        const anaRes = await backendApi.startPhase3Analysis(projectId, srcId, false, source.extractedText).catch(() => null);
       if (anaRes && anaRes.textAnalysis) {
         const ta = anaRes.textAnalysis;
         return {
@@ -618,8 +619,9 @@ ${source.extractedText.slice(0, 12000)}`;
 export async function buildUckrKnowledge(
   source: SourceFile,
   analysis: AIAnalysis,
-  projectId: string = 'proj_default'
+  projectId?: string
 ): Promise<UckrKnowledgeBase> {
+  projectId = projectId || source.projectId || 'proj_default';
   // 1. Try FastAPI backend UCKR generation with local persistence.
   if (backendEnabled) {
     try {
@@ -775,7 +777,12 @@ export async function generateDeliverables(
   // 1. Try FastAPI Backend Transformation Engine (Phase 6 Qwen/Gemma + DB persistence)
   if (backendEnabled && source.projectId) {
     try {
-      const backendRes = await backendApi.transform(source.projectId, selectedOutputs, config as unknown as Record<string, unknown>).catch(() => null);
+      const backendRes = await backendApi.transform(
+        source.projectId,
+        selectedOutputs,
+        config as unknown as Record<string, unknown>,
+        source.sourceId || source.id
+      ).catch(() => null);
       if (backendRes && backendRes.deliverables && Array.isArray(backendRes.deliverables)) {
         const mapped: TransformationDeliverables = {};
         for (const item of backendRes.deliverables) {

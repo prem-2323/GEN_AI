@@ -64,6 +64,8 @@ export type CoreSystemStatus = 'ready' | 'verified' | 'processing' | 'active' | 
 
 export interface SourceFile {
   id: string;
+  sourceId?: string;
+  fileId?: string;
   projectId?: string;
   name: string;
   type: 'PDF' | 'DOCX' | 'TXT' | 'IMAGE' | 'VIDEO' | 'TEXT';
@@ -72,6 +74,19 @@ export interface SourceFile {
   extractedText: string;
   status: CoreSystemStatus | string;
   uploadedAt: string;
+  extraction?: { pageCount?: number; textLength?: number; wordCount?: number };
+  normalized?: {
+    text?: { content?: string; characterCount?: number };
+    pages?: Array<{ pageNumber?: number; text?: string }>;
+    sections?: unknown[];
+    tables?: unknown[];
+    images?: unknown[];
+    metadata?: Record<string, unknown>;
+  };
+  processing?: { status?: string; stage?: string; progress?: number; error?: string | null };
+  doclinkResult?: Record<string, unknown>;
+  analysisResult?: Record<string, unknown>;
+  uckrReference?: { uckrId?: string; version?: number; status?: string };
 }
 
 export interface AIAnalysis {

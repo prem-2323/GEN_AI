@@ -1,0 +1,868 @@
+{
+  "hardware": {
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "pytorch_version": "2.14.0+cu126",
+    "cuda_version": "12.6",
+    "peak_vram_mb": 1129.3
+  },
+  "evaluation_summary": {
+    "total_questions": 20,
+    "baseline_grounding_pass": "17/20",
+    "final_grounding_pass": "19/20",
+    "baseline_numerical_valid": "17/20",
+    "final_numerical_valid": "19/20",
+    "baseline_avg_recall": 0.5,
+    "final_avg_recall": 0.6
+  },
+  "latency_stats_ms": {
+    "total_ms": {
+      "min": 4607.37,
+      "max": 9815.08,
+      "mean": 6351.45,
+      "median": 6075.38
+    },
+    "qubo_ms": {
+      "min": 2.51,
+      "max": 4.85,
+      "mean": 3.25,
+      "median": 3.11
+    },
+    "student_generation_ms": {
+      "min": 521.89,
+      "max": 5726.16,
+      "mean": 2268.34,
+      "median": 1994.93
+    },
+    "faiss_ms": {
+      "min": 10.56,
+      "max": 14.74,
+      "mean": 12.66,
+      "median": 12.34
+    }
+  },
+  "baseline_results": [
+    {
+      "id": "Q001",
+      "category": "Document Overview",
+      "query": "What is the title and focus of the paper?",
+      "latency_ms": 40997.72,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The title of the paper is \"Open Access Article\" and its focus is on \"Visualization\"."
+    },
+    {
+      "id": "Q002",
+      "category": "Document Overview",
+      "query": "Who are the authors of the research paper and their affiliations?",
+      "latency_ms": 9531.06,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The authors of the research paper are Rajini M and PersisVoola. Their affiliations are listed as follows:\n\n- Rajini M: Writing \u2013 review & editing, Writing \u2013 original draft, Visualization, Software, Resources, Methodology, Data curation, Conceptualization.\n- PersisVoola: Writing \u2013 review & editing, Writing \u2013 original draft, Supervision, Resources, Project administration."
+    },
+    {
+      "id": "Q003",
+      "category": "Technical Architecture",
+      "query": "What microcontroller is used in the proposed prototype?",
+      "latency_ms": 5184.3,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "In the proposed prototype, the ESP32 microcontroller is used."
+    },
+    {
+      "id": "Q004",
+      "category": "Technical Architecture",
+      "query": "What sensors were used in the IoT architecture?",
+      "latency_ms": 11030.22,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "In the proposed prototype, the ESP32 microcontroller collected data from various sensors locally and transmitted them wirelessly to the ThingSpeak IoT platform, where it was securely stored and visually displayed. The user-friendly interface enabled efficient transmission of sensor data, including temperature, humidity, TVOC, CO2, H2, and ethanol measurements, from the ESP32 microcontroller to the cloud. A comprehensive dataset was developed through the collection of sensor data for seven days. Two methods were employed to create this dataset: \n\n[Source: benchmark_doc]"
+    },
+    {
+      "id": "Q005",
+      "category": "Technical Architecture",
+      "query": "Which IoT platform was used for cloud data storage and visualization?",
+      "latency_ms": 5076.0,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The ThingSpeak IoT platform was used for cloud data storage and visualization."
+    },
+    {
+      "id": "Q006",
+      "category": "Methodology",
+      "query": "What machine learning algorithms were evaluated?",
+      "latency_ms": 7718.4,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "To evaluate the machine learning algorithms utilized in this study, the text mentions several algorithms including \"benchmark_doc_chunk_067_a12c26d0\" which refers to \"benchmark_doc_chunk_067_a12c26d0\"."
+    },
+    {
+      "id": "Q007",
+      "category": "Model Metrics",
+      "query": "What CatBoost performance values were reported?",
+      "latency_ms": 5027.95,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "CatBoost algorithms proved its advantage among all the other algorithms."
+    },
+    {
+      "id": "Q008",
+      "category": "Dataset Information",
+      "query": "How many ripeness classes were classified in the proposed framework?",
+      "latency_ms": 5796.75,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Based on the provided text, the dataset was carefully labeled with four ripeness categories: not ripe, ripe, and spoiled."
+    },
+    {
+      "id": "Q009",
+      "category": "Dataset Information",
+      "query": "What target fruit was used for the case study?",
+      "latency_ms": 4334.7,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "strawberries"
+    },
+    {
+      "id": "Q010",
+      "category": "Comparisons",
+      "query": "How does the proposed framework accuracy compare to reference [36]?",
+      "latency_ms": 8080.27,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": false,
+      "numerical_valid": false,
+      "citations": [],
+      "answer": "According to the provided text, the proposed framework's performance was compared to that of the reference [36]. Specifically, it states that the CatBoost classifier outperformed all other algorithms in terms of accuracy, precision, and recall. This indicates that the proposed framework achieved higher accuracy than the reference method."
+    },
+    {
+      "id": "Q011",
+      "category": "Entity Extraction",
+      "query": "Which journal published this research paper?",
+      "latency_ms": 4986.21,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "This research paper was published in the Agricultural Engineering International journal."
+    },
+    {
+      "id": "Q012",
+      "category": "Numerical Facts",
+      "query": "What was the reported accuracy of reference [38] for detecting spoilage?",
+      "latency_ms": 5624.71,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": false,
+      "numerical_valid": false,
+      "citations": [],
+      "answer": "The reported accuracy of the reference [38] for detecting spoilage was 99.65%."
+    },
+    {
+      "id": "Q013",
+      "category": "Numerical Facts",
+      "query": "What accuracy was achieved by reference [39] using camera and gas sensor array?",
+      "latency_ms": 5699.54,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": false,
+      "numerical_valid": false,
+      "citations": [],
+      "answer": "The accuracy achieved by the reference [39] using the camera and gas sensor array was precise with capacitive sensing."
+    },
+    {
+      "id": "Q014",
+      "category": "Technical Architecture",
+      "query": "What type of sensor is the SGP30?",
+      "latency_ms": 8286.94,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The SGP30 gas sensor is a compact, energy-efficient sensor that incorporates multi-pixel gas sensor technology, enabling accurate measurements of Total Volatile Organic Compounds (TVOC) and Carbon Dioxide Equivalent (CO2eq) levels, as well as H2 and Ethanol levels, which are essential for evaluating indoor air quality."
+    },
+    {
+      "id": "Q015",
+      "category": "Methodology",
+      "query": "What main application domain is targeted by the proposed framework?",
+      "latency_ms": 5106.84,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The proposed framework targets the area of **IoT development**."
+    },
+    {
+      "id": "Q016",
+      "category": "Questions where evidence is insufficient",
+      "query": "What quantum computing algorithm was used for fruit ripeness detection?",
+      "latency_ms": 4954.88,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Quantum computing algorithms were not mentioned in the provided text."
+    },
+    {
+      "id": "Q017",
+      "category": "Questions where evidence is insufficient",
+      "query": "What was the exact price of the ESP32 in US dollars mentioned in the text?",
+      "latency_ms": 5381.69,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The exact price of the ESP32 in US dollars mentioned in the text is not provided."
+    },
+    {
+      "id": "Q018",
+      "category": "Numerical Facts",
+      "query": "What volume and issue number of e-Prime published this paper?",
+      "latency_ms": 6054.66,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The paper was published in Volume 11, Issue 2 of e-Prime - Advances in Electrical Engineering, Electronics and Energy."
+    },
+    {
+      "id": "Q019",
+      "category": "Entity Extraction",
+      "query": "Which university is author Persis Voola affiliated with?",
+      "latency_ms": 4765.63,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Adikavi Nannaya University"
+    },
+    {
+      "id": "Q020",
+      "category": "Document Overview",
+      "query": "What is the declared data availability policy of this study?",
+      "latency_ms": 6868.7,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The author's declaration states that they have no financial interests or personal relationships that could influence the work presented in this study. This indicates that the authors adhere to a data availability policy where their research findings can be accessed upon request."
+    }
+  ],
+  "final_results": [
+    {
+      "id": "Q001",
+      "category": "Document Overview",
+      "query": "What is the title and focus of the paper?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.37,
+        "faiss_ms": 12.37,
+        "neo4j_ms": 4068.87,
+        "rrf_ms": 0.0,
+        "qubo_ms": 2.76,
+        "context_build_ms": 0.54,
+        "student_generation_ms": 2222.92,
+        "validation_ms": 1.0,
+        "total_ms": 6309.46
+      },
+      "peak_vram_mb": 1113.98,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.7189,
+        "qubo_ms": 2.76
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The title of the paper is \"An Open Access Article\". The focus of the paper is on fruit ripeness and quality assessment using IoT-based investigations."
+    },
+    {
+      "id": "Q002",
+      "category": "Document Overview",
+      "query": "Who are the authors of the research paper and their affiliations?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 13.81,
+        "faiss_ms": 13.81,
+        "neo4j_ms": 4070.16,
+        "rrf_ms": 0.73,
+        "qubo_ms": 2.68,
+        "context_build_ms": 0.54,
+        "student_generation_ms": 5726.16,
+        "validation_ms": 0.0,
+        "total_ms": 9815.08
+      },
+      "peak_vram_mb": 1125.94,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.6889,
+        "qubo_ms": 2.68
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The authors of the research paper are Rajini M and Persis Voola. Their affiliations are listed as follows:\n\n- Rajini M: Writing \u2013 review & editing, Writing \u2013 original draft, Visualization, Software, Resources, Methodology, Data curation, Conceptualization.\n- Persis Voola: Writing \u2013 review & editing, Writing \u2013 original draft, Supervision, Resources, Project administration."
+    },
+    {
+      "id": "Q003",
+      "category": "Technical Architecture",
+      "query": "What microcontroller is used in the proposed prototype?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 11.31,
+        "faiss_ms": 11.31,
+        "neo4j_ms": 4058.44,
+        "rrf_ms": 0.57,
+        "qubo_ms": 2.58,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1070.57,
+        "validation_ms": 0.0,
+        "total_ms": 5143.47
+      },
+      "peak_vram_mb": 1119.56,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.9989,
+        "qubo_ms": 2.58
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "In the proposed prototype, the ESP32 microcontroller is used."
+    },
+    {
+      "id": "Q004",
+      "category": "Technical Architecture",
+      "query": "What sensors were used in the IoT architecture?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 13.19,
+        "faiss_ms": 13.19,
+        "neo4j_ms": 4076.67,
+        "rrf_ms": 0.0,
+        "qubo_ms": 3.47,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 5114.67,
+        "validation_ms": 0.0,
+        "total_ms": 9208.01
+      },
+      "peak_vram_mb": 1126.81,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0684,
+        "qubo_ms": 3.47
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "In the proposed prototype, the ESP32 microcontroller collected data from various sensors locally and transmitted them wirelessly to the ThingSpeak IoT platform, where it was securely stored and visualized. The user-friendly interface enabled efficient transmission of sensor data, including temperature, humidity, TVOC, CO2, H2, and ethanol measurements, from the ESP32 microcontroller to the cloud."
+    },
+    {
+      "id": "Q005",
+      "category": "Technical Architecture",
+      "query": "Which IoT platform was used for cloud data storage and visualization?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 11.97,
+        "faiss_ms": 11.97,
+        "neo4j_ms": 4083.82,
+        "rrf_ms": 0.65,
+        "qubo_ms": 3.84,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 992.69,
+        "validation_ms": 0.0,
+        "total_ms": 5092.97
+      },
+      "peak_vram_mb": 1123.14,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0362,
+        "qubo_ms": 3.84
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The ThingSpeak IoT platform was used for cloud data storage and visualization."
+    },
+    {
+      "id": "Q006",
+      "category": "Methodology",
+      "query": "What machine learning algorithms were evaluated?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 11.51,
+        "faiss_ms": 11.51,
+        "neo4j_ms": 4077.97,
+        "rrf_ms": 0.54,
+        "qubo_ms": 2.92,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1914.05,
+        "validation_ms": 0.0,
+        "total_ms": 6006.98
+      },
+      "peak_vram_mb": 1125.89,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0702,
+        "qubo_ms": 2.92
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Decision Tree Classifier (DTC), K-Nearest Neighbors (KNN), and Support Vector Machine (SVM) were evaluated."
+    },
+    {
+      "id": "Q007",
+      "category": "Model Metrics",
+      "query": "What CatBoost performance values were reported?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.23,
+        "faiss_ms": 12.23,
+        "neo4j_ms": 4047.52,
+        "rrf_ms": 0.0,
+        "qubo_ms": 3.71,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2783.57,
+        "validation_ms": 0.0,
+        "total_ms": 6847.7
+      },
+      "peak_vram_mb": 1119.42,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.8971,
+        "qubo_ms": 3.71
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The CatBoost model's performance values were reported as follows:\n\nFor Not ripe: 99.65%\nFor Ripe: 98.90%\nFor Spoiled: 99.25%"
+    },
+    {
+      "id": "Q008",
+      "category": "Dataset Information",
+      "query": "How many ripeness classes were classified in the proposed framework?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.3,
+        "faiss_ms": 12.3,
+        "neo4j_ms": 4051.84,
+        "rrf_ms": 0.69,
+        "qubo_ms": 2.6,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2075.82,
+        "validation_ms": 0.0,
+        "total_ms": 6143.77
+      },
+      "peak_vram_mb": 1120.17,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.1436,
+        "qubo_ms": 2.6
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Based on the provided text, the dataset was carefully labeled with four ripeness classes: Not ripe, Ripe, Spoiled, and Mixed."
+    },
+    {
+      "id": "Q009",
+      "category": "Dataset Information",
+      "query": "What target fruit was used for the case study?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.31,
+        "faiss_ms": 12.31,
+        "neo4j_ms": 4065.57,
+        "rrf_ms": 0.0,
+        "qubo_ms": 3.83,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1362.49,
+        "validation_ms": 0.0,
+        "total_ms": 5445.03
+      },
+      "peak_vram_mb": 1121.95,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0946,
+        "qubo_ms": 3.83
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "According to the text provided, the target fruit used for the case study was bananas."
+    },
+    {
+      "id": "Q010",
+      "category": "Comparisons",
+      "query": "How does the proposed framework accuracy compare to reference [36]?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.74,
+        "faiss_ms": 12.74,
+        "neo4j_ms": 4069.08,
+        "rrf_ms": 0.0,
+        "qubo_ms": 2.95,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 4975.26,
+        "validation_ms": 0.0,
+        "total_ms": 9060.39
+      },
+      "peak_vram_mb": 1129.3,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0682,
+        "qubo_ms": 2.95
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "According to the table provided in the document, the CatBoost classifier outperformed all other algorithms in terms of accuracy, precision, and recall. Specifically, it showed high class-specific accuracies for not ripe, ripe, and spoiled fruits. This indicates that the CatBoost model performs well in identifying ripeness stages, with slight differences noted for \"ripe\" fruits compared to the reference [36]."
+    },
+    {
+      "id": "Q011",
+      "category": "Entity Extraction",
+      "query": "Which journal published this research paper?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 10.9,
+        "faiss_ms": 10.9,
+        "neo4j_ms": 4051.74,
+        "rrf_ms": 0.69,
+        "qubo_ms": 4.85,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1147.29,
+        "validation_ms": 0.0,
+        "total_ms": 5215.47
+      },
+      "peak_vram_mb": 1122.81,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.8847,
+        "qubo_ms": 4.85
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "This research paper was published in the Agricultural Engineering International journal."
+    },
+    {
+      "id": "Q012",
+      "category": "Numerical Facts",
+      "query": "What was the reported accuracy of reference [38] for detecting spoilage?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 14.12,
+        "faiss_ms": 14.12,
+        "neo4j_ms": 4064.48,
+        "rrf_ms": 0.36,
+        "qubo_ms": 3.2,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2085.23,
+        "validation_ms": 0.0,
+        "total_ms": 6167.39
+      },
+      "peak_vram_mb": 1122.73,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0411,
+        "qubo_ms": 3.2
+      },
+      "grounding_pass": false,
+      "numerical_valid": false,
+      "citations": [],
+      "answer": "According to the reference [38], the reported accuracy of the reference [38] for detecting spoilage was 99.65%."
+    },
+    {
+      "id": "Q013",
+      "category": "Numerical Facts",
+      "query": "What accuracy was achieved by reference [39] using camera and gas sensor array?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.73,
+        "faiss_ms": 12.73,
+        "neo4j_ms": 4069.22,
+        "rrf_ms": 0.5,
+        "qubo_ms": 3.03,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 521.89,
+        "validation_ms": 0.0,
+        "total_ms": 4607.37
+      },
+      "peak_vram_mb": 1123.14,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0385,
+        "qubo_ms": 3.03
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "96.15%"
+    },
+    {
+      "id": "Q014",
+      "category": "Technical Architecture",
+      "query": "What type of sensor is the SGP30?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 13.56,
+        "faiss_ms": 13.56,
+        "neo4j_ms": 4062.59,
+        "rrf_ms": 0.0,
+        "qubo_ms": 4.15,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2866.78,
+        "validation_ms": 0.0,
+        "total_ms": 6947.08
+      },
+      "peak_vram_mb": 1118.31,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.1884,
+        "qubo_ms": 4.15
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The SGP30 sensor is an energy-efficient gas sensor that incorporates multi-pixel gas sensor technology. It also includes a Compact, energy-efficient sensor with advanced signal processing algorithms to deliver comprehensive insights into indoor air quality."
+    },
+    {
+      "id": "Q015",
+      "category": "Methodology",
+      "query": "What main application domain is targeted by the proposed framework?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 14.66,
+        "faiss_ms": 14.66,
+        "neo4j_ms": 4087.05,
+        "rrf_ms": 0.0,
+        "qubo_ms": 3.7,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1200.54,
+        "validation_ms": 0.0,
+        "total_ms": 5305.95
+      },
+      "peak_vram_mb": 1118.42,
+      "evidence_count": 3,
+      "evidence_recall": 0.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.8008,
+        "qubo_ms": 3.7
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The proposed framework targets the area of Internet of Things (IoT)."
+    },
+    {
+      "id": "Q016",
+      "category": "Questions where evidence is insufficient",
+      "query": "What quantum computing algorithm was used for fruit ripeness detection?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.01,
+        "faiss_ms": 12.01,
+        "neo4j_ms": 4059.78,
+        "rrf_ms": 0.76,
+        "qubo_ms": 3.5,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1314.52,
+        "validation_ms": 0.0,
+        "total_ms": 5390.56
+      },
+      "peak_vram_mb": 1123.89,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.0346,
+        "qubo_ms": 3.5
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "Quantum computing algorithm used for fruit ripeness detection was the CatBoost Classifier."
+    },
+    {
+      "id": "Q017",
+      "category": "Questions where evidence is insufficient",
+      "query": "What was the exact price of the ESP32 in US dollars mentioned in the text?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 14.74,
+        "faiss_ms": 14.74,
+        "neo4j_ms": 4058.92,
+        "rrf_ms": 0.55,
+        "qubo_ms": 3.19,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1514.81,
+        "validation_ms": 0.0,
+        "total_ms": 5592.22
+      },
+      "peak_vram_mb": 1123.86,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.8871,
+        "qubo_ms": 3.19
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The exact price of the ESP32 in US dollars mentioned in the text is not provided."
+    },
+    {
+      "id": "Q018",
+      "category": "Numerical Facts",
+      "query": "What volume and issue number of e-Prime published this paper?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 10.56,
+        "faiss_ms": 10.56,
+        "neo4j_ms": 4055.65,
+        "rrf_ms": 0.0,
+        "qubo_ms": 2.6,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2389.93,
+        "validation_ms": 0.0,
+        "total_ms": 6460.24
+      },
+      "peak_vram_mb": 1113.85,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.8293,
+        "qubo_ms": 2.6
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The paper was published in Volume 11, Issue 2 of the journal \"Electrical Engineering, Electronics and Energy\". The specific issue number is not provided in the text."
+    },
+    {
+      "id": "Q019",
+      "category": "Entity Extraction",
+      "query": "Which university is author Persis Voola affiliated with?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 13.88,
+        "faiss_ms": 13.88,
+        "neo4j_ms": 4087.37,
+        "rrf_ms": 0.0,
+        "qubo_ms": 2.51,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 2626.97,
+        "validation_ms": 0.0,
+        "total_ms": 6731.34
+      },
+      "peak_vram_mb": 1118.96,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -2.6153,
+        "qubo_ms": 2.51
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "According to the provided text, Dr. Persis Voola is an Associate Professor in the Department of Computer Science and Engineering at Adikavi Nannaya University, located in Andhra Pradesh, India."
+    },
+    {
+      "id": "Q020",
+      "category": "Document Overview",
+      "query": "What is the declared data availability policy of this study?",
+      "latency_breakdown_ms": {
+        "embedding_ms": 12.24,
+        "faiss_ms": 12.24,
+        "neo4j_ms": 4062.19,
+        "rrf_ms": 0.47,
+        "qubo_ms": 2.95,
+        "context_build_ms": 0.0,
+        "student_generation_ms": 1460.7,
+        "validation_ms": 0.0,
+        "total_ms": 5538.55
+      },
+      "peak_vram_mb": 1118.7,
+      "evidence_count": 3,
+      "evidence_recall": 1.0,
+      "qubo_details": {
+        "qubo_enabled": true,
+        "solver_type": "classical_exact",
+        "total_energy": -3.011,
+        "qubo_ms": 2.95
+      },
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations": [],
+      "answer": "The author declares that they have not obtained any financial interests or personal relationships that could potentially influence their work presentation."
+    }
+  ]
+}

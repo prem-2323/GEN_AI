@@ -63,6 +63,9 @@ interface NewTransformationViewProps {
   onShowToast: (title: string, message: string, type?: 'success' | 'info' | 'error') => void;
 }
 
+const getSourceContent = (source: SourceFile | null | undefined): string =>
+  source?.extractedText?.trim() || source?.normalized?.text?.content?.trim() || '';
+
 export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
   source,
   config,
@@ -81,7 +84,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 }) => {
   const activeUckr = uckr;
   const [inputTab, setInputTab] = useState<'upload' | 'paste' | 'samples' | 'context'>('upload');
-  const [pasteContent, setPasteContent] = useState(source?.extractedText || '');
+  const [pasteContent, setPasteContent] = useState(getSourceContent(source));
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [showSourcePreviewModal, setShowSourcePreviewModal] = useState(false);
   const [contextNotes, setContextNotes] = useState(config.customNotes || '');
@@ -92,16 +95,17 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
   // Sync textarea if source changes
   useEffect(() => {
-    if (source?.extractedText) {
-      setPasteContent(source.extractedText);
+    const content = getSourceContent(source);
+    if (content) {
+      setPasteContent(content);
     }
-  }, [source?.extractedText]);
+  }, [source?.extractedText, source?.normalized?.text?.content]);
 
   // Run real AI analysis whenever a new source with text arrives and no analysis exists yet
   useEffect(() => {
     const currentSource = source;
-    const text = currentSource?.extractedText?.trim();
-    if (!currentSource || !text || analysis) {
+    const text = getSourceContent(currentSource);
+    if (!currentSource || !text || analysis || currentSource.status === 'processing') {
       analyzingSourceKeyRef.current = null;
       return;
     }
@@ -114,11 +118,11 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     const run = async () => {
       setIsAnalyzing(true);
       try {
-        const fresh = await analyzeSourceContent(currentSource);
+        const fresh = await analyzeSourceContent(currentSource, currentSource.projectId);
         if (cancelled) return;
         onUpdateAnalysis(fresh);
         try {
-          const knowledge = await buildUckrKnowledge(currentSource, fresh);
+          const knowledge = await buildUckrKnowledge(currentSource, fresh, currentSource.projectId);
           if (!cancelled) onUpdateUckr(knowledge);
         } catch {
           // UCKR is optional — analysis alone unblocks configuration
@@ -137,7 +141,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [source?.id, source?.extractedText, analysis]);
+  }, [source?.id, source?.extractedText, source?.status, analysis]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -150,63 +154,90 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
       const fileType = isPdf ? 'PDF' : isDoc ? 'DOCX' : isImg ? 'IMAGE' : isVid ? 'VIDEO' : 'TXT';
 
       setIsExtracting(true);
-      let extractedText = '';
+      let uploadedSource: SourceFile | null = null;
       try {
-        if (!isPdf && !isDoc && !isImg && !isVid && file.size < 5 * 1024 * 1024) {
-          extractedText = await file.text();
-        } else if (backendEnabled) {
-          try {
-            const uploadRes = await backendApi.uploadSource('proj_default', file);
-            const backendText =
-              uploadRes?.extractedDocument?.content ||
-              uploadRes?.text?.content ||
-              uploadRes?.extracted?.content ||
-              uploadRes?.source?.text?.content;
-            if (typeof backendText === 'string') {
-              extractedText = backendText;
-            }
-          } catch {
-            // fallback
-          }
+        onUpdateAnalysis(null);
+        onUpdateUckr(null);
+
+        if (!backendEnabled) {
+          const extractedText = !isPdf && !isDoc && !isImg && !isVid ? await file.text() : '';
+          uploadedSource = {
+            id: `src-${Date.now()}`,
+            name: file.name,
+            type: fileType,
+            size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+            status: extractedText ? 'ready' : 'pending',
+            uploadedAt: new Date().toISOString(),
+            extractedText,
+          };
+          onUpdateSource(uploadedSource);
+          if (extractedText) setPasteContent(extractedText);
+          return;
         }
-      } catch {
-        extractedText = '';
+
+        const projectId = 'proj_default';
+        const uploadRes = await backendApi.uploadSource(projectId, file);
+        const backendSource = uploadRes?.source;
+        const extractedDocument = uploadRes?.extractedDocument;
+        const sourceId = backendSource?.sourceId || backendSource?.id || extractedDocument?.documentId;
+        const extractedText =
+          backendSource?.extractedText ||
+          backendSource?.normalized?.text?.content ||
+          extractedDocument?.content || '';
+        if (!sourceId || typeof extractedText !== 'string') {
+          throw new Error('Upload response did not include the canonical source record.');
+        }
+
+        uploadedSource = {
+          id: sourceId,
+          sourceId,
+          fileId: backendSource?.fileId,
+          projectId: backendSource?.projectId || projectId,
+          name: backendSource?.normalized?.document?.name || extractedDocument?.filename || backendSource?.file?.originalName || file.name,
+          type: fileType,
+          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+          pages: backendSource?.extraction?.pageCount || extractedDocument?.pages?.length,
+          status: 'processing',
+          uploadedAt: backendSource?.createdAt || new Date().toISOString(),
+          extractedText,
+          extraction: backendSource?.extraction,
+          normalized: backendSource?.normalized,
+          processing: backendSource?.processing,
+        };
+        onUpdateSource(uploadedSource);
+        setPasteContent(extractedText);
+
+        if (extractedText.trim()) {
+          const doclinkResult = await backendApi.analyzeDocLink(projectId, sourceId);
+          const analysisResult = await backendApi.startPhase3Analysis(projectId, sourceId, false, extractedText);
+          const uckrResult = await backendApi.buildUckr(projectId, sourceId);
+          onUpdateSource({
+            ...uploadedSource,
+            status: 'ready',
+            doclinkResult,
+            analysisResult,
+            uckrReference: {
+              uckrId: uckrResult?.uckrId || uckrResult?.uckr?.uckrId,
+              version: uckrResult?.version || uckrResult?.uckr?.version,
+              status: uckrResult?.status || uckrResult?.uckr?.status,
+            },
+          });
+          onShowToast('Document Ready', `Processed ${file.name} through DocLink, Qwen/Gemma, and UCKR.`, 'success');
+        } else {
+          onUpdateSource({ ...uploadedSource, status: 'ready' });
+          onShowToast('Source Uploaded', `No text was extracted from "${file.name}".`, 'info');
+        }
+      } catch (err) {
+        if (uploadedSource) {
+          onUpdateSource({
+            ...uploadedSource,
+            status: 'failed',
+            processing: { ...uploadedSource.processing, status: 'failed', stage: 'failed', error: err instanceof Error ? err.message : 'Document processing failed.' },
+          });
+        }
+        onShowToast('Upload Failed', err instanceof Error ? err.message : 'Could not process the source document.', 'error');
       } finally {
         setIsExtracting(false);
-      }
-
-      onUpdateAnalysis(null);
-      onUpdateUckr(null);
-
-      if (extractedText.trim()) {
-        setPasteContent(extractedText);
-        onUpdateSource({
-          id: `src-${Date.now()}`,
-          name: file.name,
-          type: fileType,
-          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-          pages: undefined,
-          status: 'ready',
-          uploadedAt: new Date().toISOString(),
-          extractedText
-        });
-        onShowToast('Source Uploaded', `Successfully extracted text from "${file.name}".`, 'success');
-      } else {
-        onUpdateSource({
-          id: `src-${Date.now()}`,
-          name: file.name,
-          type: fileType,
-          size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-          pages: undefined,
-          status: 'pending',
-          uploadedAt: new Date().toISOString(),
-          extractedText: ''
-        });
-        onShowToast(
-          'Text Required',
-          `"${file.name}" was loaded as metadata. Please paste the document text or choose a sample report.`,
-          'info'
-        );
       }
     }
   };
@@ -251,7 +282,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
   };
 
   const handleGenerateClick = () => {
-    const textToUse = (pasteContent.trim() || source?.extractedText?.trim() || '').trim();
+    const textToUse = (pasteContent.trim() || getSourceContent(source)).trim();
     if (textToUse) {
       const activeSource: SourceFile = {
         id: source?.id || `src-text-${Date.now()}`,
@@ -393,7 +424,8 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     'Custom'
   ];
 
-  const hasSourceText = Boolean(source?.extractedText?.trim() || pasteContent.trim());
+  const sourceContent = getSourceContent(source);
+  const hasSourceText = Boolean(sourceContent || pasteContent.trim());
 
   return (
     <div className="space-y-10 pb-28">
@@ -502,7 +534,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                 )}
               </div>
               <p className="text-sm font-semibold text-white">
-                {isExtracting ? 'Extracting document text…' : 'Drop files here or click to browse'}
+                {isExtracting ? 'Processing document…' : 'Drop files here or click to browse'}
               </p>
               <p className="text-xs text-slate-400 mt-1">
                 PDF • DOCX • TXT • MD • JSON • PNG • JPG
@@ -551,13 +583,21 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                   <div className="flex items-center gap-1.5">
                     <StatusBadge status={source.status || 'ready'} size="xs" />
                     {isAnalyzing && <span className="text-[11px] text-purple-300 animate-pulse">Analyzing…</span>}
-                    {!isAnalyzing && !source.extractedText?.trim() && (
+                    {!isAnalyzing && source.status === 'processing' && (
+                      <span className="text-[11px] text-purple-300 animate-pulse">Processing document pipeline…</span>
+                    )}
+                    {!isAnalyzing && source.status === 'ready' && source.doclinkResult && source.analysisResult && (
+                      <span className="text-[11px] text-emerald-300">
+                        DocLink {String(source.doclinkResult.status || 'completed')} · Qwen/Gemma {String(source.analysisResult.status || 'completed')} · UCKR {source.uckrReference?.version ? `v${source.uckrReference.version}` : 'ready'} · Content available
+                      </span>
+                    )}
+                    {!isAnalyzing && !sourceContent && (
                       <span className="text-[11px] text-amber-400 flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" />
                         No text content detected
                       </span>
                     )}
-                    {!isAnalyzing && source.extractedText?.trim() && !analysis && (
+                    {!isAnalyzing && sourceContent && !analysis && !source.analysisResult && source.status !== 'processing' && (
                       <span className="text-[11px] text-slate-400">Ready for analysis</span>
                     )}
                     {!isAnalyzing && analysis && (
@@ -565,7 +605,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                     )}
                   </div>
 
-                  {!source.extractedText?.trim() && (
+                  {!sourceContent && (
                     <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 mt-1">
                       This file provided metadata only. Switch to <strong>Paste Text</strong> or <strong>Sample Reports</strong> to add content.
                     </div>
@@ -1014,7 +1054,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
-              {source?.extractedText || 'No extracted text found in source.'}
+              {getSourceContent(source) || 'No extracted text found in source.'}
             </div>
 
             <div className="flex justify-end pt-4">

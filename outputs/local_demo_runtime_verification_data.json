@@ -1,0 +1,111 @@
+{
+  "gpu": {
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "pytorch_version": "2.14.0+cu126",
+    "cuda_version": "12.6",
+    "total_vram_mb": 4095.5
+  },
+  "neo4j": {
+    "online": false,
+    "uri": "bolt://localhost:7687"
+  },
+  "embeddings": {
+    "model": "sentence-transformers:BAAI/bge-small-en-v1.5",
+    "device": "cuda",
+    "dimension": 384,
+    "dimension_valid": true,
+    "normalized": true,
+    "latency_ms": 228.81
+  },
+  "faiss": {
+    "backend": "faiss",
+    "index_type": "IndexFlatIP",
+    "dimension": 384,
+    "total_vectors": 383,
+    "persistence_dir": "storage\\vector_db",
+    "is_persisted": true,
+    "auto_save": true,
+    "index_file_exists": true,
+    "metadata_file_exists": true
+  },
+  "student": {
+    "base_model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "adapter_path": "C:\\Users\\premk\\OneDrive\\Documents\\gen-transform-ai\\Backend\\outputs\\distillation\\student",
+    "device": "cpu",
+    "test_inference_ms": 5471.58
+  },
+  "domain_queries": [
+    {
+      "code": "Q1",
+      "question": "What machine learning algorithms were evaluated?",
+      "answer": "The machine learning algorithms evaluated in this study included decision tree classifier (DTC), k-nearest neighbors (KNN) algorithm, and support vector machine (SVM).",
+      "citations": [],
+      "evidence_count": 3,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "latency_ms": 6425.67,
+      "qubo_energy": -3.1325,
+      "qubo_ms": 3.11,
+      "peak_vram_mb": 1119.33
+    },
+    {
+      "code": "Q2",
+      "question": "What sensors were used in the system?",
+      "answer": "The SHT40 Temperature & Humidity Sensor, SGP30 Indoor Air Quality Sensor, and Pizza spoilage detection employ sensors and microcontrollers to monitor temperature, humidity, and grain quality.",
+      "citations": [],
+      "evidence_count": 3,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "latency_ms": 6789.04,
+      "qubo_energy": -3.1292,
+      "qubo_ms": 2.61,
+      "peak_vram_mb": 1119.99
+    },
+    {
+      "code": "Q3",
+      "question": "How was the dataset collected and labeled?",
+      "answer": "Thoroughly collected and labeled through the ThingSpeak REST API, which provided necessary data for the banana ripening process.",
+      "citations": [],
+      "evidence_count": 3,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "latency_ms": 5791.3,
+      "qubo_energy": -3.04,
+      "qubo_ms": 3.17,
+      "peak_vram_mb": 1114.63
+    },
+    {
+      "code": "Q4",
+      "question": "What CatBoost performance values were reported?",
+      "answer": "The CatBoost models showed high class-specific accuracies: For Not ripe: 99.65%, for Ripe: 98.90%, and for Spoiled: 99.25%.",
+      "citations": [],
+      "evidence_count": 3,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "latency_ms": 7157.85,
+      "qubo_energy": -2.931,
+      "qubo_ms": 3.2,
+      "peak_vram_mb": 1119.42
+    },
+    {
+      "code": "Q5",
+      "question": "What was the main classification problem?",
+      "answer": "The main classification problem addressed in the text is determining the maturity stage of banana fruits based on their size.",
+      "citations": [],
+      "evidence_count": 3,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "latency_ms": 5555.39,
+      "qubo_energy": -2.9726,
+      "qubo_ms": 2.6,
+      "peak_vram_mb": 1113.38
+    }
+  ],
+  "hallucination_test": {
+    "query": "What was the company's revenue in 2025?",
+    "answer": "Based on the text provided, there is no specific mention of the company's revenue for the year 2025. The text focuses on various research papers and projects related to fruit conditions and temperature management but does not provide financial or revenue figures. Therefore, it is not possible to determine the company's revenue for the specified year based solely on the given text.",
+    "grounding_pass": true,
+    "latency_ms": 9693.53
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "hardware": {
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "pytorch_version": "2.14.0+cu126",
+    "cuda_version": "12.6",
+    "peak_vram_mb": 1125.62
+  },
+  "ingestion": {
+    "document": "testreport.pdf",
+    "extraction_ms": 786.1,
+    "embedding_ms": 764.46,
+    "faiss_indexing_ms": 13.72
+  },
+  "averages_ms": {
+    "avg_retrieval_ms": 4125.26,
+    "avg_qubo_ms": 4.56,
+    "avg_student_generation_ms": 6095.04,
+    "avg_grounding_validation_ms": 0.0,
+    "avg_total_ms": 10220.3
+  },
+  "query_details": [
+    {
+      "query_idx": 1,
+      "query": "What machine learning algorithms were evaluated?",
+      "retrieval_ms": 4278.52,
+      "faiss_ms": 61.07,
+      "neo4j_ms": 4211.36,
+      "rrf_ms": 0.0,
+      "qubo_ms": 5.59,
+      "context_build_ms": 0.0,
+      "student_generation_ms": 9874.59,
+      "grounding_validation_ms": 0.0,
+      "total_ms": 14153.11,
+      "peak_vram_mb": 1124.81,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations_count": 0
+    },
+    {
+      "query_idx": 2,
+      "query": "What sensors were used in the IoT architecture?",
+      "retrieval_ms": 4078.1,
+      "faiss_ms": 13.07,
+      "neo4j_ms": 4059.77,
+      "rrf_ms": 0.68,
+      "qubo_ms": 4.58,
+      "context_build_ms": 0.0,
+      "student_generation_ms": 5812.94,
+      "grounding_validation_ms": 0.0,
+      "total_ms": 9891.04,
+      "peak_vram_mb": 1125.62,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations_count": 0
+    },
+    {
+      "query_idx": 3,
+      "query": "What CatBoost performance values were reported?",
+      "retrieval_ms": 4074.97,
+      "faiss_ms": 14.23,
+      "neo4j_ms": 4055.1,
+      "rrf_ms": 0.75,
+      "qubo_ms": 4.9,
+      "context_build_ms": 0.0,
+      "student_generation_ms": 3375.55,
+      "grounding_validation_ms": 0.0,
+      "total_ms": 7450.52,
+      "peak_vram_mb": 1118.63,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations_count": 0
+    },
+    {
+      "query_idx": 4,
+      "query": "How was the dataset collected and labeled?",
+      "retrieval_ms": 4091.73,
+      "faiss_ms": 13.95,
+      "neo4j_ms": 4073.95,
+      "rrf_ms": 0.0,
+      "qubo_ms": 3.83,
+      "context_build_ms": 0.0,
+      "student_generation_ms": 7349.78,
+      "grounding_validation_ms": 0.0,
+      "total_ms": 11441.51,
+      "peak_vram_mb": 1114.22,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations_count": 0
+    },
+    {
+      "query_idx": 5,
+      "query": "What classification problem was addressed?",
+      "retrieval_ms": 4102.98,
+      "faiss_ms": 12.84,
+      "neo4j_ms": 4086.22,
+      "rrf_ms": 0.0,
+      "qubo_ms": 3.92,
+      "context_build_ms": 0.0,
+      "student_generation_ms": 4062.32,
+      "grounding_validation_ms": 0.0,
+      "total_ms": 8165.3,
+      "peak_vram_mb": 1115.93,
+      "grounding_pass": true,
+      "numerical_valid": true,
+      "citations_count": 0
+    }
+  ]
+}

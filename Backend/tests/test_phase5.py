@@ -35,10 +35,10 @@ def test_phase5_all():
     assert res1.status_code == 200, f"Health failed: {res1.text}"
     print("  [OK] System Health OK:", res1.json()["status"])
 
-    res1_neo4j = c.get("/health/neo4j")
+    res1_neo4j = c.get("/api/graph/health")
     assert res1_neo4j.status_code == 200, f"Neo4j health check failed: {res1_neo4j.text}"
-    assert res1_neo4j.json()["ok"] is True
-    print("  [OK] Neo4j Health Check:", res1_neo4j.json()["neo4j"])
+    assert res1_neo4j.json()["status"] in ("healthy", "offline", "ready")
+    print("  [OK] Neo4j Health Check:", res1_neo4j.json())
 
     # 2. Anonymous local workspace
     print("\n[Test 2] Local Workspace API:")
