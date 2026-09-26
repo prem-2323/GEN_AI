@@ -11,6 +11,18 @@ REM Set Workspace Root Path
 set WORKSPACE_DIR=%~dp0
 cd /d "%WORKSPACE_DIR%"
 
+REM 0. Start Stable Diffusion Forge for Image / Video generation (Port 7860)
+echo [0/4] Starting Stable Diffusion Forge (Port 7860)...
+REM Keep START's title argument empty; start_forge.bat sets its own window title.
+if exist "%WORKSPACE_DIR%start_forge.bat" (
+    start "" "%ComSpec%" /k ""%WORKSPACE_DIR%start_forge.bat""
+) else (
+    echo [NOTICE] start_forge.bat not found - image generation will use placeholders
+)
+
+REM Wait briefly so Forge can begin initializing while other services start
+timeout /t 2 /nobreak >nul
+
 REM 1. Start Ollama Server for Gemma / Qwen models
 echo [1/4] Starting Ollama Local Server (Port 11434)...
 start "DocLink - Ollama Server" cmd /k "echo Starting Ollama Local Server... && ollama serve"
@@ -46,6 +58,7 @@ echo   - Backend API Root:     http://localhost:8000
 echo   - Swagger API Docs:     http://localhost:8000/docs
 echo   - Health Check:         http://localhost:8000/health
 echo   - Ollama Local Server:  http://localhost:11434
+echo   - Forge Image API:      http://localhost:7860
 echo   - Neo4j Web Console:    http://localhost:7474
 echo.
 echo Launching Web Application in browser...

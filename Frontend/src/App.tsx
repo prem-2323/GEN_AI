@@ -77,6 +77,19 @@ function AppContent() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  // Bridge: modals rendered outside AppContent (e.g. TopBar Image Studio)
+  // publish toasts through the 'gentransform:toast' custom event.
+  React.useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent).detail as { title: string; message: string; type?: 'success' | 'info' | 'error' } | undefined;
+      if (detail?.title && detail?.message) {
+        addToast(detail.title, detail.message, detail.type || 'info');
+      }
+    };
+    window.addEventListener('gentransform:toast', handler);
+    return () => window.removeEventListener('gentransform:toast', handler);
+  }, []);
+
   // Quick Start from Dashboard Drop/Paste — real user content only
   const handleQuickStartUpload = (partial: Partial<SourceFile>) => {
     setCurrentProjectId(`proj-${Date.now()}`);

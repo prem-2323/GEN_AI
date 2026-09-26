@@ -23,6 +23,7 @@ import {
 import { VideoDeliverable, VideoScene } from '../../../types';
 import { speakText, stopSpeaking } from '../../../services/aiService';
 import { StatusBadge } from '../../common/StatusBadge';
+import { VideoRenderModal } from '../VideoRenderModal';
 
 interface VideoPackageCardProps {
   deliverable: VideoDeliverable;
@@ -41,9 +42,15 @@ export const VideoPackageCard: React.FC<VideoPackageCardProps> = ({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [selectedSceneIndex, setSelectedSceneIndex] = useState(0);
   const [isPreviewPlayerOpen, setIsPreviewPlayerOpen] = useState(false);
+  const [isRenderModalOpen, setIsRenderModalOpen] = useState(false);
   const [currentPlaySceneIdx, setCurrentPlaySceneIdx] = useState(0);
 
   const activeScene = deliverable.scenes[selectedSceneIndex] || deliverable.scenes[0];
+
+  // Source text fed to the backend video pipeline (script, falling back to narrations)
+  const renderSourceText =
+    deliverable.script?.trim() ||
+    deliverable.scenes.map((s) => s.narration).join(' ');
 
   const handleToggleVoice = () => {
     if (isPlayingAudio) {
@@ -131,10 +138,20 @@ export const VideoPackageCard: React.FC<VideoPackageCardProps> = ({
 
           <button
             onClick={handleStartSimulatedPreview}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-md shadow-purple-600/20 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-all cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 fill-white" />
             <span>Preview Video</span>
+          </button>
+
+          <button
+            onClick={() => setIsRenderModalOpen(true)}
+            disabled={!renderSourceText.trim()}
+            title="Render a real MP4 with the backend AI pipeline (Forge + TTS + FFmpeg)"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-md shadow-purple-600/20 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Film className="w-3.5 h-3.5" />
+            <span>Render AI Video</span>
           </button>
         </div>
       </div>
@@ -503,6 +520,16 @@ export const VideoPackageCard: React.FC<VideoPackageCardProps> = ({
           <span className="text-xs text-slate-400 font-mono">Pipeline Target</span>
         </div>
       </div>
+
+      {/* Backend AI Video Renderer (Forge + Edge TTS + FFmpeg) */}
+      <VideoRenderModal
+        isOpen={isRenderModalOpen}
+        onClose={() => setIsRenderModalOpen(false)}
+        sourceText={renderSourceText}
+        title={deliverable.title}
+        tone="Professional"
+        onShowToast={onShowToast}
+      />
 
       {/* Simulated Video Player Modal */}
       {isPreviewPlayerOpen && (

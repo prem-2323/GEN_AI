@@ -9,3 +9,8 @@ mock_db.json
 storage/
 uploads/
 outputs/
+# Media Studio generated artifacts
+generated_images/
+generated_audio/
+generated_videos/
+subtitles/

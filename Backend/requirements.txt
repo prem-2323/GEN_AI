@@ -25,6 +25,9 @@ sentence-transformers>=3.0
 faiss-cpu>=1.7
 numpy>=1.24
 torch>=2.0.0
+# Media Studio (Backend/image + Backend/video)
+requests>=2.31
+
 # Phase 10 Audio / TTS
 edge-tts>=6.1.0
 # Phase 10 exports

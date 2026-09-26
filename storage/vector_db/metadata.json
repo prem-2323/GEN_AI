@@ -93,5 +93,157 @@
       "created_at": "2026-09-26T07:15:10.673324+00:00",
       "text": "RAG Foundation\nPhase 6 establishes the vector search foundation for Phase 7 Hybrid RAG."
     }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_000_bd34f1d2",
+    "text": "Theme: Geo-Tech\nCategory: Software\nTeam Name: DraXon\nProject Title: Geo-Tagged Waste Reporting and Tracking\n\nChallenge Statement\n\u2022 Rapid urbanization increasing waste generation\n\u2022 Waste reporting systems are manual\n\u2022 Complaints are text-based and lack visual evidence\n\u2022 There is no priority system for hazardous waste cases\n\u2022 Delayed response lead to environmental & public health risks",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_000_bd34f1d2",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 0,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 386,
+      "token_count": 72,
+      "content_hash": "bd34f1d29ea927aec0493468b2d2fb949a5bda41aca82d52d08e91547864ff5f",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Theme: Geo-Tech\nCategory: Software\nTeam Name: DraXon\nProject Title: Geo-Tagged Waste Reporting and Tracking\n\nChallenge Statement\n\u2022 Rapid urbanization increasing waste generation\n\u2022 Waste reporting systems are manual\n\u2022 Complaints are text-based and lack visual evidence\n\u2022 There is no priority system for hazardous waste cases\n\u2022 Delayed response lead to environmental & public health risks"
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_001_88246c21",
+    "text": "Real-World Scenario\nDelhi faces a deluge of waste on its roads\n1.With its overloaded landfills and lack of coordination between various\nstakeholders, Delhi continues to have an inefficient waste management system.\n2.The city generates over 11,000 tons of waste daily. However, it faces\nsignificant challenges due to poor waste segregation.",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_001_88246c21",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 3,
+      "page_end": 3,
+      "chunk_index": 1,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 339,
+      "token_count": 65,
+      "content_hash": "88246c21d867d47da3499673ab85a6b1a0f5c7a25437378a6fc68f664a99ec6b",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Real-World Scenario\nDelhi faces a deluge of waste on its roads\n1.With its overloaded landfills and lack of coordination between various\nstakeholders, Delhi continues to have an inefficient waste management system.\n2.The city generates over 11,000 tons of waste daily. However, it faces\nsignificant challenges due to poor waste segregation."
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_002_9b6d2047",
+    "text": "Real World Scenario\nWaste Dumping in Tamil Nadu\n1.Tamil Nadu generates about 14,200-15,200 tonnes of municipal solid\nwaste per day.\n2.The state processes around 66% of this waste.\n3.The remaining ~34% (~5,000 tonnes per day) ends up in landfills or\nunmanaged places which includes roadsides, open lands, drains, etc.",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_002_9b6d2047",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 4,
+      "page_end": 4,
+      "chunk_index": 2,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 316,
+      "token_count": 63,
+      "content_hash": "9b6d20477adcebae84d6a4b8c5d89c7acccaf9d9a17324bb3b907d6f495ac817",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Real World Scenario\nWaste Dumping in Tamil Nadu\n1.Tamil Nadu generates about 14,200-15,200 tonnes of municipal solid\nwaste per day.\n2.The state processes around 66% of this waste.\n3.The remaining ~34% (~5,000 tonnes per day) ends up in landfills or\nunmanaged places which includes roadsides, open lands, drains, etc."
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_003_a7c38100",
+    "text": "Proposed Solution\n\u2022 Users report waste by uploading photos\n\u2022 The system automatically captures the exact geo-location\n\u2022 AI verifies the image, identifies waste type category\n\u2022 Multiple reports from the same geo-tagged location increases priority\n\u2022 Authorities view real-time waste hotspots\n\u2022 Cleaning staff receive assigned tasks with location\n\u2022 After cleaning, staffs upload an after-clean image and awards credit\npoints",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_003_a7c38100",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 5,
+      "page_end": 5,
+      "chunk_index": 3,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 421,
+      "token_count": 80,
+      "content_hash": "a7c38100e3f32d4c8f84e3128047fa6ef64fe30c62b8f5e2fc230f3175ec54fc",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Proposed Solution\n\u2022 Users report waste by uploading photos\n\u2022 The system automatically captures the exact geo-location\n\u2022 AI verifies the image, identifies waste type category\n\u2022 Multiple reports from the same geo-tagged location increases priority\n\u2022 Authorities view real-time waste hotspots\n\u2022 Cleaning staff receive assigned tasks with location\n\u2022 After cleaning, staffs upload an after-clean image and awards credit\npoints"
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_004_1e4c915c",
+    "text": "Technical Description\n\u2022 Frontend: React Native\n\u2022 Backend: Node.js\n\u2022 Database Management: MongoDB\n\u2022 Waste vs Non-Waste image detection: MobileNetV2\n\u2022 Waste type classification: YOLOv8\n\u2022 Before\u2013after cleanliness verification: Siamese Neural Network\n\u2022 Location tracking: Google Maps API\n\nSystem Design\nFig.1.2 ML Waste PredictionFig.1.1 System Workflow",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_004_1e4c915c",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 6,
+      "page_end": 6,
+      "chunk_index": 4,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 349,
+      "token_count": 59,
+      "content_hash": "1e4c915c4be31876a655b6c3147b634bac37881590e71991bcc4e7aa644ac9c2",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Technical Description\n\u2022 Frontend: React Native\n\u2022 Backend: Node.js\n\u2022 Database Management: MongoDB\n\u2022 Waste vs Non-Waste image detection: MobileNetV2\n\u2022 Waste type classification: YOLOv8\n\u2022 Before\u2013after cleanliness verification: Siamese Neural Network\n\u2022 Location tracking: Google Maps API\n\nSystem Design\nFig.1.2 ML Waste PredictionFig.1.1 System Workflow"
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_005_cf409ec9",
+    "text": "System Design\nFig.1.2 ML Waste PredictionFig.1.1 System Workflow\n\nImpact & Benefits\n\u2022 Speed: Faster reporting, verification, and cleanup\n\u2022 Cost: Reduced manual work and unnecessary field visits\n\u2022 Simplicity: Easy-to-use system for citizens and cleaners\n\u2022 Accessibility: Can be used by anyone with a smartphone\n\u2022 Accuracy: AI verification and geo-tagging improves accuracy\n\u2022 Transparency: Clear confirmation through after-clean photos",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_005_cf409ec9",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 7,
+      "page_end": 7,
+      "chunk_index": 5,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 433,
+      "token_count": 78,
+      "content_hash": "cf409ec986c582ae5375c546d28dc2a8a8767a6fae12ac33582121ad3f682676",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "System Design\nFig.1.2 ML Waste PredictionFig.1.1 System Workflow\n\nImpact & Benefits\n\u2022 Speed: Faster reporting, verification, and cleanup\n\u2022 Cost: Reduced manual work and unnecessary field visits\n\u2022 Simplicity: Easy-to-use system for citizens and cleaners\n\u2022 Accessibility: Can be used by anyone with a smartphone\n\u2022 Accuracy: AI verification and geo-tagging improves accuracy\n\u2022 Transparency: Clear confirmation through after-clean photos"
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_006_bb311c3e",
+    "text": "Feasibility & Viability\n\u2022 AI image recognition validates waste reports\n\u2022 Automatic geo-tagging ensures precise location tracking\n\u2022 Users earn credit points for submitting waste reports, encouraging active\nparticipation\n\u2022 Cleaners receive credit points only successful cleaning\n\u2022 Credit points can be redeemed as cash incentives\n\u2022 Requires only a smartphone with internet access",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_006_bb311c3e",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 9,
+      "page_end": 9,
+      "chunk_index": 6,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 377,
+      "token_count": 70,
+      "content_hash": "bb311c3ee5a9226373620ea754e28de83a3c026cab91e33f817eca520c45792c",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Feasibility & Viability\n\u2022 AI image recognition validates waste reports\n\u2022 Automatic geo-tagging ensures precise location tracking\n\u2022 Users earn credit points for submitting waste reports, encouraging active\nparticipation\n\u2022 Cleaners receive credit points only successful cleaning\n\u2022 Credit points can be redeemed as cash incentives\n\u2022 Requires only a smartphone with internet access"
+    }
+  },
+  {
+    "id": "doc_salem_waste_001_chunk_007_3c63950a",
+    "text": "Competitor Analysis\n\u2022 Swachhata App (India)\nAllows citizens to upload waste complaints with image and geo-location\nDoes not use AI verification and lacks accountability for timely cleaning.\n\u2022 Our AI-Driven Approach\nUses AI to verify waste and assign priority\nMultiple reports from the same geo-tagged location increases priority\nAuthorities view real-time waste hotspots\nAI verifies cleanliness and awards credit points to cleaners\n\nLimitations of Existing System\n\u2022 Manual Reporting Process\n\u2022 No AI Verification\n\u2022 Lack of Priority Handling\n\u2022 Delayed Response Time\n\u2022 No Real-Time Tracking",
+    "metadata": {
+      "chunk_id": "doc_salem_waste_001_chunk_007_3c63950a",
+      "document_id": "doc_salem_waste_001",
+      "section": "Main",
+      "page_start": 10,
+      "page_end": 10,
+      "chunk_index": 7,
+      "source_filename": "salem final.pdf",
+      "document_type": "document",
+      "character_count": 587,
+      "token_count": 113,
+      "content_hash": "3c63950a60ff7134efa2a367a5daef061f7a4394ab998916bc15c2388b145671",
+      "created_at": "2026-09-26T10:03:03.177328+00:00",
+      "text": "Competitor Analysis\n\u2022 Swachhata App (India)\nAllows citizens to upload waste complaints with image and geo-location\nDoes not use AI verification and lacks accountability for timely cleaning.\n\u2022 Our AI-Driven Approach\nUses AI to verify waste and assign priority\nMultiple reports from the same geo-tagged location increases priority\nAuthorities view real-time waste hotspots\nAI verifies cleanliness and awards credit points to cleaners\n\nLimitations of Existing System\n\u2022 Manual Reporting Process\n\u2022 No AI Verification\n\u2022 Lack of Priority Handling\n\u2022 Delayed Response Time\n\u2022 No Real-Time Tracking"
+    }
   }
 ]

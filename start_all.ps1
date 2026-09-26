@@ -9,6 +9,17 @@ Write-Host "               DOCLINK GROUNDED RAG PLATFORM LAUNCHER               
 Write-Host "====================================================================" -ForegroundColor Green
 Write-Host ""
 
+# 0. Start Stable Diffusion Forge (Image / Video generation)
+Write-Host "[0/4] Starting Stable Diffusion Forge (Port 7860)..." -ForegroundColor Yellow
+$forgeLauncher = Join-Path $WORKSPACE_DIR "start_forge.bat"
+if (Test-Path $forgeLauncher) {
+    Start-Process -FilePath $forgeLauncher -WorkingDirectory $WORKSPACE_DIR
+} else {
+    Write-Host "[NOTICE] start_forge.bat not found - image generation will use placeholders" -ForegroundColor Yellow
+}
+
+Start-Sleep -Seconds 2
+
 # 1. Start Ollama Server
 Write-Host "[1/4] Starting Ollama Local Server (Port 11434)..." -ForegroundColor Yellow
 Start-Process cmd.exe -ArgumentList '/k "echo Starting Ollama Server... && ollama serve"' -WorkingDirectory $WORKSPACE_DIR
@@ -41,6 +52,7 @@ Write-Host "  - Frontend UI:          http://localhost:5173" -ForegroundColor Wh
 Write-Host "  - Backend API Root:     http://localhost:8000" -ForegroundColor White
 Write-Host "  - Swagger API Docs:     http://localhost:8000/docs" -ForegroundColor White
 Write-Host "  - Ollama Local Server:  http://localhost:11434" -ForegroundColor White
+Write-Host "  - Forge Image API:      http://localhost:7860" -ForegroundColor White
 Write-Host "  - Neo4j Web Console:    http://localhost:7474" -ForegroundColor White
 Write-Host ""
 

@@ -10,13 +10,13 @@
     "createdAt": "2026-09-26T03:02:42.607501+00:00",
     "updatedAt": "2026-09-26T03:02:42.607501+00:00",
     "analysis": {
-      "analysisId": "ANA_src-3ae255b0911f_b12c7376",
-      "summary": "DevelopinganIoTandML-drivenplatformforfruitripenessevaluationand\nspoilage detection: A case study on bananas\nRajini Ma,*, Persis Voolab\na Department of CSE, Government Degree College, Ravulapalem, A.P, India\nb Department of CSE, Adikavi Nannaya University, Rajahmundry, A.P, India\nARTICLE INFO\nKeywor",
-      "factsCount": 381,
+      "analysisId": "ANA_src-a582cf4637df_0430cd5a",
+      "summary": "Cybersecurity SOC Incident-Response",
+      "factsCount": 92,
       "entitiesCount": 20,
-      "eventsCount": 7,
-      "metricsCount": 42,
-      "updatedAt": "2026-09-26T06:17:07.184065+00:00"
+      "eventsCount": 10,
+      "metricsCount": 0,
+      "updatedAt": "2026-09-26T10:24:46.762496+00:00"
     }
   },
   {
@@ -1170,5 +1170,3460 @@
     "deliverables": null,
     "createdAt": "2026-09-26T05:31:13.646404+00:00",
     "updatedAt": "2026-09-26T05:31:13.658699+00:00"
+  },
+  {
+    "id": "proj-1790413277863",
+    "projectId": "proj-1790413277863",
+    "userId": "local-workspace",
+    "name": "154",
+    "projectName": "154",
+    "title": "154",
+    "description": "General Public \u00b7 Technical \u00b7 7 deliverables",
+    "sourceFile": null,
+    "source": {
+      "id": "src-557464ccfbb4",
+      "name": "154.docx",
+      "type": "DOCX",
+      "size": "0.0 MB",
+      "status": "ready",
+      "uploadedAt": "2026-09-26T08:57:21.206795+00:00",
+      "extractedText": "Team Name \u2013 BRUTEFORCES\n\nTeam Id -\n\nProblem Statement ID \u2013 26154\n\nCategory \u2013 Software\n\nProblem Statement Title\n\nGen AI Platform for Automated Content Transformation\n\nDescription\n\n\u2022 Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes. The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge.\n\nThere is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.\n\u2022 Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency.\n\nThe platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information. In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard.\n\nBased on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact. The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style.\n\nIn summary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard.\n\u2022 Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations.\n\u2022 If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication.\n\u2022 If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads.\n\u2022 If 'Advisory' is selected, generate a structured advisory document.\n\u2022 If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging.\n\u2022 If 'Executive Summary' is selected, generate a concise executive briefing.\n\u2022 If 'Presentation' is selected, generate presentation slides and speaker notes.\n\u2022 If multiple output formats are selected, generate all selected deliverables from the same source content.\n\u2022 Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides)"
+    },
+    "sourceCount": 1,
+    "status": "Completed",
+    "config": {
+      "targetAudience": "General Public",
+      "tone": "Technical",
+      "language": "English",
+      "levelOfDetail": "Balanced",
+      "objective": "Inform",
+      "contentStyle": "Storytelling"
+    },
+    "selectedOutputs": [
+      "linkedin",
+      "twitter",
+      "advisory",
+      "presentation",
+      "executive_summary",
+      "infographic",
+      "video"
+    ],
+    "analysis": {
+      "detectedTopic": "Team Name \u2013 BRUTEFORCES",
+      "confidenceScore": 0.98,
+      "keyEntities": [
+        "Team Name",
+        "BRUTEFORCES",
+        "Team",
+        "Problem Statement",
+        "Category",
+        "Software",
+        "Problem Statement Title",
+        "Platform"
+      ],
+      "importantFacts": [
+        "Team Name \u2013 BRUTEFORCES.",
+        "Team Id -.",
+        "Problem Statement ID \u2013 26154.",
+        "Category \u2013 Software.",
+        "Problem Statement Title.",
+        "Gen AI Platform for Automated Content Transformation.",
+        "Description.",
+        "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes."
+      ],
+      "audienceSignals": [
+        "Executive Leadership",
+        "Security Operations",
+        "IT Infrastructure"
+      ],
+      "communicationObjective": "Inform stakeholders of critical vulnerabilities and immediate mandates.",
+      "sentiment": "Formal & Action-Oriented",
+      "readabilityScore": "Technical / Professional (Grade 12)"
+    },
+    "uckr": {
+      "stats": {
+        "totalFacts": 25,
+        "totalEntities": 20,
+        "totalEvents": 1,
+        "totalMetrics": 1,
+        "totalActions": 7,
+        "totalSources": 1,
+        "totalRelationships": 12,
+        "coverage": 100,
+        "grounding": 100,
+        "groundingIndex": 100,
+        "factCompleteness": 92,
+        "factConsistency": 100,
+        "entityConsistency": 100,
+        "numberConsistency": 100,
+        "dateConsistency": 100,
+        "readiness": 100
+      },
+      "facts": [
+        {
+          "id": "fact_001",
+          "value": "Team Name \u2013 BRUTEFORCES.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Team Name \u2013 BRUTEFORCES.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_002",
+          "value": "Team Id -.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Team Id -.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_003",
+          "value": "Problem Statement ID \u2013 26154.",
+          "type": "metric_fact",
+          "sourceDoc": "154.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Problem Statement ID \u2013 26154.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_004",
+          "value": "Category \u2013 Software.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Category \u2013 Software.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_005",
+          "value": "Problem Statement Title.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Problem Statement Title.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_006",
+          "value": "Gen AI Platform for Automated Content Transformation.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Gen AI Platform for Automated Content Transformation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_007",
+          "value": "Description.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Description.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_008",
+          "value": "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes.",
+          "type": "risk_fact",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_009",
+          "value": "The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_010",
+          "value": "There is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "There is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_011",
+          "value": "Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_012",
+          "value": "The platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_013",
+          "value": "In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_014",
+          "value": "Based on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Based on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_015",
+          "value": "The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_016",
+          "value": "In summary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "In summary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_017",
+          "value": "Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_018",
+          "value": "If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_019",
+          "value": "If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_020",
+          "value": "If 'Advisory' is selected, generate a structured advisory document.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'Advisory' is selected, generate a structured advisory document.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_021",
+          "value": "If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_022",
+          "value": "If 'Executive Summary' is selected, generate a concise executive briefing.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'Executive Summary' is selected, generate a concise executive briefing.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_023",
+          "value": "If 'Presentation' is selected, generate presentation slides and speaker notes.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If 'Presentation' is selected, generate presentation slides and speaker notes.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_024",
+          "value": "If multiple output formats are selected, generate all selected deliverables from the same source content.",
+          "type": "proposition",
+          "sourceDoc": "154.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "If multiple output formats are selected, generate all selected deliverables from the same source content.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_025",
+          "value": "Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides).",
+          "type": "metric_fact",
+          "sourceDoc": "154.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides).",
+          "usedInDeliverables": []
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Team Name",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_002",
+          "name": "BRUTEFORCES",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_003",
+          "name": "Team",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_004",
+          "name": "Problem Statement",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_005",
+          "name": "Category",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_006",
+          "name": "Software",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_007",
+          "name": "Problem Statement Title",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_008",
+          "name": "Platform",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_009",
+          "name": "Automated Content Transformation",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_010",
+          "name": "Description",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_011",
+          "name": "Background Organisations",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_012",
+          "name": "Description The",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_013",
+          "name": "AI-powered",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_014",
+          "name": "English",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_015",
+          "name": "Based",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_016",
+          "name": "Examples",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_017",
+          "name": "Video",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_018",
+          "name": "LinkedIn Post",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_019",
+          "name": "LinkedIn",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_020",
+          "name": "Twitter",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "title": "\u2022 Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, t",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Team Name",
+            "BRUTEFORCES"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "26154",
+          "unit": "",
+          "context": "Problem Statement ID \u2013 26154",
+          "confidence": 0.98
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Team Name",
+          "relation": "RELATED_TO",
+          "target": "BRUTEFORCES",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "BRUTEFORCES",
+          "relation": "TARGETED",
+          "target": "Team",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "Team",
+          "relation": "RELATED_TO",
+          "target": "Problem Statement",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "Problem Statement",
+          "relation": "TARGETED",
+          "target": "Category",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Category",
+          "relation": "RELATED_TO",
+          "target": "Software",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Software",
+          "relation": "TARGETED",
+          "target": "Problem Statement Title",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_007",
+          "source": "Problem Statement Title",
+          "relation": "RELATED_TO",
+          "target": "Platform",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_008",
+          "source": "Platform",
+          "relation": "TARGETED",
+          "target": "Automated Content Transformation",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_009",
+          "source": "Automated Content Transformation",
+          "relation": "RELATED_TO",
+          "target": "Description",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_010",
+          "source": "Description",
+          "relation": "TARGETED",
+          "target": "Background Organisations",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_011",
+          "source": "Background Organisations",
+          "relation": "RELATED_TO",
+          "target": "Description The",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_012",
+          "source": "Description The",
+          "relation": "TARGETED",
+          "target": "AI-powered",
+          "confidence": 0.95
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_002",
+          "action": "Shall act as an AI-powered content transformation engine that converts a common source of information into the specific delive",
+          "priority": "P1 High",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_003",
+          "action": "Shall provide a dashboard through which an operator can submit source content in the form of high quality English language tex",
+          "priority": "P1 High",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_004",
+          "action": "Shall select one or more desired output types through configurable parameters available on the dashboard",
+          "priority": "P1 High",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_005",
+          "action": "Shall analyze the input, understand the context and intent, and generate the requested output artefact",
+          "priority": "P1 High",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_006",
+          "action": "Should support multiple output formats and allow operators to control generation parameters such as target audience, tone, lang",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        },
+        {
+          "id": "action_007",
+          "action": "Shall generate output corresponding to the option(s) selected by the operator on the dashboard",
+          "priority": "P1 High",
+          "timeframe": "Operational Timeline",
+          "owner": "Team Name"
+        }
+      ],
+      "sources": [
+        {
+          "id": "citation_001",
+          "title": "154.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Team Name \u2013 BRUTEFORCES."
+        },
+        {
+          "id": "citation_002",
+          "title": "154.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Team Id -."
+        },
+        {
+          "id": "citation_003",
+          "title": "154.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Problem Statement ID \u2013 26154."
+        },
+        {
+          "id": "citation_004",
+          "title": "154.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Category \u2013 Software."
+        },
+        {
+          "id": "citation_005",
+          "title": "154.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Problem Statement Title."
+        },
+        {
+          "id": "citation_006",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Gen AI Platform for Automated Content Transformation."
+        },
+        {
+          "id": "citation_007",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Description."
+        },
+        {
+          "id": "citation_008",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes."
+        },
+        {
+          "id": "citation_009",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge."
+        },
+        {
+          "id": "citation_010",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "There is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface."
+        },
+        {
+          "id": "citation_011",
+          "title": "154.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency."
+        },
+        {
+          "id": "citation_012",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "The platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information."
+        },
+        {
+          "id": "citation_013",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard."
+        },
+        {
+          "id": "citation_014",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "Based on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact."
+        },
+        {
+          "id": "citation_015",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style."
+        },
+        {
+          "id": "citation_016",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "In summary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard."
+        },
+        {
+          "id": "citation_017",
+          "title": "154.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations."
+        },
+        {
+          "id": "citation_018",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication."
+        },
+        {
+          "id": "citation_019",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads."
+        },
+        {
+          "id": "citation_020",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'Advisory' is selected, generate a structured advisory document."
+        },
+        {
+          "id": "citation_021",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging."
+        },
+        {
+          "id": "citation_022",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'Executive Summary' is selected, generate a concise executive briefing."
+        },
+        {
+          "id": "citation_023",
+          "title": "154.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "If 'Presentation' is selected, generate presentation slides and speaker notes."
+        },
+        {
+          "id": "citation_024",
+          "title": "154.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "If multiple output formats are selected, generate all selected deliverables from the same source content."
+        },
+        {
+          "id": "citation_025",
+          "title": "154.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides)."
+        }
+      ]
+    },
+    "deliverables": {
+      "linkedin": {
+        "hook": "\ud83d\udea8 Key Update: Team Name \u2013 BRUTEFORCES.",
+        "body": "Key Insights & Developments:\n\n\u2022 Team Name \u2013 BRUTEFORCES.\n\u2022 Team Id -.\n\u2022 Problem Statement ID \u2013 26154.\n\u2022 Category \u2013 Software.\n\u2022 Problem Statement Title.\n\u2022 Gen AI Platform for Automated Content Transformation.\n\nExpected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides).",
+        "callToAction": "How is your team navigating this transition? Share your perspectives below.",
+        "hashtags": [
+          "#ArtificialIntelligence",
+          "#Leadership",
+          "#Innovation",
+          "#Strategy"
+        ],
+        "characterCount": 520,
+        "targetAudience": "General Public"
+      },
+      "twitter": {
+        "singlePost": "\ud83e\uddf5 Team Name \u2013 BRUTEFORCES. #ArtificialIntelligence #Leadership",
+        "thread": [
+          {
+            "index": 1,
+            "text": "1/5 Team Name \u2013 BRUTEFORCES.",
+            "charCount": 24
+          },
+          {
+            "index": 2,
+            "text": "2/5 Team Id -.",
+            "charCount": 10
+          },
+          {
+            "index": 3,
+            "text": "3/5 Problem Statement ID \u2013 26154.",
+            "charCount": 29
+          },
+          {
+            "index": 4,
+            "text": "4/5 Category \u2013 Software.",
+            "charCount": 20
+          },
+          {
+            "index": 5,
+            "text": "5/5 Problem Statement Title.",
+            "charCount": 24
+          }
+        ]
+      },
+      "advisory": {
+        "advisoryId": "ADV-264467",
+        "title": "Strategic Advisory & Policy Brief: Team Name \u2013 BRUTEFORCES.",
+        "domain": "technology",
+        "severity": "MEDIUM",
+        "dateIssued": "2026-09-26",
+        "situation": "Team Name \u2013 BRUTEFORCES. Team Id -.",
+        "keyInformation": [
+          "Team Name \u2013 BRUTEFORCES.",
+          "Team Id -.",
+          "Problem Statement ID \u2013 26154.",
+          "Category \u2013 Software.",
+          "Problem Statement Title.",
+          "Gen AI Platform for Automated Content Transformation."
+        ],
+        "threatImpact": "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes.",
+        "recommendedActions": [
+          {
+            "phase": "Immediate Guidance",
+            "steps": [
+              "Implement: Team Name \u2013 BRUTEFORCES.",
+              "Implement: Team Id -."
+            ]
+          },
+          {
+            "phase": "Continuous Governance",
+            "steps": [
+              "Maintain: Problem Statement ID \u2013 26154.",
+              "Maintain: Category \u2013 Software."
+            ]
+          }
+        ],
+        "complianceReferences": [
+          "Institutional Academic Governance Standards",
+          "Responsible AI in Education Framework"
+        ]
+      },
+      "presentation": {
+        "deckTitle": "Team Name \u2013 BRUTEFORCES.",
+        "totalSlides": 4,
+        "slides": [
+          {
+            "slideNumber": 1,
+            "title": "Team Name \u2013 BRUTEFORCES.",
+            "subtitle": "Audience: General Public \u2022 Tone: Technical",
+            "bullets": [
+              "Team Name \u2013 BRUTEFORCES.",
+              "Team Id -.",
+              "Problem Statement ID \u2013 26154."
+            ],
+            "visualRecommendation": "Title banner with theme accent cards",
+            "speakerNotes": "Team Name \u2013 BRUTEFORCES."
+          },
+          {
+            "slideNumber": 2,
+            "title": "Core Capabilities & Student Impact",
+            "bullets": [
+              "Category \u2013 Software.",
+              "Problem Statement Title.",
+              "Gen AI Platform for Automated Content Transformation."
+            ],
+            "visualRecommendation": "Feature breakdown columns with metric highlights",
+            "speakerNotes": "Detailed review of core capabilities."
+          },
+          {
+            "slideNumber": 3,
+            "title": "Teacher Augmentation & Accessibility",
+            "bullets": [
+              "Description.",
+              "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes.",
+              "The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge."
+            ],
+            "visualRecommendation": "Workflow interaction diagram",
+            "speakerNotes": "Analyzing practitioner augmentation and accessibility advantages."
+          },
+          {
+            "slideNumber": 4,
+            "title": "Responsible AI & Human Competencies",
+            "bullets": [
+              "There is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.",
+              "Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency.",
+              "The platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information.",
+              "In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard."
+            ],
+            "visualRecommendation": "Governance principle cards",
+            "speakerNotes": "Key governance mandates and operational considerations."
+          }
+        ]
+      },
+      "executive_summary": {
+        "priority": "High",
+        "keyFindingsCount": 6,
+        "recommendationsCount": 2,
+        "executiveOverview": "Team Name \u2013 BRUTEFORCES. Team Id -. Problem Statement ID \u2013 26154.",
+        "keyFindings": [
+          {
+            "metric": "Point 1",
+            "title": "Team Name \u2013 BRUTEFORCES.",
+            "description": "Team Name \u2013 BRUTEFORCES."
+          },
+          {
+            "metric": "Point 2",
+            "title": "Team Id -.",
+            "description": "Team Id -."
+          },
+          {
+            "metric": "Point 3",
+            "title": "Problem Statement ID \u2013 26154.",
+            "description": "Problem Statement ID \u2013 26154."
+          },
+          {
+            "metric": "Point 4",
+            "title": "Category \u2013 Software.",
+            "description": "Category \u2013 Software."
+          },
+          {
+            "metric": "Point 5",
+            "title": "Problem Statement Title.",
+            "description": "Problem Statement Title."
+          },
+          {
+            "metric": "Point 6",
+            "title": "Gen AI Platform for Automated Content Transformation.",
+            "description": "Gen AI Platform for Automated Content Transformation."
+          }
+        ],
+        "implications": [
+          "Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes."
+        ],
+        "strategicActions": [
+          "Action item: Problem Statement ID \u2013 26154.",
+          "Action item: Category \u2013 Software."
+        ]
+      },
+      "infographic": {
+        "keyMessage": "Team Name \u2013 BRUTEFORCES.",
+        "keyStatistics": [
+          {
+            "value": "26154",
+            "label": "Metric 1",
+            "subtext": "Problem Statement ID \u2013 26154"
+          }
+        ],
+        "supportingPoints": [
+          {
+            "iconName": "sparkles",
+            "title": "Team Name \u2013 BRUTEFORCES.",
+            "description": "Team Name \u2013 BRUTEFORCES."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Team Id -.",
+            "description": "Team Id -."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Problem Statement ID \u2013 26154.",
+            "description": "Problem Statement ID \u2013 26154."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Category \u2013 Software.",
+            "description": "Category \u2013 Software."
+          }
+        ],
+        "callToAction": "Share this executive summary with your team.",
+        "layoutRecommendation": "Vertical",
+        "visualStyle": "Corporate"
+      },
+      "video": {
+        "title": "Team Name \u2013 BRUTEFORCES.",
+        "aspectRatio": "16:9",
+        "style": "Professional",
+        "totalDurationSeconds": 60,
+        "script": "Team Name \u2013 BRUTEFORCES.\n\nTeam Id -.\n\nProblem Statement ID \u2013 26154.\n\nCategory \u2013 Software.",
+        "scenes": [
+          {
+            "sceneNumber": 1,
+            "title": "Team Name \u2013 BRUTEFORCES.",
+            "durationSeconds": 15,
+            "sceneDescription": "Team Name \u2013 BRUTEFORCES.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Team Name \u2013 BRUTEFORCES.",
+            "onScreenText": "Team Name \u2013 BRUTEFORCES."
+          },
+          {
+            "sceneNumber": 2,
+            "title": "Team Id -.",
+            "durationSeconds": 15,
+            "sceneDescription": "Team Id -.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Team Id -.",
+            "onScreenText": "Team Id -."
+          },
+          {
+            "sceneNumber": 3,
+            "title": "Problem Statement ID \u2013 26154.",
+            "durationSeconds": 15,
+            "sceneDescription": "Problem Statement ID \u2013 26154.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Problem Statement ID \u2013 26154.",
+            "onScreenText": "Problem Statement ID \u2013 26154."
+          },
+          {
+            "sceneNumber": 4,
+            "title": "Category \u2013 Software.",
+            "durationSeconds": 15,
+            "sceneDescription": "Category \u2013 Software.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Category \u2013 Software.",
+            "onScreenText": "Category \u2013 Software."
+          }
+        ],
+        "subtitlesSrt": ""
+      }
+    },
+    "createdAt": "2026-09-26T09:01:17.874590+00:00",
+    "updatedAt": "2026-09-26T09:01:17.874590+00:00"
+  },
+  {
+    "id": "proj-1790418287317",
+    "projectId": "proj-1790418287317",
+    "userId": "local-workspace",
+    "name": "24ALR044 - Cybersecurity SOC Incident",
+    "projectName": "24ALR044 - Cybersecurity SOC Incident",
+    "title": "24ALR044 - Cybersecurity SOC Incident",
+    "description": "General Public \u00b7 Professional \u00b7 7 deliverables",
+    "sourceFile": null,
+    "source": {
+      "id": "src-a582cf4637df",
+      "name": "24ALR044 - Cybersecurity SOC Incident.docx",
+      "type": "DOCX",
+      "size": "1.5 MB",
+      "status": "ready",
+      "uploadedAt": "2026-09-26T10:20:15.100955+00:00",
+      "extractedText": "Cybersecurity SOC Incident-Response\n\nCopilot\n\nName : Prem M     Roll No : 24ALR044\n\nProblem Statement\n\nSecurity Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools. Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.\n\nHow It Helps the Business or Public Organisation\n\nThe solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance. It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.\n\nProblem It Solves\n\nIt addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures. It also helps junior analysts understand security events and follow standardized investigation workflows.\n\nProposed GenAI Solution\n\nBuild a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.\n\nAnalysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps.\n\nThe system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks. It should provide evidence and source citations for its recommendations rather than making unsupported claims.\n\nThe Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language.\n\nTwo Main Features\n\n1. SOC Chatbot for Incident Investigation\n\nThe analyst can interact with the Copilot through a chatbot and ask questions such as:\n\nWhat happened in this alert?\n\nIs this activity suspicious?\n\nWhat is the severity?\n\nWhat are the indicators of compromise?\n\nWhich MITRE ATT&CK technique is involved?\n\nWhat should I investigate next?\n\nWhat response action is recommended?\n\nThe chatbot will use RAG to retrieve relevant security information before generating its answer.\n\n2. Automatic Incident Report Generation\n\nAfter analysing an incident, the Copilot can generate a structured incident report containing:\n\nIncident summary\n\nIncident severity\n\nAffected user or system\n\nIndicators of compromise\n\nEvent timeline\n\nPossible attack technique\n\nEvidence and sources\n\nInvestigation findings\n\nRecommended response actions\n\nThis reduces the time required for analysts to manually prepare incident documentation.\n\nSuggested Data\n\nSynthetic SOC alerts\n\nFirewall logs\n\nAuthentication logs\n\nEndpoint logs\n\nNetwork traffic summaries\n\nThreat-intelligence reports\n\nMITRE ATT&CK techniques\n\nIncident-response playbooks\n\nSecurity policies\n\nVulnerability information\n\nFictional incident cases\n\nTools and Models\n\nUse a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification.\n\nUseful technologies may include:\n\nPython\n\nFastAPI\n\nFAISS or another vector database\n\nSentence Transformers\n\nLLM / GenAI API\n\nMITRE ATT&CK knowledge sources\n\nReact-based chatbot interface\n\nExpected Deliverables\n\nSOC chatbot interface\n\nAlert and log input\n\nIncident summarization\n\nSeverity classification\n\nIOC extraction\n\nAlert correlation\n\nIncident timeline generation\n\nMITRE ATT&CK technique mapping\n\nInvestigation recommendations\n\nResponse-playbook suggestions\n\nRAG-based security knowledge search\n\nEvidence/source citation\n\nAutomatic incident report generation\n\nEvaluation KPIs\n\nMeasure:\n\nAlert-classification accuracy\n\nIncident-severity accuracy\n\nIOC extraction accuracy\n\nMITRE ATT&CK mapping accuracy\n\nRetrieval relevance\n\nChatbot answer accuracy\n\nCitation correctness\n\nIncident-report completeness\n\nResponse-recommendation usefulness\n\nHallucination or unsupported-answer rate\n\nAverage analyst investigation time\n\nRisks and Guardrails\n\nThe Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval.\n\nIt must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results.\n\nSensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information.\n\nThe chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst.\n\nOverall Goal\n\nThe Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts. It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation.\n\nThe system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control."
+    },
+    "sourceCount": 1,
+    "status": "Completed",
+    "config": {
+      "targetAudience": "General Public",
+      "tone": "Professional",
+      "language": "Tamil",
+      "levelOfDetail": "Balanced",
+      "objective": "Inform",
+      "contentStyle": "Professional"
+    },
+    "selectedOutputs": [
+      "linkedin",
+      "infographic",
+      "executive_summary",
+      "twitter",
+      "advisory",
+      "presentation",
+      "video"
+    ],
+    "analysis": {
+      "detectedTopic": "Cybersecurity SOC Incident-Response",
+      "confidenceScore": 0.98,
+      "keyEntities": [
+        "Cybersecurity SOC Incident-Response",
+        "Copilot",
+        "Name",
+        "Prem",
+        "Roll",
+        "Problem Statement",
+        "Security Operations Center",
+        "Analysts"
+      ],
+      "importantFacts": [
+        "Cybersecurity SOC Incident-Response.",
+        "Name : Prem M     Roll No : 24ALR044.",
+        "Problem Statement.",
+        "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+        "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+        "How It Helps the Business or Public Organisation.",
+        "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance.",
+        "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions."
+      ],
+      "audienceSignals": [
+        "Executive Leadership",
+        "Security Operations",
+        "IT Infrastructure"
+      ],
+      "communicationObjective": "Inform stakeholders of critical vulnerabilities and immediate mandates.",
+      "sentiment": "Formal & Action-Oriented",
+      "readabilityScore": "Technical / Professional (Grade 12)"
+    },
+    "uckr": {
+      "stats": {
+        "totalFacts": 91,
+        "totalEntities": 20,
+        "totalEvents": 10,
+        "totalMetrics": 0,
+        "totalActions": 2,
+        "totalSources": 1,
+        "totalRelationships": 12,
+        "coverage": 100,
+        "grounding": 100,
+        "groundingIndex": 100,
+        "factCompleteness": 95.6,
+        "factConsistency": 100,
+        "entityConsistency": 100,
+        "numberConsistency": 100,
+        "dateConsistency": 100,
+        "readiness": 100
+      },
+      "facts": [
+        {
+          "id": "fact_001",
+          "value": "Cybersecurity SOC Incident-Response.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Cybersecurity SOC Incident-Response.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_002",
+          "value": "Name : Prem M     Roll No : 24ALR044.",
+          "type": "metric_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Name : Prem M     Roll No : 24ALR044.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_003",
+          "value": "Problem Statement.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Problem Statement.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_004",
+          "value": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_005",
+          "value": "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+          "type": "event_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_006",
+          "value": "How It Helps the Business or Public Organisation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "How It Helps the Business or Public Organisation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_007",
+          "value": "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance.",
+          "type": "risk_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_008",
+          "value": "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_009",
+          "value": "Problem It Solves.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Problem It Solves.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_010",
+          "value": "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_011",
+          "value": "It also helps junior analysts understand security events and follow standardized investigation workflows.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It also helps junior analysts understand security events and follow standardized investigation workflows.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_012",
+          "value": "Proposed GenAI Solution.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Proposed GenAI Solution.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_013",
+          "value": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.",
+          "type": "risk_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_014",
+          "value": "Analysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Analysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_015",
+          "value": "The system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_016",
+          "value": "It should provide evidence and source citations for its recommendations rather than making unsupported claims.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It should provide evidence and source citations for its recommendations rather than making unsupported claims.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_017",
+          "value": "The Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_018",
+          "value": "Two Main Features.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Two Main Features.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_019",
+          "value": "SOC Chatbot for Incident Investigation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "SOC Chatbot for Incident Investigation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_020",
+          "value": "The analyst can interact with the Copilot through a chatbot and ask questions such as:.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The analyst can interact with the Copilot through a chatbot and ask questions such as:.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_021",
+          "value": "What happened in this alert?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "What happened in this alert?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_022",
+          "value": "Is this activity suspicious?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Is this activity suspicious?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_023",
+          "value": "What is the severity?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "What is the severity?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_024",
+          "value": "What are the indicators of compromise?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "What are the indicators of compromise?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_025",
+          "value": "MITRE ATT&CK technique is involved?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "MITRE ATT&CK technique is involved?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_026",
+          "value": "What should I investigate next?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "What should I investigate next?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_027",
+          "value": "What response action is recommended?",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "What response action is recommended?",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_028",
+          "value": "The chatbot will use RAG to retrieve relevant security information before generating its answer.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The chatbot will use RAG to retrieve relevant security information before generating its answer.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_029",
+          "value": "Automatic Incident Report Generation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Automatic Incident Report Generation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_030",
+          "value": "After analysing an incident, the Copilot can generate a structured incident report containing:.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "After analysing an incident, the Copilot can generate a structured incident report containing:.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_031",
+          "value": "Incident summary.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident summary.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_032",
+          "value": "Incident severity.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident severity.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_033",
+          "value": "Affected user or system.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Affected user or system.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_034",
+          "value": "Event timeline.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Event timeline.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_035",
+          "value": "Possible attack technique.",
+          "type": "risk_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Possible attack technique.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_036",
+          "value": "Evidence and sources.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Evidence and sources.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_037",
+          "value": "Investigation findings.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Investigation findings.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_038",
+          "value": "Recommended response actions.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Recommended response actions.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_039",
+          "value": "This reduces the time required for analysts to manually prepare incident documentation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "This reduces the time required for analysts to manually prepare incident documentation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_040",
+          "value": "Suggested Data.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Suggested Data.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_041",
+          "value": "Synthetic SOC alerts.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Synthetic SOC alerts.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_042",
+          "value": "Firewall logs.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Firewall logs.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_043",
+          "value": "Authentication logs.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Authentication logs.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_044",
+          "value": "Endpoint logs.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Endpoint logs.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_045",
+          "value": "Network traffic summaries.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Network traffic summaries.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_046",
+          "value": "Threat-intelligence reports.",
+          "type": "risk_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Threat-intelligence reports.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_047",
+          "value": "MITRE ATT&CK techniques.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "MITRE ATT&CK techniques.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_048",
+          "value": "Vulnerability information.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Vulnerability information.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_049",
+          "value": "Fictional incident cases.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Fictional incident cases.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_050",
+          "value": "Tools and Models.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Tools and Models.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_051",
+          "value": "Use a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Use a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_052",
+          "value": "Useful technologies may include:.",
+          "type": "event_fact",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Useful technologies may include:.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_053",
+          "value": "FAISS or another vector database.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "FAISS or another vector database.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_054",
+          "value": "Sentence Transformers.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Sentence Transformers.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_055",
+          "value": "LLM / GenAI API.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "LLM / GenAI API.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_056",
+          "value": "MITRE ATT&CK knowledge sources.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "MITRE ATT&CK knowledge sources.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_057",
+          "value": "React-based chatbot interface.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "React-based chatbot interface.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_058",
+          "value": "Expected Deliverables.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Expected Deliverables.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_059",
+          "value": "SOC chatbot interface.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "SOC chatbot interface.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_060",
+          "value": "Alert and log input.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Alert and log input.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_061",
+          "value": "Incident summarization.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident summarization.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_062",
+          "value": "IOC extraction.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "IOC extraction.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_063",
+          "value": "Alert correlation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Alert correlation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_064",
+          "value": "Incident timeline generation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident timeline generation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_065",
+          "value": "MITRE ATT&CK technique mapping.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "MITRE ATT&CK technique mapping.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_066",
+          "value": "Investigation recommendations.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Investigation recommendations.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_067",
+          "value": "Response-playbook suggestions.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Response-playbook suggestions.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_068",
+          "value": "RAG-based security knowledge search.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "RAG-based security knowledge search.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_069",
+          "value": "Evidence/source citation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Evidence/source citation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_070",
+          "value": "Evaluation KPIs.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Evaluation KPIs.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_071",
+          "value": "Measure:.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Measure:.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_072",
+          "value": "Alert-classification accuracy.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Alert-classification accuracy.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_073",
+          "value": "Incident-severity accuracy.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident-severity accuracy.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_074",
+          "value": "IOC extraction accuracy.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "IOC extraction accuracy.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_075",
+          "value": "MITRE ATT&CK mapping accuracy.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "MITRE ATT&CK mapping accuracy.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_076",
+          "value": "Retrieval relevance.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Retrieval relevance.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_077",
+          "value": "Chatbot answer accuracy.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Chatbot answer accuracy.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_078",
+          "value": "Citation correctness.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Citation correctness.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_079",
+          "value": "Incident-report completeness.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Incident-report completeness.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_080",
+          "value": "Response-recommendation usefulness.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Response-recommendation usefulness.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_081",
+          "value": "Hallucination or unsupported-answer rate.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Hallucination or unsupported-answer rate.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_082",
+          "value": "Average analyst investigation time.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Average analyst investigation time.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_083",
+          "value": "Risks and Guardrails.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Risks and Guardrails.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_084",
+          "value": "The Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_085",
+          "value": "It must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_086",
+          "value": "Sensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Sensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_087",
+          "value": "The chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_088",
+          "value": "Overall Goal.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Overall Goal.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_089",
+          "value": "The Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_090",
+          "value": "It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_091",
+          "value": "The system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control.",
+          "type": "proposition",
+          "sourceDoc": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "The system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control.",
+          "usedInDeliverables": []
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Cybersecurity SOC Incident-Response",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_002",
+          "name": "Copilot",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_003",
+          "name": "Name",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_004",
+          "name": "Prem",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_005",
+          "name": "Roll",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_006",
+          "name": "Problem Statement",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_007",
+          "name": "Security Operations Center",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_008",
+          "name": "Analysts",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_009",
+          "name": "Helps",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_010",
+          "name": "Business",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_011",
+          "name": "Public Organisation",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_012",
+          "name": "Problem",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_013",
+          "name": "Solves",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_014",
+          "name": "Proposed GenAI Solution",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_015",
+          "name": "Build",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_016",
+          "name": "RAG-based SOC Incident-Response Copilot",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_017",
+          "name": "The Copilot",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_018",
+          "name": "Two Main Features",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_019",
+          "name": "SOC Chatbot",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_020",
+          "name": "Incident Investigation",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "title": "Cybersecurity SOC Incident-Response",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_002",
+          "title": "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_003",
+          "title": "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsis",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_004",
+          "title": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policie",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_005",
+          "title": "Analysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summ",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_006",
+          "title": "SOC Chatbot for Incident Investigation",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_007",
+          "title": "Automatic Incident Report Generation",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_008",
+          "title": "After analysing an incident, the Copilot can generate a structured incident report containing:",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_009",
+          "title": "Incident summary",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        },
+        {
+          "id": "event_010",
+          "title": "Incident severity",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Cybersecurity SOC Incident-Response",
+            "Copilot"
+          ]
+        }
+      ],
+      "metrics": [],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Cybersecurity SOC Incident-Response",
+          "relation": "RELATED_TO",
+          "target": "Copilot",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "Copilot",
+          "relation": "TARGETED",
+          "target": "Name",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "Name",
+          "relation": "RELATED_TO",
+          "target": "Prem",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "Prem",
+          "relation": "TARGETED",
+          "target": "Roll",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Roll",
+          "relation": "RELATED_TO",
+          "target": "Problem Statement",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Problem Statement",
+          "relation": "TARGETED",
+          "target": "Security Operations Center",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_007",
+          "source": "Security Operations Center",
+          "relation": "RELATED_TO",
+          "target": "Analysts",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_008",
+          "source": "Analysts",
+          "relation": "TARGETED",
+          "target": "Helps",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_009",
+          "source": "Helps",
+          "relation": "RELATED_TO",
+          "target": "Business",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_010",
+          "source": "Business",
+          "relation": "TARGETED",
+          "target": "Public Organisation",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_011",
+          "source": "Public Organisation",
+          "relation": "RELATED_TO",
+          "target": "Problem",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_012",
+          "source": "Problem",
+          "relation": "TARGETED",
+          "target": "Solves",
+          "confidence": 0.95
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Should provide evidence and source citations for its recommendations rather than making unsupported claims",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Cybersecurity SOC Incident-Response"
+        },
+        {
+          "id": "action_002",
+          "action": "Should I investigate next",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Cybersecurity SOC Incident-Response"
+        }
+      ],
+      "sources": [
+        {
+          "id": "citation_001",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Cybersecurity SOC Incident-Response."
+        },
+        {
+          "id": "citation_002",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Name : Prem M     Roll No : 24ALR044."
+        },
+        {
+          "id": "citation_003",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Problem Statement."
+        },
+        {
+          "id": "citation_004",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools."
+        },
+        {
+          "id": "citation_005",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions."
+        },
+        {
+          "id": "citation_006",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "How It Helps the Business or Public Organisation."
+        },
+        {
+          "id": "citation_007",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance."
+        },
+        {
+          "id": "citation_008",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions."
+        },
+        {
+          "id": "citation_009",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Problem It Solves."
+        },
+        {
+          "id": "citation_010",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures."
+        },
+        {
+          "id": "citation_011",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "It also helps junior analysts understand security events and follow standardized investigation workflows."
+        },
+        {
+          "id": "citation_012",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "Proposed GenAI Solution."
+        },
+        {
+          "id": "citation_013",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation."
+        },
+        {
+          "id": "citation_014",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "Analysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps."
+        },
+        {
+          "id": "citation_015",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "The system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks."
+        },
+        {
+          "id": "citation_016",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 3,
+          "section": "chunk_003",
+          "excerpt": "It should provide evidence and source citations for its recommendations rather than making unsupported claims."
+        },
+        {
+          "id": "citation_017",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "The Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language."
+        },
+        {
+          "id": "citation_018",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "Two Main Features."
+        },
+        {
+          "id": "citation_019",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "SOC Chatbot for Incident Investigation."
+        },
+        {
+          "id": "citation_020",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "The analyst can interact with the Copilot through a chatbot and ask questions such as:."
+        },
+        {
+          "id": "citation_021",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "What happened in this alert?"
+        },
+        {
+          "id": "citation_022",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 4,
+          "section": "chunk_004",
+          "excerpt": "Is this activity suspicious?"
+        },
+        {
+          "id": "citation_023",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "What is the severity?"
+        },
+        {
+          "id": "citation_024",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "What are the indicators of compromise?"
+        },
+        {
+          "id": "citation_025",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "MITRE ATT&CK technique is involved?"
+        },
+        {
+          "id": "citation_026",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "What should I investigate next?"
+        },
+        {
+          "id": "citation_027",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "What response action is recommended?"
+        },
+        {
+          "id": "citation_028",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 5,
+          "section": "chunk_005",
+          "excerpt": "The chatbot will use RAG to retrieve relevant security information before generating its answer."
+        },
+        {
+          "id": "citation_029",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "chunk_006",
+          "excerpt": "Automatic Incident Report Generation."
+        },
+        {
+          "id": "citation_030",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "chunk_006",
+          "excerpt": "After analysing an incident, the Copilot can generate a structured incident report containing:."
+        },
+        {
+          "id": "citation_031",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "chunk_006",
+          "excerpt": "Incident summary."
+        },
+        {
+          "id": "citation_032",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "chunk_006",
+          "excerpt": "Incident severity."
+        },
+        {
+          "id": "citation_033",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 6,
+          "section": "chunk_006",
+          "excerpt": "Affected user or system."
+        },
+        {
+          "id": "citation_034",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "Event timeline."
+        },
+        {
+          "id": "citation_035",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "Possible attack technique."
+        },
+        {
+          "id": "citation_036",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "Evidence and sources."
+        },
+        {
+          "id": "citation_037",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "Investigation findings."
+        },
+        {
+          "id": "citation_038",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "Recommended response actions."
+        },
+        {
+          "id": "citation_039",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 7,
+          "section": "chunk_007",
+          "excerpt": "This reduces the time required for analysts to manually prepare incident documentation."
+        },
+        {
+          "id": "citation_040",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Suggested Data."
+        },
+        {
+          "id": "citation_041",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Synthetic SOC alerts."
+        },
+        {
+          "id": "citation_042",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Firewall logs."
+        },
+        {
+          "id": "citation_043",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Authentication logs."
+        },
+        {
+          "id": "citation_044",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Endpoint logs."
+        },
+        {
+          "id": "citation_045",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 8,
+          "section": "chunk_008",
+          "excerpt": "Network traffic summaries."
+        },
+        {
+          "id": "citation_046",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "chunk_009",
+          "excerpt": "Threat-intelligence reports."
+        },
+        {
+          "id": "citation_047",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "chunk_009",
+          "excerpt": "MITRE ATT&CK techniques."
+        },
+        {
+          "id": "citation_048",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "chunk_009",
+          "excerpt": "Vulnerability information."
+        },
+        {
+          "id": "citation_049",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "chunk_009",
+          "excerpt": "Fictional incident cases."
+        },
+        {
+          "id": "citation_050",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 9,
+          "section": "chunk_009",
+          "excerpt": "Tools and Models."
+        },
+        {
+          "id": "citation_051",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "chunk_010",
+          "excerpt": "Use a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification."
+        },
+        {
+          "id": "citation_052",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "chunk_010",
+          "excerpt": "Useful technologies may include:."
+        },
+        {
+          "id": "citation_053",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "chunk_010",
+          "excerpt": "FAISS or another vector database."
+        },
+        {
+          "id": "citation_054",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 10,
+          "section": "chunk_010",
+          "excerpt": "Sentence Transformers."
+        },
+        {
+          "id": "citation_055",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "LLM / GenAI API."
+        },
+        {
+          "id": "citation_056",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "MITRE ATT&CK knowledge sources."
+        },
+        {
+          "id": "citation_057",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "React-based chatbot interface."
+        },
+        {
+          "id": "citation_058",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "Expected Deliverables."
+        },
+        {
+          "id": "citation_059",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "SOC chatbot interface."
+        },
+        {
+          "id": "citation_060",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 11,
+          "section": "chunk_011",
+          "excerpt": "Alert and log input."
+        },
+        {
+          "id": "citation_061",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "chunk_012",
+          "excerpt": "Incident summarization."
+        },
+        {
+          "id": "citation_062",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "chunk_012",
+          "excerpt": "IOC extraction."
+        },
+        {
+          "id": "citation_063",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "chunk_012",
+          "excerpt": "Alert correlation."
+        },
+        {
+          "id": "citation_064",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "chunk_012",
+          "excerpt": "Incident timeline generation."
+        },
+        {
+          "id": "citation_065",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 12,
+          "section": "chunk_012",
+          "excerpt": "MITRE ATT&CK technique mapping."
+        },
+        {
+          "id": "citation_066",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "chunk_013",
+          "excerpt": "Investigation recommendations."
+        },
+        {
+          "id": "citation_067",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "chunk_013",
+          "excerpt": "Response-playbook suggestions."
+        },
+        {
+          "id": "citation_068",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "chunk_013",
+          "excerpt": "RAG-based security knowledge search."
+        },
+        {
+          "id": "citation_069",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "chunk_013",
+          "excerpt": "Evidence/source citation."
+        },
+        {
+          "id": "citation_070",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 13,
+          "section": "chunk_013",
+          "excerpt": "Evaluation KPIs."
+        },
+        {
+          "id": "citation_071",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "Measure:."
+        },
+        {
+          "id": "citation_072",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "Alert-classification accuracy."
+        },
+        {
+          "id": "citation_073",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "Incident-severity accuracy."
+        },
+        {
+          "id": "citation_074",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "IOC extraction accuracy."
+        },
+        {
+          "id": "citation_075",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "MITRE ATT&CK mapping accuracy."
+        },
+        {
+          "id": "citation_076",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 14,
+          "section": "chunk_014",
+          "excerpt": "Retrieval relevance."
+        },
+        {
+          "id": "citation_077",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Chatbot answer accuracy."
+        },
+        {
+          "id": "citation_078",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Citation correctness."
+        },
+        {
+          "id": "citation_079",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Incident-report completeness."
+        },
+        {
+          "id": "citation_080",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Response-recommendation usefulness."
+        },
+        {
+          "id": "citation_081",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Hallucination or unsupported-answer rate."
+        },
+        {
+          "id": "citation_082",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 15,
+          "section": "chunk_015",
+          "excerpt": "Average analyst investigation time."
+        },
+        {
+          "id": "citation_083",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "Risks and Guardrails."
+        },
+        {
+          "id": "citation_084",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "The Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval."
+        },
+        {
+          "id": "citation_085",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "It must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results."
+        },
+        {
+          "id": "citation_086",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "Sensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information."
+        },
+        {
+          "id": "citation_087",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "The chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst."
+        },
+        {
+          "id": "citation_088",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 16,
+          "section": "chunk_016",
+          "excerpt": "Overall Goal."
+        },
+        {
+          "id": "citation_089",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "chunk_017",
+          "excerpt": "The Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts."
+        },
+        {
+          "id": "citation_090",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "chunk_017",
+          "excerpt": "It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation."
+        },
+        {
+          "id": "citation_091",
+          "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+          "page": 17,
+          "section": "chunk_017",
+          "excerpt": "The system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control."
+        }
+      ]
+    },
+    "deliverables": {
+      "linkedin": {
+        "hook": "\ud83d\udea8 \u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0b85\u0bb1\u0bbf\u0bb5\u0bbf\u0baa\u0bcd\u0baa\u0bc1: Cybersecurity SOC Incident-Response.",
+        "body": "\u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1\u0b95\u0bb3\u0bcd & \u0bb5\u0bbf\u0bb5\u0bb0\u0b99\u0bcd\u0b95\u0bb3\u0bcd:\n\n\u2022 Cybersecurity SOC Incident-Response.\n\u2022 Name : Prem M     Roll No : 24ALR044.\n\u2022 Problem Statement.\n\u2022 Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.\n\u2022 Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.\n\u2022 How It Helps the Business or Public Organisation.\n\nThe system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control.",
+        "callToAction": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0b95\u0bc1\u0bb4\u0bc1 \u0b87\u0ba4\u0bc8 \u0b8e\u0bb5\u0bcd\u0bb5\u0bbe\u0bb1\u0bc1 \u0b95\u0bc8\u0baf\u0bbe\u0bb3\u0bcd\u0b95\u0bbf\u0bb1\u0ba4\u0bc1? \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0b95\u0bb0\u0bc1\u0ba4\u0bcd\u0ba4\u0bc1\u0b95\u0bcd\u0b95\u0bb3\u0bc8 \u0b95\u0bc0\u0bb4\u0bc7 \u0baa\u0b95\u0bbf\u0bb0\u0bc1\u0b99\u0bcd\u0b95\u0bb3\u0bcd.",
+        "hashtags": [
+          "#\u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8\u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1",
+          "#\u0b95\u0bb2\u0bcd\u0bb5\u0bbf",
+          "#EdTech",
+          "#\u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8 \u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1 (AI)",
+          "#Innovation"
+        ],
+        "characterCount": 520,
+        "targetAudience": "General Public"
+      },
+      "infographic": {
+        "keyMessage": "Cybersecurity SOC Incident-Response.",
+        "keyStatistics": [
+          {
+            "value": "91",
+            "label": "\u0b9a\u0bb0\u0bbf\u0baa\u0bbe\u0bb0\u0bcd\u0b95\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f \u0b95\u0bc2\u0bb1\u0bcd\u0bb1\u0bc1\u0b95\u0bb3\u0bcd",
+            "subtext": "\u0bae\u0bc1\u0bb4\u0bc1\u0bae\u0bc8\u0baf\u0bbe\u0ba9 \u0b89\u0bb3\u0bcd\u0bb3\u0b9f\u0b95\u0bcd\u0b95 \u0bb5\u0bb0\u0bae\u0bcd\u0baa\u0bc1"
+          },
+          {
+            "value": "100%",
+            "label": "\u0b89\u0ba3\u0bcd\u0bae\u0bc8 \u0ba8\u0bbf\u0bb2\u0bc8\u0ba4\u0bcd\u0ba4\u0ba9\u0bcd\u0bae\u0bc8",
+            "subtext": "\u0bae\u0bc2\u0bb2\u0ba4\u0bcd\u0ba4\u0bbf\u0bb2\u0bbf\u0bb0\u0bc1\u0ba8\u0bcd\u0ba4\u0bc1 \u0ba8\u0bc7\u0bb0\u0b9f\u0bbf\u0baf\u0bbe\u0b95 \u0baa\u0bc6\u0bb1\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f\u0ba4\u0bc1"
+          }
+        ],
+        "supportingPoints": [
+          {
+            "iconName": "sparkles",
+            "title": "Cybersecurity SOC Incident-Response.",
+            "description": "Cybersecurity SOC Incident-Response."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Name : Prem M     Roll No : 24ALR044.",
+            "description": "Name : Prem M     Roll No : 24ALR044."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Problem Statement.",
+            "description": "Problem Statement."
+          },
+          {
+            "iconName": "sparkles",
+            "title": "Security Operations Center (SOC) teams receive lar",
+            "description": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools."
+          }
+        ],
+        "callToAction": "\u0b87\u0ba8\u0bcd\u0ba4 \u0b85\u0bb1\u0bbf\u0b95\u0bcd\u0b95\u0bc8\u0baf\u0bc8 \u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0b95\u0bc1\u0bb4\u0bc1\u0bb5\u0bbf\u0ba9\u0bb0\u0bc1\u0b9f\u0ba9\u0bcd \u0baa\u0b95\u0bbf\u0bb0\u0bcd\u0ba8\u0bcd\u0ba4\u0bc1 \u0b95\u0bca\u0bb3\u0bcd\u0bb3\u0bc1\u0b99\u0bcd\u0b95\u0bb3\u0bcd.",
+        "layoutRecommendation": "Vertical",
+        "visualStyle": "Corporate"
+      },
+      "executive_summary": {
+        "priority": "High",
+        "keyFindingsCount": 6,
+        "recommendationsCount": 2,
+        "executiveOverview": "Cybersecurity SOC Incident-Response. Name : Prem M     Roll No : 24ALR044. Problem Statement.",
+        "keyFindings": [
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 1",
+            "title": "Cybersecurity SOC Incident-Response.",
+            "description": "Cybersecurity SOC Incident-Response."
+          },
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 2",
+            "title": "Name : Prem M     Roll No : 24ALR044.",
+            "description": "Name : Prem M     Roll No : 24ALR044."
+          },
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 3",
+            "title": "Problem Statement.",
+            "description": "Problem Statement."
+          },
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 4",
+            "title": "Security Operations Center (SOC) teams receive large volumes of s",
+            "description": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools."
+          },
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 5",
+            "title": "Analysts may struggle to quickly understand incidents, identify t",
+            "description": "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions."
+          },
+          {
+            "metric": "\u0baa\u0bc1\u0bb3\u0bcd\u0bb3\u0bbf 6",
+            "title": "How It Helps the Business or Public Organisation.",
+            "description": "How It Helps the Business or Public Organisation."
+          }
+        ],
+        "implications": [
+          "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.",
+          "Threat-intelligence reports."
+        ],
+        "strategicActions": [
+          "\u0b9a\u0bc6\u0baf\u0bb2\u0bcd \u0ba4\u0bbf\u0b9f\u0bcd\u0b9f\u0bae\u0bcd: Problem Statement.",
+          "\u0b9a\u0bc6\u0baf\u0bb2\u0bcd \u0ba4\u0bbf\u0b9f\u0bcd\u0b9f\u0bae\u0bcd: Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools."
+        ]
+      },
+      "twitter": {
+        "singlePost": "\ud83e\uddf5 Cybersecurity SOC Incident-Response. #\u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8\u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1 #\u0b95\u0bb2\u0bcd\u0bb5\u0bbf",
+        "thread": [
+          {
+            "index": 1,
+            "text": "1/5 Cybersecurity SOC Incident-Response.",
+            "charCount": 36
+          },
+          {
+            "index": 2,
+            "text": "2/5 Name : Prem M     Roll No : 24ALR044.",
+            "charCount": 37
+          },
+          {
+            "index": 3,
+            "text": "3/5 Problem Statement.",
+            "charCount": 18
+          },
+          {
+            "index": 4,
+            "text": "4/5 Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+            "charCount": 140
+          },
+          {
+            "index": 5,
+            "text": "5/5 Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+            "charCount": 190
+          }
+        ]
+      },
+      "advisory": {
+        "advisoryId": "ADV-866652",
+        "title": "\u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8 \u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1 (\u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8 \u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1 (AI)) \u2014 \u0bae\u0bc2\u0bb2\u0bcb\u0baa\u0bbe\u0baf \u0b86\u0bb2\u0bcb\u0b9a\u0ba9\u0bc8 & \u0b95\u0bca\u0bb3\u0bcd\u0b95\u0bc8 \u0b85\u0bb1\u0bbf\u0b95\u0bcd\u0b95\u0bc8: Cybersecurity SOC Incident-Response.",
+        "domain": "cybersecurity",
+        "severity": "MEDIUM",
+        "dateIssued": "2026-09-26",
+        "situation": "Cybersecurity SOC Incident-Response. Name : Prem M     Roll No : 24ALR044.",
+        "keyInformation": [
+          "Cybersecurity SOC Incident-Response.",
+          "Name : Prem M     Roll No : 24ALR044.",
+          "Problem Statement.",
+          "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+          "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+          "How It Helps the Business or Public Organisation."
+        ],
+        "threatImpact": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.",
+        "recommendedActions": [
+          {
+            "phase": "\u0b89\u0b9f\u0ba9\u0b9f\u0bbf \u0bb5\u0bb4\u0bbf\u0b95\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1\u0ba4\u0bb2\u0bcd",
+            "steps": [
+              "\u0b9a\u0bc6\u0baf\u0bb2\u0bcd\u0baa\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4\u0bc1\u0b95: Cybersecurity SOC Incident-Response.",
+              "\u0b9a\u0bc6\u0baf\u0bb2\u0bcd\u0baa\u0b9f\u0bc1\u0ba4\u0bcd\u0ba4\u0bc1\u0b95: Name : Prem M     Roll No : 24ALR044."
+            ]
+          },
+          {
+            "phase": "\u0ba4\u0bca\u0b9f\u0bb0\u0bcd \u0ba8\u0bbf\u0bb0\u0bcd\u0bb5\u0bbe\u0b95\u0bae\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0bae\u0bc7\u0bb1\u0bcd\u0baa\u0bbe\u0bb0\u0bcd\u0bb5\u0bc8",
+            "steps": [
+              "\u0baa\u0bb0\u0bbe\u0bae\u0bb0\u0bbf\u0b95\u0bcd\u0b95: Problem Statement.",
+              "\u0baa\u0bb0\u0bbe\u0bae\u0bb0\u0bbf\u0b95\u0bcd\u0b95: Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools."
+            ]
+          }
+        ],
+        "complianceReferences": [
+          "\u0ba8\u0bbf\u0bb1\u0bc1\u0bb5\u0ba9 \u0b95\u0bb2\u0bcd\u0bb5\u0bbf \u0bb5\u0bb4\u0bbf\u0b95\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1\u0ba4\u0bb2\u0bcd \u0ba4\u0bb0\u0ba8\u0bbf\u0bb2\u0bc8\u0b95\u0bb3\u0bcd",
+          "\u0baa\u0bca\u0bb1\u0bc1\u0baa\u0bcd\u0baa\u0bbe\u0ba9 \u0b9a\u0bc6\u0baf\u0bb1\u0bcd\u0b95\u0bc8 \u0ba8\u0bc1\u0ba3\u0bcd\u0ba3\u0bb1\u0bbf\u0bb5\u0bc1 (AI) \u0baa\u0baf\u0ba9\u0bcd\u0baa\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1 \u0b95\u0b9f\u0bcd\u0b9f\u0bae\u0bc8\u0baa\u0bcd\u0baa\u0bc1"
+        ]
+      },
+      "presentation": {
+        "deckTitle": "Cybersecurity SOC Incident-Response.",
+        "totalSlides": 4,
+        "slides": [
+          {
+            "slideNumber": 1,
+            "title": "Cybersecurity SOC Incident-Response.",
+            "subtitle": "\u0baa\u0bbe\u0bb0\u0bcd\u0bb5\u0bc8\u0baf\u0bbe\u0bb3\u0bb0\u0bcd\u0b95\u0bb3\u0bcd: General Public \u2022 \u0ba4\u0bca\u0ba9\u0bbf: Professional",
+            "bullets": [
+              "Cybersecurity SOC Incident-Response.",
+              "Name : Prem M     Roll No : 24ALR044.",
+              "Problem Statement."
+            ],
+            "visualRecommendation": "Title banner with theme accent cards",
+            "speakerNotes": "Cybersecurity SOC Incident-Response."
+          },
+          {
+            "slideNumber": 2,
+            "title": "\u0b95\u0bb1\u0bcd\u0bb1\u0bb2\u0bcd \u0ba4\u0bbf\u0bb1\u0ba9\u0bcd\u0b95\u0bb3\u0bcd & \u0bae\u0bbe\u0ba3\u0bb5\u0bb0\u0bcd \u0bae\u0bc0\u0ba4\u0bbe\u0ba9 \u0ba4\u0bbe\u0b95\u0bcd\u0b95\u0bae\u0bcd",
+            "bullets": [
+              "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+              "Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.",
+              "How It Helps the Business or Public Organisation."
+            ],
+            "visualRecommendation": "Feature breakdown columns with metric highlights",
+            "speakerNotes": "\u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0ba4\u0bbf\u0bb1\u0ba9\u0bcd\u0b95\u0bb3\u0bbf\u0ba9\u0bcd \u0bb5\u0bbf\u0bb0\u0bbf\u0bb5\u0bbe\u0ba9 \u0baa\u0b95\u0bc1\u0baa\u0bcd\u0baa\u0bbe\u0baf\u0bcd\u0bb5\u0bc1."
+          },
+          {
+            "slideNumber": 3,
+            "title": "\u0b86\u0b9a\u0bbf\u0bb0\u0bbf\u0baf\u0bb0\u0bcd \u0bae\u0bc7\u0bae\u0bcd\u0baa\u0bbe\u0b9f\u0bc1 & \u0b95\u0bb2\u0bcd\u0bb5\u0bbf \u0b85\u0ba3\u0bc1\u0b95\u0bb2\u0bcd",
+            "bullets": [
+              "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance.",
+              "It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.",
+              "Problem It Solves."
+            ],
+            "visualRecommendation": "Workflow interaction diagram",
+            "speakerNotes": "\u0b86\u0b9a\u0bbf\u0bb0\u0bbf\u0baf\u0bb0\u0bcd\u0b95\u0bb3\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0bae\u0bbe\u0ba3\u0bb5\u0bb0\u0bcd\u0b95\u0bb3\u0bc1\u0b95\u0bcd\u0b95\u0bbe\u0ba9 \u0ba8\u0ba9\u0bcd\u0bae\u0bc8\u0b95\u0bb3\u0bbf\u0ba9\u0bcd \u0bae\u0ba4\u0bbf\u0baa\u0bcd\u0baa\u0bbe\u0baf\u0bcd\u0bb5\u0bc1."
+          },
+          {
+            "slideNumber": 4,
+            "title": "\u0baa\u0bca\u0bb1\u0bc1\u0baa\u0bcd\u0baa\u0bbe\u0ba9 \u0baa\u0baf\u0ba9\u0bcd\u0baa\u0bbe\u0b9f\u0bc1 & \u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0baa\u0bb0\u0bbf\u0b9a\u0bc0\u0bb2\u0ba9\u0bc8\u0b95\u0bb3\u0bcd",
+            "bullets": [
+              "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures.",
+              "It also helps junior analysts understand security events and follow standardized investigation workflows.",
+              "Proposed GenAI Solution.",
+              "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation."
+            ],
+            "visualRecommendation": "Governance principle cards",
+            "speakerNotes": "\u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0ba8\u0bbf\u0bb0\u0bcd\u0bb5\u0bbe\u0b95 \u0bb5\u0bbf\u0ba4\u0bbf\u0b95\u0bb3\u0bcd \u0bae\u0bb1\u0bcd\u0bb1\u0bc1\u0bae\u0bcd \u0baa\u0bca\u0bb1\u0bc1\u0baa\u0bcd\u0baa\u0bbe\u0ba9 \u0baa\u0baf\u0ba9\u0bcd\u0baa\u0bbe\u0b9f\u0bcd\u0b9f\u0bc1 \u0bae\u0bc1\u0bb1\u0bc8\u0b95\u0bb3\u0bcd."
+          }
+        ]
+      },
+      "video": {
+        "title": "Cybersecurity SOC Incident-Response.",
+        "aspectRatio": "16:9",
+        "style": "Professional",
+        "totalDurationSeconds": 60,
+        "script": "Cybersecurity SOC Incident-Response.\n\nName : Prem M     Roll No : 24ALR044.\n\nProblem Statement.\n\nSecurity Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+        "scenes": [
+          {
+            "sceneNumber": 1,
+            "title": "Cybersecurity SOC Incident-Response.",
+            "durationSeconds": 15,
+            "sceneDescription": "Cybersecurity SOC Incident-Response.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Cybersecurity SOC Incident-Response.",
+            "onScreenText": "Cybersecurity SOC Incident-Response."
+          },
+          {
+            "sceneNumber": 2,
+            "title": "Name : Prem M     Roll No : 24ALR044.",
+            "durationSeconds": 15,
+            "sceneDescription": "Name : Prem M     Roll No : 24ALR044.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Name : Prem M     Roll No : 24ALR044.",
+            "onScreenText": "Name : Prem M     Roll No : 24ALR044."
+          },
+          {
+            "sceneNumber": 3,
+            "title": "Problem Statement.",
+            "durationSeconds": 15,
+            "sceneDescription": "Problem Statement.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Problem Statement.",
+            "onScreenText": "Problem Statement."
+          },
+          {
+            "sceneNumber": 4,
+            "title": "Security Operations Center (SOC) teams receiv",
+            "durationSeconds": 15,
+            "sceneDescription": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+            "visualRecommendation": "Dynamic kinetic typography with thematic backdrop",
+            "narration": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools.",
+            "onScreenText": "Security Operations Center (SOC) teams receive large volumes of security al"
+          }
+        ],
+        "subtitlesSrt": ""
+      }
+    },
+    "createdAt": "2026-09-26T10:24:47.352544+00:00",
+    "updatedAt": "2026-09-26T10:24:47.352544+00:00"
   }
 ]

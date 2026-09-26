@@ -915,5 +915,2288 @@
       }
     ],
     "createdAt": "2026-09-26T06:11:49.860621+00:00"
+  },
+  {
+    "sourceId": "src-557464ccfbb4",
+    "extractionId": "ext_src-557464ccfbb4_4a14f57f",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "document": {
+      "title": "154.docx",
+      "language": "en",
+      "pageCount": 2
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "Team Name \u2013 BRUTEFORCES\n\nTeam Id -\n\nProblem Statement ID \u2013 26154\n\nCategory \u2013 Software\n\nProblem Statement Title\n\nGen AI Platform for Automated Content Transformation\n\nDescription\n\n\u2022 Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes. The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge.\n\nThere is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.\n\u2022 Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency.\n\nThe platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information. In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard.\n\nBased on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact. The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style.\n\nIn sum",
+        "characterCount": 2000,
+        "wordCount": 273
+      },
+      {
+        "pageNumber": 2,
+        "text": "mary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard.\n\u2022 Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations.\n\u2022 If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication.\n\u2022 If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads.\n\u2022 If 'Advisory' is selected, generate a structured advisory document.\n\u2022 If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging.\n\u2022 If 'Executive Summary' is selected, generate a concise executive briefing.\n\u2022 If 'Presentation' is selected, generate presentation slides and speaker notes.\n\u2022 If multiple output formats are selected, generate all selected deliverables from the same source content.\n\u2022 Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides)",
+        "characterCount": 1146,
+        "wordCount": 161
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-557464ccfbb4_001",
+        "pageNumber": 1,
+        "text": "Team Name \u2013 BRUTEFORCES"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_002",
+        "pageNumber": 1,
+        "text": "Team Id -"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_003",
+        "pageNumber": 1,
+        "text": "Problem Statement ID \u2013 26154"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_004",
+        "pageNumber": 1,
+        "text": "Category \u2013 Software"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_005",
+        "pageNumber": 1,
+        "text": "Problem Statement Title"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_006",
+        "pageNumber": 1,
+        "text": "Gen AI Platform for Automated Content Transformation"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_007",
+        "pageNumber": 1,
+        "text": "Description"
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_008",
+        "pageNumber": 1,
+        "text": "\u2022 Background Organisations frequently need to convert information available in different forms such as news articles, reports, advisories, threat intelligence, policy documents, research papers, announcements, incident reports or free-form prompts into specific communication artefacts suitable for various purposes. The process of manually analysing the source content, understanding the desired objective and creating the required output format is time-consuming, resource-intensive and often requires expertise in content creation, communication and domain knowledge."
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_009",
+        "pageNumber": 1,
+        "text": "There is a need for an intelligent platform that can transform user-provided content into a desired output format through a simple and configurable interface.\n\u2022 Description The system shall act as an AI-powered content transformation engine that converts a common source of information into the specific deliverable requested by the operator, thereby reducing manual effort, improving consistency, accelerating content creation and enhancing operational efficiency."
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_010",
+        "pageNumber": 1,
+        "text": "The platform shall provide a dashboard through which an operator can submit source content in the form of high quality English language text, documents, articles, reports, prompts, images, videos or contextual information. In addition to providing the source content, the operator shall select one or more desired output types through configurable parameters available on the dashboard."
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_011",
+        "pageNumber": 1,
+        "text": "Based on the submitted content and the selected output type(s), the platform shall analyze the input, understand the context and intent, and generate the requested output artefact. The platform should support multiple output formats and allow operators to control generation parameters such as target audience, tone, language, level of detail, communication objective and content style."
+      },
+      {
+        "chunkId": "chunk_src-557464ccfbb4_012",
+        "pageNumber": 1,
+        "text": "In summary, platform shall generate output corresponding to the option(s) selected by the operator on the dashboard.\n\u2022 Examples include\n\u2022 If 'Video' is selected, generate a complete video package including script, storyboard, scene descriptions, narration text, subtitles and visual recommendations.\n\u2022 If 'LinkedIn Post' is selected, generate a professional LinkedIn post suitable for publication.\n\u2022 If 'Twitter/X Post' is selected, generate platform-optimized tweets or tweet threads.\n\u2022 If 'Advisory' is selected, generate a structured advisory document.\n\u2022 If 'Infographic' is selected, generate infographic content, layout recommendations and key messaging.\n\u2022 If 'Executive Summary' is selected, generate a concise executive briefing.\n\u2022 If 'Presentation' is selected, generate presentation slides and speaker notes.\n\u2022 If multiple output formats are selected, generate all selected deliverables from the same source content.\n\u2022 Expected Solution/Deliverables for Evaluation\n\u2022 Source Code Link (GitHub/Drive Link)\n\u2022 Readme with Setup Instructions\n\u2022 Architecture Document (Max 2 Pages)\n\u2022 Demo Video (Max 2 Minutes)\n\u2022 Technical Presentation (Max 5 Slides)"
+      }
+    ],
+    "images": [],
+    "createdAt": "2026-09-26T08:57:21.224248+00:00"
+  },
+  {
+    "sourceId": "src-7a2208c827ee",
+    "extractionId": "ext_src-7a2208c827ee_8fdec10e",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "document": {
+      "title": "mini_proj_final____ _1_.docx",
+      "language": "en",
+      "pageCount": 22
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "FAKE REVIEW CLASSIFICATION\nFOR AMAZON/FLIPKART\n\nMINI PROJECT - II\n\nVIGNESHWAR T\n\nMOHAMMED AASIK I\n\nin partial fulfilment of the requirements\n\nfor the award of the degree\n\nof\n\nBACHELOR OF TECHNOLOGY\n\nIN\n\nARTIFICIAL INTELLIGENCE AND MACHINE LEARNING\n\nDEPARTMENT OF ARTIFICIAL INTELLIGENCE AND\n\nMACHINE LEARNING\n\nPERUNDURAI ERODE \u2013 638 060\n\nAPRIL 2026\n\nDEPARTMENT OF ARTIFICIAL INTELLIGENCE\n\nAND MACHINE LEARNING\n\n(Autonomous)\n\nWe affirm that the Project Report titled FAKE REVIEW CLASSIFICATION FOR AMAZON/FLIPKART being submitted in partial fulfilment of the requirements for the award of Bachelor of Technology is the original work carried out by us. It has not formed the part of any other project report or dissertation on the basis of which a degree or award was conferred on an earlier occasion on this or any other candidate.\n\nVIGNESHWAR T\n\n(24ALR63)\n\nMOHAMMED AASHIK I\n\n(24ALL065)\n\nI certify that the declaration made by the above candidates is true to the best of my knowledge.\n\nWe express our sincere thanks and gratitude to Thiru. E. R. K. KRISHNAN, M.Com., our beloved Correspondent and all other philanthropic trust members of Kongu Vellalar Institute of Technology Trust who have always encouraged us in academic and co-curricular activities.\n\nWe are extremely thankful with no words of a formal nature to the dynamic Principal Dr. R. PARAMESHWARAN, M.E., Ph.D., for providing the necessary facilities to complete our work.\n\nWe would like to express our sincere gratitude to our respected Head of the Department of Artificial Intelligence and Machine Learning Dr. R. R. RAJALAXMI, M.E., Ph.D., for providing the necessary facilities.\n\nWe extend our thanks to Ms. A. VANMATHI, M.E., Assistant Professor, Artificial Intelligence and Machine Learning, Project Coordinator for her encouragement and valuable advice that made us carry out the project work successfully.\n\nWe extend our gratitude to our Supervisor Mrs. O. ABHILA ANJU, B.Tech., ME., Assistant Professor of Artificial Intelligenc",
+        "characterCount": 2000,
+        "wordCount": 304
+      },
+      {
+        "pageNumber": 2,
+        "text": "e and Machine Learning, for her valuable ideas and suggestions, which have been very helpful in the project. We are grateful to all the faculty members of the Artificial Intelligence Department for their support.\n\nWe are thankful to the faculty members of the Department of Artificial Intelligence for their valuable guidance and support.\n\nABSTRACT\n\nThe Fake Review Classification System is a data-driven application developed to demonstrate the practical use of Natural Language Processing and machine learning techniques in identifying misleading product reviews on e-commerce platforms. In real-world online shopping environments such as Amazon and Flipkart, customers often depend on reviews before purchasing products. However, fake or manipulated reviews can mislead users, reduce trust, and affect buying decisions. This project aims to address these challenges by automatically detecting fake reviews accurately, thereby improving customer confidence and platform reliability.\n\nThe system utilizes historical review data such as review text content, writing patterns, repeated words, promotional language, and sentiment-based indicators to classify reviews as genuine or fake. A Logistic Regression model is applied to analyse the relationship between textual features and review authenticity, enabling the system to predict suspicious reviews effectively. TF-IDF vectorization is used to convert textual reviews into numerical features, allowing accurate and efficient classification based on past data patterns.\n\nThe application provides functionalities such as dataset input, text preprocessing, fake review prediction, confidence score generation, suspicious pattern explanation, and performance evaluation through confusion matrix and classification reports. These features help customers make better purchase decisions and assist e-commerce platforms in filtering deceptive content, maintaining review quality, and improving trustworthiness.\n\nThis project highlights the real-world appl",
+        "characterCount": 2000,
+        "wordCount": 265
+      },
+      {
+        "pageNumber": 3,
+        "text": "ication of machine learning techniques like Logistic Regression, combined with efficient text processing and algorithmic design, to solve practical problems in digital commerce. The Fake Review Classification System closely resembles modern intelligent review monitoring systems used in the industry, where maintaining trust and preventing manipulation are essential. In conclusion, this project bridges theoretical concepts with practical implementation, offering valuable insights into predictive analytics, text mining, and intelligent software system design.\n\nTABLE OF CONTENTS\n\nLIST OF FIGURES\n\nGENERAL OVERVIEW\n\nIn the present era of digital transformation, data-driven decision-making has become an essential component across various domains, including education, healthcare, business, and e-commerce. One such domain where intelligent decision-making plays a crucial role is online shopping platforms. E-commerce websites serve millions of customers daily, and maintaining the authenticity of product reviews is a challenging task due to the increasing volume of user-generated content.\n\nProduct reviews on e-commerce platforms are not always genuine and may vary significantly in quality and reliability due to multiple influencing factors such as promotional activities, paid reviewers, competitor manipulation, spam content, fake ratings, and misleading feedback. For instance, some sellers may post overly positive reviews to increase product sales, while others may submit negative reviews to damage competing products. Such practices affect customer trust and decision-making.\n\nTraditionally, customers rely on star ratings and written reviews to decide whether to purchase a product. While this approach may work in simple scenarios, it often fails to identify deceptive or manipulated reviews. As a result, customers may purchase low-quality products based on fake positive reviews, while genuine products may lose reputation because of false negative feedback.\n\nFake reviews are not ",
+        "characterCount": 2000,
+        "wordCount": 269
+      },
+      {
+        "pageNumber": 4,
+        "text": "only a business issue but also a trust and ethical concern. Misleading reviews create unfair competition, reduce transparency, and negatively impact the credibility of online marketplaces. Therefore, there is a growing need for intelligent systems that can automatically detect suspicious reviews and maintain review authenticity.\n\nTo address these challenges, the Fake Review Classification System is developed using machine learning techniques. This system leverages historical review data and predictive algorithms to classify reviews as genuine or fake accurately. By analysing review text, identifying suspicious writing patterns, and applying classification models, the system can provide reliable predictions regarding review authenticity.\n\nIn addition to classification, the system offers visualization features such as confusion matrix graphs and performance reports, which help users understand model accuracy and prediction results easily. It also provides explanations for suspicious reviews, such as promotional words, repeated phrases, short generic comments, and excessive punctuation, enabling better transparency in predictions.\n\nThis project not only improves customer confidence and platform reliability but also supports fair digital commerce practices by reducing misleading content. It serves as a practical example of how machine learning can be applied to solve real-world problems effectively.\n\n1.2 OBJECTIVES\n\nThe primary objective of this project is to design and implement an intelligent system that detects fake product reviews using machine learning techniques. The system aims to enhance customer trust, improve decision-making, and maintain authenticity in e-commerce platforms.\n\nThe specific objectives of the project are as follows:\n\n1 To collect and analyse historical product review data to understand patterns of genuine and fake reviews.\n\nTo identify key factors that influence review authenticity, such as promotional language, repeated words, short comments, a",
+        "characterCount": 2000,
+        "wordCount": 271
+      },
+      {
+        "pageNumber": 5,
+        "text": "nd suspicious writing patterns.\n\nTo preprocess the dataset by handling missing values, removing inconsistencies, and transforming review text into a suitable format.\n\nTo implement a classification-based machine learning model for detecting fake and genuine reviews.\n\nTo evaluate the performance of the model using appropriate metrics and ensure prediction accuracy.\n\nTo visualize the predicted results using graphical representations such as confusion matrix and performance reports.\n\nTo develop a system that provides confidence scores and explanations for suspicious reviews.\n\nTo reduce the impact of misleading reviews and improve fairness in online marketplaces.\n\nTo improve the efficiency of e-commerce review management through data-driven decision-making.\n\nTo provide a scalable solution that can be extended with advanced techniques in the future.\n\n1.3 SCOPE\n\nThe scope of the proposed Fake Review Classification System encompasses both functional capabilities and academic significance, providing a comprehensive framework for practical implementation. The system is designed not only to solve real-world problems related to fake review detection and review authenticity analysis but also to demonstrate the effective application of machine learning and natural language processing techniques in a structured and scalable manner.\n\nFUNCTIONAL SCOPE:\n\nThe functional scope of the system focuses on developing an intelligent and data-driven solution for detecting fake reviews in an e-commerce environment. The system is capable of collecting, processing, and analyzing historical product review data to generate accurate classification results. The key functionalities of the system include data acquisition, preprocessing, model training, prediction, visualization, and explanation generation.\n\nBased on the trained model, the system predicts whether a new review is genuine or fake, enabling customers and e-commerce platforms to make better decisions. Additionally, the system provides visu",
+        "characterCount": 2000,
+        "wordCount": 270
+      },
+      {
+        "pageNumber": 6,
+        "text": "al representations of prediction performance through graphs and confusion matrix charts, making it easier for users to interpret the results.\n\nAnother important functionality is the explanation feature, which identifies suspicious indicators such as overly promotional words, repeated phrases, short generic comments, and excessive punctuation. This helps in improving transparency, reducing misleading content, and enhancing overall trust in online review systems.\n\nEDUCATIONAL SCOPE:\n\nFrom an academic perspective, this project serves as a valuable learning platform for students in the field of artificial intelligence, machine learning, and natural language processing. It provides hands-on experience in various stages of the machine learning pipeline, including data collection, preprocessing, feature extraction, model development, and evaluation.\n\nStudents gain a deeper understanding of classification algorithms and their applications in real-world scenarios such as fake review detection in e-commerce platforms. The project also enhances knowledge in text mining and data visualization techniques, enabling students to represent complex information in a simplified manner.\n\nFurthermore, the project encourages analytical thinking and problem-solving skills, as students learn to identify suspicious review patterns, interpret prediction results, and improve model performance. It bridges the gap between theoretical concepts and practical implementation.\n\nLIMITATIONS:\n\nDespite its effectiveness, the system has certain limitations that must be considered. The accuracy of the model heavily depends on the quality, size, and diversity of the dataset. If the dataset is limited, imbalanced, or contains noisy and incorrect labels, the predictions may not be highly reliable.\n\nThe current system is based on Logistic Regression, which may not capture highly complex linguistic patterns and contextual meanings present in review text. Although effective for structured text classification, i",
+        "characterCount": 2000,
+        "wordCount": 266
+      },
+      {
+        "pageNumber": 7,
+        "text": "t may perform lower than advanced deep learning models on complex datasets. Additionally, the system does not incorporate real-time review streams, which may affect its adaptability to newly emerging spam patterns.\n\nExternal factors such as reviewer behaviour, account credibility, verified purchase status, star ratings, and coordinated spam campaigns are not considered in the current model, which may influence review authenticity detection.\n\nFUTURE ENHANCEMENT:\n\nThe system can be further enhanced by incorporating advanced technologies and features. Future improvements may include the integration of real-time review collection systems, enabling continuous updates and more accurate fake review detection.\n\nAdvanced machine learning models such as LSTM networks, XGBoost, and transformer-based models like BERT can be implemented to capture complex language patterns and improve classification accuracy. The system can also be developed into a web-based or mobile application, providing easy access and user interaction for customers and administrators.\n\nIntegration with databases such as MongoDB or cloud-based storage solutions can improve data management and scalability. Additionally, incorporating external factors such as reviewer history, star ratings, verified purchase status, user behaviour patterns, and multilingual reviews can further enhance the detection capability of the system.\n\nCHAPTER 2\n\nSYSTEM ANALYSIS\n\n2.1 EXISTING SYSTEM\n\nIn traditional e-commerce review management systems, fake review detection is primarily carried out using manual moderation techniques or simple rule-based filtering methods. These methods rely on human inspection or basic keyword checks rather than systematic data analysis. While such approaches may identify some suspicious reviews, they are often inaccurate and inconsistent due to the large volume and dynamic nature of online reviews.\n\nOne of the major drawbacks of the existing system is the lack of data-driven decision-making. Historical ",
+        "characterCount": 2000,
+        "wordCount": 272
+      },
+      {
+        "pageNumber": 8,
+        "text": "review data, which could provide valuable insights into fake review patterns, is either underutilized or completely ignored. As a result, the system fails to capture trends, deceptive writing styles, and variations in suspicious review behaviour.\n\nFake positive or negative reviews are a common issue in the existing system, leading to misleading product ratings and reduced customer trust. This not only results in poor purchase decisions but also creates unfair competition among sellers. On the other hand, genuine reviews may sometimes be incorrectly removed, causing inconvenience to honest customers and vendors.\n\nAnother limitation is the absence of automation in many review monitoring processes. Many decisions are made manually, increasing the chances of human error and reducing efficiency. The system also lacks effective visualization tools, making it difficult to analyze review authenticity trends and model performance.\n\nFurthermore, the existing system does not consider important external factors such as reviewer behaviour history, verified purchase status, rating-text mismatch, coordinated spam activities, and multilingual review content, all of which significantly influence review authenticity.\n\n2.2 PROPOSED SYSTEM\n\nThe proposed system introduces a machine learning-based approach to overcome the limitations of traditional methods. It utilizes historical review data and classification algorithms to detect fake reviews in an accurate and efficient manner.\n\nThe system follows a structured workflow consisting of data collection, preprocessing, feature extraction, model training, prediction, explanation generation, and visualization. Each stage is carefully designed to ensure data integrity and model performance.\n\nOne of the key strengths of the proposed system is its ability to process large volumes of review data and identify hidden suspicious patterns that are not easily detectable through manual analysis. The classification model establishes relationships betwee",
+        "characterCount": 2000,
+        "wordCount": 274
+      },
+      {
+        "pageNumber": 9,
+        "text": "n textual features and review authenticity, enabling precise predictions.\n\nThe system also incorporates visualization techniques such as confusion matrix graphs and performance reports to present the results in an intuitive manner. These visualizations help users understand model accuracy, prediction trends, and system effectiveness.\n\nAdditionally, the system provides explanations for suspicious reviews based on promotional words, repeated phrases, short generic comments, and excessive punctuation. This feature enhances transparency, improves trust, and helps users understand why a review is classified as fake.\n\nOverall, the proposed system offers a reliable, efficient, and scalable solution for fake review classification in e-commerce platforms.\n\n2.3 FEATURES\n\nThe proposed system includes several advanced features that enhance its functionality and usability:\n\nData Analysis: Processes large volumes of historical review data to identify suspicious trends and writing patterns.\n\nPrediction Model: Uses classification algorithms for accurate fake review detection.\n\nVisualization: Displays results through graphical representations such as confusion matrix and performance metrics.\n\nExplanation System: Provides reasons for suspicious reviews such as promotional words, repeated phrases, short comments, and excessive punctuation.\n\nUser-Friendly Interface: Simple and easy-to-use system for review analysis and prediction.\n\nTrust Improvement: Reduces misleading reviews and improves customer confidence in e-commerce platforms.\n\nScalability: Can be extended with advanced models, multilingual support, and real-time detection technologies.\n\nCHAPTER 3\n\nSYSTEM ARCHITECTURE\n\n3.1 SYSTEM ARCHITECTURE\n\nproposed system is designed using a modular and layered architecture that ensures efficient data flow, scalability, and maintainability. The architecture consists of multiple interconnected components, each responsible for a specific function in fake review detection and review authenticit",
+        "characterCount": 2000,
+        "wordCount": 251
+      },
+      {
+        "pageNumber": 10,
+        "text": "y analysis.\n\nFIGURE 3.1: SYSTEM ARCHITECTURE\n\nThe architecture begins with the data collection layer, where historical product review data is gathered. This data includes attributes such as review text, review labels, ratings, and related review information. The collected data serves as the foundation for the entire system and directly influences the accuracy of classification results.\n\nThe next stage is the data preprocessing layer, where raw review data is cleaned and prepared for analysis. In this stage, missing values are handled, duplicate entries are removed, unwanted symbols are filtered, and inconsistencies are corrected. Text normalization techniques such as lowercasing and stop word removal are also applied. Data preprocessing ensures that the dataset is reliable and suitable for machine learning operations.\n\nFollowing preprocessing, the system performs feature engineering, which is a critical step in improving model performance. Features such as keywords, repeated phrases, word frequency patterns, and n-gram representations are selected and converted into numerical values using TF-IDF for model compatibility.\n\nThe processed data is then passed to the model training module, where a machine learning algorithm, specifically Logistic Regression, is applied. The model learns patterns and relationships between textual features and review authenticity. This trained model forms the core component responsible for prediction.\n\nAfter training, the system moves to the prediction module, where the trained model is used to classify new reviews. Based on input review text, the system predicts whether the review is genuine or fake and also provides a confidence score for the prediction.\n\nThe predicted results are then processed in the visualization module, where graphical representations such as confusion matrix charts and performance reports are generated. These visualizations help users easily understand classification accuracy, trends, and system effectiveness.\n\nFinal",
+        "characterCount": 2000,
+        "wordCount": 281
+      },
+      {
+        "pageNumber": 11,
+        "text": "ly, the system includes an explanation module, which identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. This module assists users in understanding why a review has been classified as fake, thereby improving transparency and trust.\n\nOverall, the system architecture ensures a smooth and logical flow of data from input to output, enabling accurate fake review detection and efficient decision-making. The modular design also allows easy scalability and future enhancements.\n\n3.1.1 DESCRIPTION\n\nThe The proposed system operates through a well-defined sequence of stages, ensuring efficient data processing and accurate fake review classification. Each stage in the architecture plays a crucial role in transforming raw review data into meaningful insights for decision-making.\n\nThe process begins with the data collection stage, where historical product review data is gathered either manually through a user input portal or from external sources such as e-commerce platforms and review datasets. The collected data includes essential attributes such as review text, labels, ratings, and related metadata. This data forms the foundation of the system and is critical for training the machine learning model.\n\nOnce the data is collected, it is passed to the data preprocessing stage, which prepares the data for analysis. In real-world scenarios, raw review data often contains missing values, duplicate entries, unwanted symbols, and inconsistencies. These issues are handled through various preprocessing techniques such as text cleaning, handling missing values, duplicate removal, stopword elimination, and normalization.\n\nAfter preprocessing, the system performs feature engineering, where relevant features that influence review authenticity are identified and selected. Attributes such as keywords, repeated phrases, word frequency, sentiment indicators, and n-gram patterns are extracted and transformed into numerica",
+        "characterCount": 2000,
+        "wordCount": 275
+      },
+      {
+        "pageNumber": 12,
+        "text": "l form using TF-IDF vectorization. Feature engineering improves the efficiency and accuracy of the machine learning model by focusing only on significant variables.\n\nThe refined dataset is then used in the model training stage, which is the core component of the system. In this project, Logistic Regression is used to establish relationships between textual features and review authenticity. The dataset is divided into training and testing sets, where the training set is used to build the model and the testing set is used to evaluate its performance. The model learns patterns from historical data and adjusts its parameters to minimize classification errors.\n\nOnce the model is trained, it is deployed in the prediction module, where it classifies new reviews. Based on input review text, the system predicts whether the review is genuine or fake and also generates a confidence score. This prediction helps customers and e-commerce platforms make better decisions.\n\nThe predicted results are then visualized in the visualization module, which converts outputs into graphical representations such as confusion matrix charts, accuracy reports, and performance summaries. These visualizations provide an intuitive understanding of classification trends, making it easier for users to analyse results and make informed decisions.\n\nIn addition to prediction and visualization, the system includes an explanation module, which identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. By analysing classified reviews, the system provides understandable reasons for why a review is flagged as fake, helping to improve transparency and trust.\n\nTo ensure data security and controlled usage, an access control mechanism is incorporated into the system. This feature restricts unauthorized access and ensures that only authorized users can interact with the system and view sensitive data.\n\nOverall, the system follows a structured an",
+        "characterCount": 2000,
+        "wordCount": 291
+      },
+      {
+        "pageNumber": 13,
+        "text": "d logical workflow, transforming raw review data into actionable insights. The modular design of the architecture ensures flexibility, scalability, and ease of maintenance, allowing future enhancements such as integration with real-time review streams, multilingual support, and advanced deep learning models.\n\nCHAPTER 4\n\nSYSTEM IMPLEMENTATION\n\n4.1 DATASET DESCRIPTION\n\nThe dataset used in this project plays a crucial role in determining the performance and accuracy of the machine learning model. It consists of historical records of product reviews collected from e-commerce sources over a specific period. This dataset serves as the foundation for training and testing the fake review classification model.\n\nThe dataset includes multiple attributes that represent different aspects of review authenticity patterns. These attributes are carefully selected to capture the variations in genuine and fake reviews influenced by writing style, sentiment, and suspicious behaviour. The primary attributes present in the dataset are:\n\nReview Text: Represents the written feedback provided by users for a product. This helps in identifying linguistic patterns and suspicious content.\n\nLabel: Indicates whether the review is genuine or fake. This is the target variable used for classification.\n\nRating: Represents the star rating given by the reviewer, which may help in identifying rating-text inconsistencies.\n\nReview Length: Represents the number of words or characters in a review, which may indicate short generic or unusually long suspicious reviews.\n\nIn addition to these attributes, derived features may also be included to enhance model performance. These include repeated words, promotional keywords, punctuation frequency, sentiment indicators, and n-gram patterns extracted from review text.\n\nThe dataset is stored in a structured format such as CSV (Comma Separated Values), which allows easy manipulation and processing using Python libraries like Pandas. A well-structured dataset ensures e",
+        "characterCount": 2000,
+        "wordCount": 280
+      },
+      {
+        "pageNumber": 14,
+        "text": "fficient data handling and improves the accuracy of results.\n\nFIGURE 4.1: SAMPLE DATASET STRUCTURE\n\n4.2 DATASET PREPROCESSING\n\nData preprocessing is one of the most critical stages in the machine learning pipeline. Raw review data collected from real-world environments is often incomplete, inconsistent, and noisy. Therefore, it must be processed and cleaned before being used for model training.\n\nThe preprocessing phase involves several steps:\n\n1. DATA CLEANING\n\nMissing values are identified and handled appropriately. In this project, records containing null or empty review text are removed. Unwanted symbols, special characters, extra spaces, and irrelevant content such as URLs are also eliminated from the review text to improve data quality.\n\n2. REMOVING DUPLICATES\n\nDuplicate review records are eliminated to avoid redundancy and bias in the dataset. Duplicate data can negatively impact model performance by causing overfitting and misleading predictions.\n\n3. DATA TRANSFORMATION\n\nCategorical variables such as review labels are converted into numerical format for machine learning compatibility. In this project, Genuine Reviews (CG) are converted to 0, and Fake Reviews (OR) are converted to 1. Review text is transformed into numerical feature vectors using TF-IDF vectorization.\n\n4. TEXT NORMALIZATION\n\nText normalization is applied to standardize the review content. This includes converting all text into lowercase, removing stopwords, and reducing unnecessary variations in writing style. This ensures consistency across the dataset and improves feature extraction quality.\n\n5. DATA SPLITTING\n\nThe dataset is divided into training and testing sets. The training dataset is used to train the machine learning model, while the testing dataset is used to evaluate its performance. In this project, 80% of the data is used for training and 20% for testing.\n\nFIGURE 4.2: DATA PREPROCESSING WORKFLOW\n\n4.3   ALGORITHM\n\nThe system uses the Logistic Regression algorithm, which is a supervi",
+        "characterCount": 2000,
+        "wordCount": 289
+      },
+      {
+        "pageNumber": 15,
+        "text": "sed machine learning technique used for classification tasks. It establishes a relationship between input variables (independent variables) and the probability of belonging to a particular class. In this project, it is used to classify reviews as genuine or fake.\n\nMathematical Representation\n\nThe logistic regression equation is:\n\nWhere:\n\n\u2022 = Probability that the review is fake\n\u2022 = Input features extracted from review text\n\u2022 = Intercept\n\u2022 = Coefficients\n\u2022 = Exponential constant\n\nWORKING PRINCIPLE\n\nThe Logistic Regression algorithm follows a systematic approach to model the relationship between input features and output:\n\nInitialize model parameters.\n\nConvert review text into numerical features using TF-IDF vectorization.\n\nCalculate the probability of the review belonging to fake or genuine class.\n\nCompare predicted output with actual labels and calculate classification error.\n\nAdjust coefficients to minimize the error using optimization techniques.\n\nRepeat the process until the optimal solution is reached.\n\nADVANTAGES OF LOGISTIC REGRESSION\n\nSimple and easy to implement.\n\nComputationally efficient.\n\nWorks well with text classification problems.\n\nProvides interpretable results.\n\nSuitable for binary classification such as fake or genuine review detection.\n\n4.4 MODULE DESCRIPTION\n\nTo ensure high performance, maintainability, and scalability, the Fake Review Detection System is designed using a modular architecture. The system is divided into four primary functional modules, each responsible for a specific phase of the text classification pipeline, seamlessly transforming raw user input into meaningful predictions.\n\n1. Data Acquisition and Packet Sniffing Module\n\nThis foundational module acts as the entry point of the system, responsible for collecting review data from external sources such as CSV datasets or user input. It ensures proper data formatting by selecting relevant columns and handles missing or inconsistent values through preprocessing steps like null removal",
+        "characterCount": 2000,
+        "wordCount": 278
+      },
+      {
+        "pageNumber": 16,
+        "text": ". This module guarantees that only clean and structured data is forwarded to the next stage.\n\n2. Flow Aggregation and Feature Extraction Module\n\nRaw textual data is unstructured and not directly suitable for machine learning, so this module converts it into a structured numerical format. It begins with text cleaning\u2014lowercasing, removing URLs, special characters, and stopwords using NLTK. The cleaned text is then transformed into numerical feature vectors using TF-IDF, capturing the importance of relevant words and phrases and making the data machine-understandable.\n\n3. Threat Classification (Machine Learning) Module\n\nThis module serves as the core intelligence of the system, utilizing a Logistic Regression classifier trained on labeled review data to distinguish between genuine and fake reviews; the model processes TF-IDF feature vectors and applies learned statistical relationships to classify each review, and upon prediction it outputs both a classification label (Genuine Review or Fake Review) and a probability-based confidence score indicating the certainty of the prediction, while being optimized for efficient performance and quick inference, making it suitable for real-time applications.\n\n4. Alerting and Visualization (Dashboard) Module\n\nThe final module bridges backend processing with user interpretation by evaluating model performance using metrics such as accuracy, precision, recall, and F1-score, along with a confusion matrix visualization generated using seaborn and matplotlib; additionally, it provides a prediction interface where new reviews can be analyzed in real time, outputting clear, human-readable results including the predicted label and confidence percentage, thereby enabling users to quickly assess the authenticity of reviews and make informed decisions.\n\n5.1 PERFORMANCE ANALYSIS\n\nThe performance of the proposed system is evaluated using various evaluation metrics and graphical representations. The goal is to assess how accurately the model cl",
+        "characterCount": 2000,
+        "wordCount": 278
+      },
+      {
+        "pageNumber": 17,
+        "text": "assifies product reviews as genuine or fake.\n\n5.1.1 EVALUATION METRICS\n\nEvaluation metrics are used to measure the effectiveness of the machine learning model.\n\n1. ACCURACY\n\nAccuracy measures how close the predicted classes are to the actual classes. It indicates how many reviews are correctly classified as genuine or fake. A higher accuracy indicates better model performance.\n\n2. LOG LOSS\n\nLog Loss measures the uncertainty of prediction probabilities generated by the model. Lower Log Loss indicates better confidence and performance in classification tasks.\n\n3. PRECISION\n\nPrecision measures the correctness of positive predictions. It indicates how many reviews predicted as fake are actually fake. Higher precision means fewer false positive results.\n\n4. RECALL\n\nRecall measures the ability of the model to identify all relevant fake reviews. It indicates how many actual fake reviews are correctly detected by the system.\n\nBottom of Form\n\n5.1.2 CONFUSION MATRIX ANALYSIS\n\nFIGURE 5.2: CONFUSION MATRIX\n\nThe confusion matrix provides a detailed breakdown of correct and incorrect predictions. It helps in analyzing classification performance.\n\n5.1.3 MODEL COMPARISON\n\nFIGURE 5.3: MODEL COMPARISON\n\nDifferent models can be compared based on performance metrics. In this project, regression provides a balance between simplicity and accuracy.\n\n5.2 RESULT DISCUSSION\n\nThe The results obtained from the model indicate that the system is capable of classifying product reviews as genuine or fake with high accuracy.\n\nThe graphical representations provide a clear understanding of classification performance, enabling better decision-making for users and e-commerce platforms. The explanation module further enhances usability by identifying suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. Although the model performs well, there is scope for improvement by incorporating advanced techniques, multilingual support, and additional",
+        "characterCount": 2000,
+        "wordCount": 278
+      },
+      {
+        "pageNumber": 18,
+        "text": " real-time review data.\n\nThe Fake Review Classification System successfully demonstrates the practical application of machine learning techniques in addressing real-world challenges related to fake review detection and maintaining trust in e-commerce platforms. The primary objective of the project was to design and develop an efficient and reliable system capable of classifying product reviews as genuine or fake using historical review data, and this objective has been achieved effectively.\n\nThe system follows a structured workflow that includes data collection, preprocessing, feature extraction, model training, prediction, and visualization. By utilizing the Logistic Regression algorithm, the system is able to identify meaningful patterns within historical review data and generate accurate classifications for new reviews. These predictions assist customers and e-commerce platforms in making informed decisions regarding product trustworthiness, thereby reducing the impact of misleading reviews and improving review authenticity.\n\nOne of the major strengths of the system lies in its simplicity and efficiency. The use of Logistic Regression ensures low computational complexity while still delivering reliable and interpretable results. Furthermore, the inclusion of visualization techniques such as confusion matrix graphs and performance reports enhances the understanding of model behavior, enabling users to analyze results easily and make better decisions.\n\nIn addition to classification, the system incorporates an explanation module that identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. This feature significantly improves transparency and helps users understand why a review has been flagged as fake, thereby increasing trust in the system.\n\nHowever, the system has certain limitations. The accuracy of predictions depends heavily on the quality, size, and consistency of the dataset used. Since t",
+        "characterCount": 2000,
+        "wordCount": 269
+      },
+      {
+        "pageNumber": 19,
+        "text": "he model is based on Logistic Regression, it may not effectively capture highly complex linguistic or contextual relationships present in real-world review text. Despite these limitations, the system provides a strong foundation for further enhancements and improvements.\n\nIn conclusion, the proposed system offers a data-driven and practical solution for fake review classification. It overcomes the limitations of traditional manual moderation methods and enhances decision-making through intelligent text analytics. The system not only improves customer confidence but also demonstrates the potential of machine learning in solving everyday digital commerce problems in a simple and effective manner.\n\nThe project also provides valuable insights into the implementation of machine learning techniques, including data preprocessing, feature extraction, text vectorization, and model evaluation. It serves as a strong foundation for further research and development in the field of natural language processing and predictive analytics.\n\nOverall, the system not only fulfils its intended objectives but also demonstrates the potential of intelligent systems in improving everyday online processes. With further improvements, it can be transformed into a fully automated and real-time solution for efficient fake review monitoring and e-commerce trust management.\n\nAPPENDIX -I\n\n(CODING)\n\n!pip install pandas numpy scikit-learn nltk seaborn matplotlib\n\nimport pandas as pd\n\nimport numpy as np\n\nimport re\n\nimport nltk\n\nimport seaborn as sns\n\nimport matplotlib.pyplot as plt\n\nfrom sklearn.model_selection import train_test_split\n\nfrom sklearn.feature_extraction.text import TfidfVectorizer\n\nfrom sklearn.linear_model import LogisticRegression\n\nfrom sklearn.metrics import accuracy_score, classification_report, confusion_matrix\n\nnltk.download('stopwords')\n\nfrom nltk.corpus import stopwords\n\nfile_path = \"/content/fake reviews dataset (1).csv\"\n\ndf = pd.read_csv(file_path)\n\nprint(\"Dataset Loaded Successf",
+        "characterCount": 2000,
+        "wordCount": 250
+      },
+      {
+        "pageNumber": 20,
+        "text": "ully!\\n\")\n\nprint(df.head())\n\nprint(\"\\nDataset Shape:\", df.shape)\n\ndf = df[['text_', 'label']]\n\ndf.columns = ['review', 'label']\n\ndf['label'] = df['label'].map({'CG':0, 'OR':1})\n\ndf.dropna(inplace=True)\n\nprint(\"\\nLabel Distribution:\")\n\nprint(df['label'].value_counts())\n\nstop_words = set(stopwords.words('english'))\n\ndef clean_text(text):\n\ntext = str(text).lower()\n\ntext = re.sub(r'http\\S+|www\\S+', '', text)\n\ntext = re.sub(r'[^a-zA-Z]', ' ', text)\n\nwords = text.split()\n\nwords = [word for word in words if word not in stop_words]\n\nreturn \" \".join(words)\n\ndf['review'] = df['review'].apply(clean_text)\n\nX = df['review']\n\ny = df['label']\n\nX_train, X_test, y_train, y_test = train_test_split(\n\nX, y, test_size=0.2, random_state=42, stratify=y\n\n)\n\nvectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1,2))\n\nX_train_vec = vectorizer.fit_transform(X_train)\n\nX_test_vec = vectorizer.transform(X_test)\n\nmodel = LogisticRegression(max_iter=300)\n\nmodel.fit(X_train_vec, y_train)\n\ny_pred = model.predict(X_test_vec)\n\naccuracy = accuracy_score(y_test, y_pred)\n\nprint(\"\\nModel Accuracy:\", accuracy)\n\nprint(\"\\nClassification Report:\\n\")\n\nprint(classification_report(y_test, y_pred))\n\ncm = confusion_matrix(y_test, y_pred)\n\nplt.figure(figsize=(5,4))\n\nsns.heatmap(cm, annot=True, fmt='d', cmap='Blues')\n\nplt.title(\"Confusion Matrix\")\n\nplt.xlabel(\"Predicted Label\")\n\nplt.ylabel(\"Actual Label\")\n\nplt.show()\n\ndef predict_review(text):\n\ncleaned = clean_text(text)\n\nvec = vectorizer.transform([cleaned])\n\nprediction = model.predict(vec)[0]\n\nprobability = model.predict_proba(vec)[0]\n\nconfidence = max(probability) * 100\n\nif prediction == 1:\n\nlabel = \"Fake Review\"\n\nelse:\n\nlabel = \"Genuine Review\"\n\nprint(\"\\nReview:\", text)\n\nprint(\"Prediction:\", label)\n\nprint(\"Confidence: {:.2f}%\".format(confidence))\n\nsample_reviews = [\n\n\"I have been using this product for two weeks and it works well.\",\n\n\"This product is amazing and worth every penny!\",\n\n\"Worst product ever, totally scam and fake\",\n\n\"The quality is decent fo",
+        "characterCount": 2000,
+        "wordCount": 198
+      },
+      {
+        "pageNumber": 21,
+        "text": "r the price and delivery was fast.\"\n\n]\n\nprint(\"\\n----- Sample Predictions -----\")\n\nfor review in sample_reviews:\n\npredict_review(review)\n\nAPPENDIX \u2013 II:\n\n(SCREENSHOT)\n\nFig A2:1 OUTPUT\n\nREFERNCES\n\n[1] Rustagi, A., & Padisetti, V. (2022), Fake Review Detection Using Machine Learning, Journal of Student Research\n\n[2] Yousif, A., & Buckley, J. (2022), Impact of Sentiment Analysis in Fake Review Detection, arXiv\n\n[3] Hameed, W., Ali, Y. H., & Allami, R. (2023), Detection of Fake Reviews Using Machine Learning Techniques, International Journal for Scientific Research\n\n[4] Shaik, M. A., et al. (2023), Fake News Detection using NLP, International Conference on Innovative Data Communication Technologies and Application\n\n[5] Arribathi, A. H., et al. (2024), Logistic Regression and TF-IDF Models for Early Detection of Fake News, Journal Sensi\n\n[6] Nadeem, M., et al. (2024), Enhancing Fake News Detection with a Hybrid NLP-Machine Learning Framework, ICCK Transactions on Intelligent Systematics\n\n[7] Singh, A., & Narang, T. (2024), Deep Learning Approaches for Fake Review Detection: A Comprehensive Survey, Journal of Interdisciplinary Knowledge\n\n[8] Kamel, A. M., Salminen, J., Jansen, B. J., & Jung, S. G. (2022), Creating and Detecting Fake Reviews of Online Products, Journal of Retailing and Consumer Services\n\n[9] Passos, L. A., et al. (2022), A Review of Deep Learning-based Approaches for Fake Content Detection, arXiv\n\n[10] Various Authors (2024), Transformer-based Models for Fake Review Detection, International Journal of Computational Intelligence\n\nMAPPING OF PROJECT GOALS TO SDG\n\nThis project contributes to the achievement of the United Nations Sustainable Development Goals (SDGs) by addressing issues related to digital trust, online transparency, and responsible use of artificial intelligence in identifying deceptive content.\n\nThe project supports SDG 9: Industry, Innovation and Infrastructure by applying machine learning and natural language processing techniques to detect",
+        "characterCount": 2000,
+        "wordCount": 284
+      },
+      {
+        "pageNumber": 22,
+        "text": " fake reviews in online platforms. It promotes innovation by integrating text preprocessing, TF-IDF feature extraction, and classification models to build an intelligent system that enhances the reliability of digital marketplaces and review-based platforms.\n\nIt also contributes to SDG 16: Peace, Justice and Strong Institutions by promoting truthful information and reducing the spread of misleading or fraudulent reviews. Detecting fake reviews helps protect consumers from manipulation, ensures fair business practices, and strengthens trust in online systems and institutions.\n\nAdditionally, the project aligns with SDG 8: Decent Work and Economic Growth by helping businesses maintain credibility and avoid losses caused by deceptive reviews. By identifying fake feedback, the system supports fair competition and encourages genuine customer engagement, contributing to a healthier digital economy.\n\nOverall, the project supports sustainable development by combining machine learning and text analysis techniques to create a practical solution for detecting fake reviews, improving trust, transparency, and reliability in online platforms.",
+        "characterCount": 1145,
+        "wordCount": 152
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-7a2208c827ee_001",
+        "pageNumber": 1,
+        "text": "FAKE REVIEW CLASSIFICATION\nFOR AMAZON/FLIPKART"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_002",
+        "pageNumber": 1,
+        "text": "MINI PROJECT - II"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_003",
+        "pageNumber": 1,
+        "text": "VIGNESHWAR T"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_004",
+        "pageNumber": 1,
+        "text": "MOHAMMED AASIK I"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_005",
+        "pageNumber": 1,
+        "text": "in partial fulfilment of the requirements"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_006",
+        "pageNumber": 1,
+        "text": "for the award of the degree"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_007",
+        "pageNumber": 1,
+        "text": "of"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_008",
+        "pageNumber": 1,
+        "text": "BACHELOR OF TECHNOLOGY"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_009",
+        "pageNumber": 1,
+        "text": "IN"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_010",
+        "pageNumber": 1,
+        "text": "ARTIFICIAL INTELLIGENCE AND MACHINE LEARNING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_011",
+        "pageNumber": 1,
+        "text": "DEPARTMENT OF ARTIFICIAL INTELLIGENCE AND"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_012",
+        "pageNumber": 1,
+        "text": "MACHINE LEARNING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_013",
+        "pageNumber": 1,
+        "text": "PERUNDURAI ERODE \u2013 638 060"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_014",
+        "pageNumber": 1,
+        "text": "APRIL 2026"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_015",
+        "pageNumber": 1,
+        "text": "DEPARTMENT OF ARTIFICIAL INTELLIGENCE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_016",
+        "pageNumber": 1,
+        "text": "AND MACHINE LEARNING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_017",
+        "pageNumber": 1,
+        "text": "(Autonomous)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_018",
+        "pageNumber": 1,
+        "text": "We affirm that the Project Report titled FAKE REVIEW CLASSIFICATION FOR AMAZON/FLIPKART being submitted in partial fulfilment of the requirements for the award of Bachelor of Technology is the original work carried out by us. It has not formed the part of any other project report or dissertation on the basis of which a degree or award was conferred on an earlier occasion on this or any other candidate."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_019",
+        "pageNumber": 1,
+        "text": "VIGNESHWAR T"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_020",
+        "pageNumber": 1,
+        "text": "(24ALR63)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_021",
+        "pageNumber": 1,
+        "text": "MOHAMMED AASHIK I"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_022",
+        "pageNumber": 1,
+        "text": "(24ALL065)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_023",
+        "pageNumber": 1,
+        "text": "I certify that the declaration made by the above candidates is true to the best of my knowledge."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_024",
+        "pageNumber": 1,
+        "text": "We express our sincere thanks and gratitude to Thiru. E. R. K. KRISHNAN, M.Com., our beloved Correspondent and all other philanthropic trust members of Kongu Vellalar Institute of Technology Trust who have always encouraged us in academic and co-curricular activities."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_025",
+        "pageNumber": 1,
+        "text": "We are extremely thankful with no words of a formal nature to the dynamic Principal Dr. R. PARAMESHWARAN, M.E., Ph.D., for providing the necessary facilities to complete our work."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_026",
+        "pageNumber": 1,
+        "text": "We would like to express our sincere gratitude to our respected Head of the Department of Artificial Intelligence and Machine Learning Dr. R. R. RAJALAXMI, M.E., Ph.D., for providing the necessary facilities."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_027",
+        "pageNumber": 1,
+        "text": "We extend our thanks to Ms. A. VANMATHI, M.E., Assistant Professor, Artificial Intelligence and Machine Learning, Project Coordinator for her encouragement and valuable advice that made us carry out the project work successfully."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_028",
+        "pageNumber": 1,
+        "text": "We extend our gratitude to our Supervisor Mrs. O. ABHILA ANJU, B.Tech., ME., Assistant Professor of Artificial Intelligence and Machine Learning, for her valuable ideas and suggestions, which have been very helpful in the project. We are grateful to all the faculty members of the Artificial Intelligence Department for their support."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_029",
+        "pageNumber": 1,
+        "text": "We are thankful to the faculty members of the Department of Artificial Intelligence for their valuable guidance and support."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_030",
+        "pageNumber": 1,
+        "text": "ABSTRACT"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_031",
+        "pageNumber": 1,
+        "text": "The Fake Review Classification System is a data-driven application developed to demonstrate the practical use of Natural Language Processing and machine learning techniques in identifying misleading product reviews on e-commerce platforms. In real-world online shopping environments such as Amazon and Flipkart, customers often depend on reviews before purchasing products. However, fake or manipulated reviews can mislead users, reduce trust, and affect buying decisions. This project aims to address these challenges by automatically detecting fake reviews accurately, thereby improving customer confidence and platform reliability."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_032",
+        "pageNumber": 1,
+        "text": "The system utilizes historical review data such as review text content, writing patterns, repeated words, promotional language, and sentiment-based indicators to classify reviews as genuine or fake. A Logistic Regression model is applied to analyse the relationship between textual features and review authenticity, enabling the system to predict suspicious reviews effectively. TF-IDF vectorization is used to convert textual reviews into numerical features, allowing accurate and efficient classification based on past data patterns."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_033",
+        "pageNumber": 1,
+        "text": "The application provides functionalities such as dataset input, text preprocessing, fake review prediction, confidence score generation, suspicious pattern explanation, and performance evaluation through confusion matrix and classification reports. These features help customers make better purchase decisions and assist e-commerce platforms in filtering deceptive content, maintaining review quality, and improving trustworthiness."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_034",
+        "pageNumber": 1,
+        "text": "This project highlights the real-world application of machine learning techniques like Logistic Regression, combined with efficient text processing and algorithmic design, to solve practical problems in digital commerce. The Fake Review Classification System closely resembles modern intelligent review monitoring systems used in the industry, where maintaining trust and preventing manipulation are essential. In conclusion, this project bridges theoretical concepts with practical implementation, offering valuable insights into predictive analytics, text mining, and intelligent software system design."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_035",
+        "pageNumber": 1,
+        "text": "TABLE OF CONTENTS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_036",
+        "pageNumber": 1,
+        "text": "LIST OF FIGURES"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_037",
+        "pageNumber": 1,
+        "text": "GENERAL OVERVIEW"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_038",
+        "pageNumber": 1,
+        "text": "In the present era of digital transformation, data-driven decision-making has become an essential component across various domains, including education, healthcare, business, and e-commerce. One such domain where intelligent decision-making plays a crucial role is online shopping platforms. E-commerce websites serve millions of customers daily, and maintaining the authenticity of product reviews is a challenging task due to the increasing volume of user-generated content."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_039",
+        "pageNumber": 1,
+        "text": "Product reviews on e-commerce platforms are not always genuine and may vary significantly in quality and reliability due to multiple influencing factors such as promotional activities, paid reviewers, competitor manipulation, spam content, fake ratings, and misleading feedback. For instance, some sellers may post overly positive reviews to increase product sales, while others may submit negative reviews to damage competing products. Such practices affect customer trust and decision-making."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_040",
+        "pageNumber": 1,
+        "text": "Traditionally, customers rely on star ratings and written reviews to decide whether to purchase a product. While this approach may work in simple scenarios, it often fails to identify deceptive or manipulated reviews. As a result, customers may purchase low-quality products based on fake positive reviews, while genuine products may lose reputation because of false negative feedback."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_041",
+        "pageNumber": 1,
+        "text": "Fake reviews are not only a business issue but also a trust and ethical concern. Misleading reviews create unfair competition, reduce transparency, and negatively impact the credibility of online marketplaces. Therefore, there is a growing need for intelligent systems that can automatically detect suspicious reviews and maintain review authenticity."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_042",
+        "pageNumber": 1,
+        "text": "To address these challenges, the Fake Review Classification System is developed using machine learning techniques. This system leverages historical review data and predictive algorithms to classify reviews as genuine or fake accurately. By analysing review text, identifying suspicious writing patterns, and applying classification models, the system can provide reliable predictions regarding review authenticity."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_043",
+        "pageNumber": 1,
+        "text": "In addition to classification, the system offers visualization features such as confusion matrix graphs and performance reports, which help users understand model accuracy and prediction results easily. It also provides explanations for suspicious reviews, such as promotional words, repeated phrases, short generic comments, and excessive punctuation, enabling better transparency in predictions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_044",
+        "pageNumber": 1,
+        "text": "This project not only improves customer confidence and platform reliability but also supports fair digital commerce practices by reducing misleading content. It serves as a practical example of how machine learning can be applied to solve real-world problems effectively."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_045",
+        "pageNumber": 1,
+        "text": "1.2 OBJECTIVES"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_046",
+        "pageNumber": 1,
+        "text": "The primary objective of this project is to design and implement an intelligent system that detects fake product reviews using machine learning techniques. The system aims to enhance customer trust, improve decision-making, and maintain authenticity in e-commerce platforms."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_047",
+        "pageNumber": 1,
+        "text": "The specific objectives of the project are as follows:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_048",
+        "pageNumber": 1,
+        "text": "1 To collect and analyse historical product review data to understand patterns of genuine and fake reviews."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_049",
+        "pageNumber": 1,
+        "text": "To identify key factors that influence review authenticity, such as promotional language, repeated words, short comments, and suspicious writing patterns."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_050",
+        "pageNumber": 1,
+        "text": "To preprocess the dataset by handling missing values, removing inconsistencies, and transforming review text into a suitable format."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_051",
+        "pageNumber": 1,
+        "text": "To implement a classification-based machine learning model for detecting fake and genuine reviews."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_052",
+        "pageNumber": 1,
+        "text": "To evaluate the performance of the model using appropriate metrics and ensure prediction accuracy."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_053",
+        "pageNumber": 1,
+        "text": "To visualize the predicted results using graphical representations such as confusion matrix and performance reports."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_054",
+        "pageNumber": 1,
+        "text": "To develop a system that provides confidence scores and explanations for suspicious reviews."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_055",
+        "pageNumber": 1,
+        "text": "To reduce the impact of misleading reviews and improve fairness in online marketplaces."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_056",
+        "pageNumber": 1,
+        "text": "To improve the efficiency of e-commerce review management through data-driven decision-making."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_057",
+        "pageNumber": 1,
+        "text": "To provide a scalable solution that can be extended with advanced techniques in the future."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_058",
+        "pageNumber": 1,
+        "text": "1.3 SCOPE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_059",
+        "pageNumber": 1,
+        "text": "The scope of the proposed Fake Review Classification System encompasses both functional capabilities and academic significance, providing a comprehensive framework for practical implementation. The system is designed not only to solve real-world problems related to fake review detection and review authenticity analysis but also to demonstrate the effective application of machine learning and natural language processing techniques in a structured and scalable manner."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_060",
+        "pageNumber": 1,
+        "text": "FUNCTIONAL SCOPE:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_061",
+        "pageNumber": 1,
+        "text": "The functional scope of the system focuses on developing an intelligent and data-driven solution for detecting fake reviews in an e-commerce environment. The system is capable of collecting, processing, and analyzing historical product review data to generate accurate classification results. The key functionalities of the system include data acquisition, preprocessing, model training, prediction, visualization, and explanation generation."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_062",
+        "pageNumber": 1,
+        "text": "Based on the trained model, the system predicts whether a new review is genuine or fake, enabling customers and e-commerce platforms to make better decisions. Additionally, the system provides visual representations of prediction performance through graphs and confusion matrix charts, making it easier for users to interpret the results."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_063",
+        "pageNumber": 1,
+        "text": "Another important functionality is the explanation feature, which identifies suspicious indicators such as overly promotional words, repeated phrases, short generic comments, and excessive punctuation. This helps in improving transparency, reducing misleading content, and enhancing overall trust in online review systems."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_064",
+        "pageNumber": 1,
+        "text": "EDUCATIONAL SCOPE:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_065",
+        "pageNumber": 1,
+        "text": "From an academic perspective, this project serves as a valuable learning platform for students in the field of artificial intelligence, machine learning, and natural language processing. It provides hands-on experience in various stages of the machine learning pipeline, including data collection, preprocessing, feature extraction, model development, and evaluation."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_066",
+        "pageNumber": 1,
+        "text": "Students gain a deeper understanding of classification algorithms and their applications in real-world scenarios such as fake review detection in e-commerce platforms. The project also enhances knowledge in text mining and data visualization techniques, enabling students to represent complex information in a simplified manner."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_067",
+        "pageNumber": 1,
+        "text": "Furthermore, the project encourages analytical thinking and problem-solving skills, as students learn to identify suspicious review patterns, interpret prediction results, and improve model performance. It bridges the gap between theoretical concepts and practical implementation."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_068",
+        "pageNumber": 1,
+        "text": "LIMITATIONS:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_069",
+        "pageNumber": 1,
+        "text": "Despite its effectiveness, the system has certain limitations that must be considered. The accuracy of the model heavily depends on the quality, size, and diversity of the dataset. If the dataset is limited, imbalanced, or contains noisy and incorrect labels, the predictions may not be highly reliable."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_070",
+        "pageNumber": 1,
+        "text": "The current system is based on Logistic Regression, which may not capture highly complex linguistic patterns and contextual meanings present in review text. Although effective for structured text classification, it may perform lower than advanced deep learning models on complex datasets. Additionally, the system does not incorporate real-time review streams, which may affect its adaptability to newly emerging spam patterns."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_071",
+        "pageNumber": 1,
+        "text": "External factors such as reviewer behaviour, account credibility, verified purchase status, star ratings, and coordinated spam campaigns are not considered in the current model, which may influence review authenticity detection."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_072",
+        "pageNumber": 1,
+        "text": "FUTURE ENHANCEMENT:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_073",
+        "pageNumber": 1,
+        "text": "The system can be further enhanced by incorporating advanced technologies and features. Future improvements may include the integration of real-time review collection systems, enabling continuous updates and more accurate fake review detection."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_074",
+        "pageNumber": 1,
+        "text": "Advanced machine learning models such as LSTM networks, XGBoost, and transformer-based models like BERT can be implemented to capture complex language patterns and improve classification accuracy. The system can also be developed into a web-based or mobile application, providing easy access and user interaction for customers and administrators."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_075",
+        "pageNumber": 1,
+        "text": "Integration with databases such as MongoDB or cloud-based storage solutions can improve data management and scalability. Additionally, incorporating external factors such as reviewer history, star ratings, verified purchase status, user behaviour patterns, and multilingual reviews can further enhance the detection capability of the system."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_076",
+        "pageNumber": 1,
+        "text": "CHAPTER 2"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_077",
+        "pageNumber": 1,
+        "text": "SYSTEM ANALYSIS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_078",
+        "pageNumber": 1,
+        "text": "2.1 EXISTING SYSTEM"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_079",
+        "pageNumber": 1,
+        "text": "In traditional e-commerce review management systems, fake review detection is primarily carried out using manual moderation techniques or simple rule-based filtering methods. These methods rely on human inspection or basic keyword checks rather than systematic data analysis. While such approaches may identify some suspicious reviews, they are often inaccurate and inconsistent due to the large volume and dynamic nature of online reviews."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_080",
+        "pageNumber": 1,
+        "text": "One of the major drawbacks of the existing system is the lack of data-driven decision-making. Historical review data, which could provide valuable insights into fake review patterns, is either underutilized or completely ignored. As a result, the system fails to capture trends, deceptive writing styles, and variations in suspicious review behaviour."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_081",
+        "pageNumber": 1,
+        "text": "Fake positive or negative reviews are a common issue in the existing system, leading to misleading product ratings and reduced customer trust. This not only results in poor purchase decisions but also creates unfair competition among sellers. On the other hand, genuine reviews may sometimes be incorrectly removed, causing inconvenience to honest customers and vendors."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_082",
+        "pageNumber": 1,
+        "text": "Another limitation is the absence of automation in many review monitoring processes. Many decisions are made manually, increasing the chances of human error and reducing efficiency. The system also lacks effective visualization tools, making it difficult to analyze review authenticity trends and model performance."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_083",
+        "pageNumber": 1,
+        "text": "Furthermore, the existing system does not consider important external factors such as reviewer behaviour history, verified purchase status, rating-text mismatch, coordinated spam activities, and multilingual review content, all of which significantly influence review authenticity."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_084",
+        "pageNumber": 1,
+        "text": "2.2 PROPOSED SYSTEM"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_085",
+        "pageNumber": 1,
+        "text": "The proposed system introduces a machine learning-based approach to overcome the limitations of traditional methods. It utilizes historical review data and classification algorithms to detect fake reviews in an accurate and efficient manner."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_086",
+        "pageNumber": 1,
+        "text": "The system follows a structured workflow consisting of data collection, preprocessing, feature extraction, model training, prediction, explanation generation, and visualization. Each stage is carefully designed to ensure data integrity and model performance."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_087",
+        "pageNumber": 1,
+        "text": "One of the key strengths of the proposed system is its ability to process large volumes of review data and identify hidden suspicious patterns that are not easily detectable through manual analysis. The classification model establishes relationships between textual features and review authenticity, enabling precise predictions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_088",
+        "pageNumber": 1,
+        "text": "The system also incorporates visualization techniques such as confusion matrix graphs and performance reports to present the results in an intuitive manner. These visualizations help users understand model accuracy, prediction trends, and system effectiveness."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_089",
+        "pageNumber": 1,
+        "text": "Additionally, the system provides explanations for suspicious reviews based on promotional words, repeated phrases, short generic comments, and excessive punctuation. This feature enhances transparency, improves trust, and helps users understand why a review is classified as fake."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_090",
+        "pageNumber": 1,
+        "text": "Overall, the proposed system offers a reliable, efficient, and scalable solution for fake review classification in e-commerce platforms."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_091",
+        "pageNumber": 1,
+        "text": "2.3 FEATURES"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_092",
+        "pageNumber": 1,
+        "text": "The proposed system includes several advanced features that enhance its functionality and usability:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_093",
+        "pageNumber": 1,
+        "text": "Data Analysis: Processes large volumes of historical review data to identify suspicious trends and writing patterns."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_094",
+        "pageNumber": 1,
+        "text": "Prediction Model: Uses classification algorithms for accurate fake review detection."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_095",
+        "pageNumber": 1,
+        "text": "Visualization: Displays results through graphical representations such as confusion matrix and performance metrics."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_096",
+        "pageNumber": 1,
+        "text": "Explanation System: Provides reasons for suspicious reviews such as promotional words, repeated phrases, short comments, and excessive punctuation."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_097",
+        "pageNumber": 1,
+        "text": "User-Friendly Interface: Simple and easy-to-use system for review analysis and prediction."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_098",
+        "pageNumber": 1,
+        "text": "Trust Improvement: Reduces misleading reviews and improves customer confidence in e-commerce platforms."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_099",
+        "pageNumber": 1,
+        "text": "Scalability: Can be extended with advanced models, multilingual support, and real-time detection technologies."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_100",
+        "pageNumber": 1,
+        "text": "CHAPTER 3"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_101",
+        "pageNumber": 1,
+        "text": "SYSTEM ARCHITECTURE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_102",
+        "pageNumber": 1,
+        "text": "3.1 SYSTEM ARCHITECTURE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_103",
+        "pageNumber": 1,
+        "text": "proposed system is designed using a modular and layered architecture that ensures efficient data flow, scalability, and maintainability. The architecture consists of multiple interconnected components, each responsible for a specific function in fake review detection and review authenticity analysis."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_104",
+        "pageNumber": 1,
+        "text": "FIGURE 3.1: SYSTEM ARCHITECTURE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_105",
+        "pageNumber": 1,
+        "text": "The architecture begins with the data collection layer, where historical product review data is gathered. This data includes attributes such as review text, review labels, ratings, and related review information. The collected data serves as the foundation for the entire system and directly influences the accuracy of classification results."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_106",
+        "pageNumber": 1,
+        "text": "The next stage is the data preprocessing layer, where raw review data is cleaned and prepared for analysis. In this stage, missing values are handled, duplicate entries are removed, unwanted symbols are filtered, and inconsistencies are corrected. Text normalization techniques such as lowercasing and stop word removal are also applied. Data preprocessing ensures that the dataset is reliable and suitable for machine learning operations."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_107",
+        "pageNumber": 1,
+        "text": "Following preprocessing, the system performs feature engineering, which is a critical step in improving model performance. Features such as keywords, repeated phrases, word frequency patterns, and n-gram representations are selected and converted into numerical values using TF-IDF for model compatibility."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_108",
+        "pageNumber": 1,
+        "text": "The processed data is then passed to the model training module, where a machine learning algorithm, specifically Logistic Regression, is applied. The model learns patterns and relationships between textual features and review authenticity. This trained model forms the core component responsible for prediction."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_109",
+        "pageNumber": 1,
+        "text": "After training, the system moves to the prediction module, where the trained model is used to classify new reviews. Based on input review text, the system predicts whether the review is genuine or fake and also provides a confidence score for the prediction."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_110",
+        "pageNumber": 1,
+        "text": "The predicted results are then processed in the visualization module, where graphical representations such as confusion matrix charts and performance reports are generated. These visualizations help users easily understand classification accuracy, trends, and system effectiveness."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_111",
+        "pageNumber": 1,
+        "text": "Finally, the system includes an explanation module, which identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. This module assists users in understanding why a review has been classified as fake, thereby improving transparency and trust."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_112",
+        "pageNumber": 1,
+        "text": "Overall, the system architecture ensures a smooth and logical flow of data from input to output, enabling accurate fake review detection and efficient decision-making. The modular design also allows easy scalability and future enhancements."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_113",
+        "pageNumber": 1,
+        "text": "3.1.1 DESCRIPTION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_114",
+        "pageNumber": 1,
+        "text": "The The proposed system operates through a well-defined sequence of stages, ensuring efficient data processing and accurate fake review classification. Each stage in the architecture plays a crucial role in transforming raw review data into meaningful insights for decision-making."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_115",
+        "pageNumber": 1,
+        "text": "The process begins with the data collection stage, where historical product review data is gathered either manually through a user input portal or from external sources such as e-commerce platforms and review datasets. The collected data includes essential attributes such as review text, labels, ratings, and related metadata. This data forms the foundation of the system and is critical for training the machine learning model."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_116",
+        "pageNumber": 1,
+        "text": "Once the data is collected, it is passed to the data preprocessing stage, which prepares the data for analysis. In real-world scenarios, raw review data often contains missing values, duplicate entries, unwanted symbols, and inconsistencies. These issues are handled through various preprocessing techniques such as text cleaning, handling missing values, duplicate removal, stopword elimination, and normalization."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_117",
+        "pageNumber": 1,
+        "text": "After preprocessing, the system performs feature engineering, where relevant features that influence review authenticity are identified and selected. Attributes such as keywords, repeated phrases, word frequency, sentiment indicators, and n-gram patterns are extracted and transformed into numerical form using TF-IDF vectorization. Feature engineering improves the efficiency and accuracy of the machine learning model by focusing only on significant variables."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_118",
+        "pageNumber": 1,
+        "text": "The refined dataset is then used in the model training stage, which is the core component of the system. In this project, Logistic Regression is used to establish relationships between textual features and review authenticity. The dataset is divided into training and testing sets, where the training set is used to build the model and the testing set is used to evaluate its performance. The model learns patterns from historical data and adjusts its parameters to minimize classification errors."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_119",
+        "pageNumber": 1,
+        "text": "Once the model is trained, it is deployed in the prediction module, where it classifies new reviews. Based on input review text, the system predicts whether the review is genuine or fake and also generates a confidence score. This prediction helps customers and e-commerce platforms make better decisions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_120",
+        "pageNumber": 1,
+        "text": "The predicted results are then visualized in the visualization module, which converts outputs into graphical representations such as confusion matrix charts, accuracy reports, and performance summaries. These visualizations provide an intuitive understanding of classification trends, making it easier for users to analyse results and make informed decisions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_121",
+        "pageNumber": 1,
+        "text": "In addition to prediction and visualization, the system includes an explanation module, which identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. By analysing classified reviews, the system provides understandable reasons for why a review is flagged as fake, helping to improve transparency and trust."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_122",
+        "pageNumber": 1,
+        "text": "To ensure data security and controlled usage, an access control mechanism is incorporated into the system. This feature restricts unauthorized access and ensures that only authorized users can interact with the system and view sensitive data."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_123",
+        "pageNumber": 1,
+        "text": "Overall, the system follows a structured and logical workflow, transforming raw review data into actionable insights. The modular design of the architecture ensures flexibility, scalability, and ease of maintenance, allowing future enhancements such as integration with real-time review streams, multilingual support, and advanced deep learning models."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_124",
+        "pageNumber": 1,
+        "text": "CHAPTER 4"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_125",
+        "pageNumber": 1,
+        "text": "SYSTEM IMPLEMENTATION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_126",
+        "pageNumber": 1,
+        "text": "4.1 DATASET DESCRIPTION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_127",
+        "pageNumber": 1,
+        "text": "The dataset used in this project plays a crucial role in determining the performance and accuracy of the machine learning model. It consists of historical records of product reviews collected from e-commerce sources over a specific period. This dataset serves as the foundation for training and testing the fake review classification model."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_128",
+        "pageNumber": 1,
+        "text": "The dataset includes multiple attributes that represent different aspects of review authenticity patterns. These attributes are carefully selected to capture the variations in genuine and fake reviews influenced by writing style, sentiment, and suspicious behaviour. The primary attributes present in the dataset are:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_129",
+        "pageNumber": 1,
+        "text": "Review Text: Represents the written feedback provided by users for a product. This helps in identifying linguistic patterns and suspicious content."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_130",
+        "pageNumber": 1,
+        "text": "Label: Indicates whether the review is genuine or fake. This is the target variable used for classification."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_131",
+        "pageNumber": 1,
+        "text": "Rating: Represents the star rating given by the reviewer, which may help in identifying rating-text inconsistencies."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_132",
+        "pageNumber": 1,
+        "text": "Review Length: Represents the number of words or characters in a review, which may indicate short generic or unusually long suspicious reviews."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_133",
+        "pageNumber": 1,
+        "text": "In addition to these attributes, derived features may also be included to enhance model performance. These include repeated words, promotional keywords, punctuation frequency, sentiment indicators, and n-gram patterns extracted from review text."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_134",
+        "pageNumber": 1,
+        "text": "The dataset is stored in a structured format such as CSV (Comma Separated Values), which allows easy manipulation and processing using Python libraries like Pandas. A well-structured dataset ensures efficient data handling and improves the accuracy of results."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_135",
+        "pageNumber": 1,
+        "text": "FIGURE 4.1: SAMPLE DATASET STRUCTURE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_136",
+        "pageNumber": 1,
+        "text": "4.2 DATASET PREPROCESSING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_137",
+        "pageNumber": 1,
+        "text": "Data preprocessing is one of the most critical stages in the machine learning pipeline. Raw review data collected from real-world environments is often incomplete, inconsistent, and noisy. Therefore, it must be processed and cleaned before being used for model training."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_138",
+        "pageNumber": 1,
+        "text": "The preprocessing phase involves several steps:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_139",
+        "pageNumber": 1,
+        "text": "1. DATA CLEANING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_140",
+        "pageNumber": 1,
+        "text": "Missing values are identified and handled appropriately. In this project, records containing null or empty review text are removed. Unwanted symbols, special characters, extra spaces, and irrelevant content such as URLs are also eliminated from the review text to improve data quality."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_141",
+        "pageNumber": 1,
+        "text": "2. REMOVING DUPLICATES"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_142",
+        "pageNumber": 1,
+        "text": "Duplicate review records are eliminated to avoid redundancy and bias in the dataset. Duplicate data can negatively impact model performance by causing overfitting and misleading predictions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_143",
+        "pageNumber": 1,
+        "text": "3. DATA TRANSFORMATION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_144",
+        "pageNumber": 1,
+        "text": "Categorical variables such as review labels are converted into numerical format for machine learning compatibility. In this project, Genuine Reviews (CG) are converted to 0, and Fake Reviews (OR) are converted to 1. Review text is transformed into numerical feature vectors using TF-IDF vectorization."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_145",
+        "pageNumber": 1,
+        "text": "4. TEXT NORMALIZATION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_146",
+        "pageNumber": 1,
+        "text": "Text normalization is applied to standardize the review content. This includes converting all text into lowercase, removing stopwords, and reducing unnecessary variations in writing style. This ensures consistency across the dataset and improves feature extraction quality."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_147",
+        "pageNumber": 1,
+        "text": "5. DATA SPLITTING"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_148",
+        "pageNumber": 1,
+        "text": "The dataset is divided into training and testing sets. The training dataset is used to train the machine learning model, while the testing dataset is used to evaluate its performance. In this project, 80% of the data is used for training and 20% for testing."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_149",
+        "pageNumber": 1,
+        "text": "FIGURE 4.2: DATA PREPROCESSING WORKFLOW"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_150",
+        "pageNumber": 1,
+        "text": "4.3   ALGORITHM"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_151",
+        "pageNumber": 1,
+        "text": "The system uses the Logistic Regression algorithm, which is a supervised machine learning technique used for classification tasks. It establishes a relationship between input variables (independent variables) and the probability of belonging to a particular class. In this project, it is used to classify reviews as genuine or fake."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_152",
+        "pageNumber": 1,
+        "text": "Mathematical Representation"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_153",
+        "pageNumber": 1,
+        "text": "The logistic regression equation is:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_154",
+        "pageNumber": 1,
+        "text": "Where:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_155",
+        "pageNumber": 1,
+        "text": "\u2022 = Probability that the review is fake\n\u2022 = Input features extracted from review text\n\u2022 = Intercept\n\u2022 = Coefficients\n\u2022 = Exponential constant"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_156",
+        "pageNumber": 1,
+        "text": "WORKING PRINCIPLE"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_157",
+        "pageNumber": 1,
+        "text": "The Logistic Regression algorithm follows a systematic approach to model the relationship between input features and output:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_158",
+        "pageNumber": 1,
+        "text": "Initialize model parameters."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_159",
+        "pageNumber": 1,
+        "text": "Convert review text into numerical features using TF-IDF vectorization."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_160",
+        "pageNumber": 1,
+        "text": "Calculate the probability of the review belonging to fake or genuine class."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_161",
+        "pageNumber": 1,
+        "text": "Compare predicted output with actual labels and calculate classification error."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_162",
+        "pageNumber": 1,
+        "text": "Adjust coefficients to minimize the error using optimization techniques."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_163",
+        "pageNumber": 1,
+        "text": "Repeat the process until the optimal solution is reached."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_164",
+        "pageNumber": 1,
+        "text": "ADVANTAGES OF LOGISTIC REGRESSION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_165",
+        "pageNumber": 1,
+        "text": "Simple and easy to implement."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_166",
+        "pageNumber": 1,
+        "text": "Computationally efficient."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_167",
+        "pageNumber": 1,
+        "text": "Works well with text classification problems."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_168",
+        "pageNumber": 1,
+        "text": "Provides interpretable results."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_169",
+        "pageNumber": 1,
+        "text": "Suitable for binary classification such as fake or genuine review detection."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_170",
+        "pageNumber": 1,
+        "text": "4.4 MODULE DESCRIPTION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_171",
+        "pageNumber": 1,
+        "text": "To ensure high performance, maintainability, and scalability, the Fake Review Detection System is designed using a modular architecture. The system is divided into four primary functional modules, each responsible for a specific phase of the text classification pipeline, seamlessly transforming raw user input into meaningful predictions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_172",
+        "pageNumber": 1,
+        "text": "1. Data Acquisition and Packet Sniffing Module"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_173",
+        "pageNumber": 1,
+        "text": "This foundational module acts as the entry point of the system, responsible for collecting review data from external sources such as CSV datasets or user input. It ensures proper data formatting by selecting relevant columns and handles missing or inconsistent values through preprocessing steps like null removal. This module guarantees that only clean and structured data is forwarded to the next stage."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_174",
+        "pageNumber": 1,
+        "text": "2. Flow Aggregation and Feature Extraction Module"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_175",
+        "pageNumber": 1,
+        "text": "Raw textual data is unstructured and not directly suitable for machine learning, so this module converts it into a structured numerical format. It begins with text cleaning\u2014lowercasing, removing URLs, special characters, and stopwords using NLTK. The cleaned text is then transformed into numerical feature vectors using TF-IDF, capturing the importance of relevant words and phrases and making the data machine-understandable."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_176",
+        "pageNumber": 1,
+        "text": "3. Threat Classification (Machine Learning) Module"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_177",
+        "pageNumber": 1,
+        "text": "This module serves as the core intelligence of the system, utilizing a Logistic Regression classifier trained on labeled review data to distinguish between genuine and fake reviews; the model processes TF-IDF feature vectors and applies learned statistical relationships to classify each review, and upon prediction it outputs both a classification label (Genuine Review or Fake Review) and a probability-based confidence score indicating the certainty of the prediction, while being optimized for efficient performance and quick inference, making it suitable for real-time applications."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_178",
+        "pageNumber": 1,
+        "text": "4. Alerting and Visualization (Dashboard) Module"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_179",
+        "pageNumber": 1,
+        "text": "The final module bridges backend processing with user interpretation by evaluating model performance using metrics such as accuracy, precision, recall, and F1-score, along with a confusion matrix visualization generated using seaborn and matplotlib; additionally, it provides a prediction interface where new reviews can be analyzed in real time, outputting clear, human-readable results including the predicted label and confidence percentage, thereby enabling users to quickly assess the authenticity of reviews and make informed decisions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_180",
+        "pageNumber": 1,
+        "text": "5.1 PERFORMANCE ANALYSIS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_181",
+        "pageNumber": 1,
+        "text": "The performance of the proposed system is evaluated using various evaluation metrics and graphical representations. The goal is to assess how accurately the model classifies product reviews as genuine or fake."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_182",
+        "pageNumber": 1,
+        "text": "5.1.1 EVALUATION METRICS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_183",
+        "pageNumber": 1,
+        "text": "Evaluation metrics are used to measure the effectiveness of the machine learning model."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_184",
+        "pageNumber": 1,
+        "text": "1. ACCURACY"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_185",
+        "pageNumber": 1,
+        "text": "Accuracy measures how close the predicted classes are to the actual classes. It indicates how many reviews are correctly classified as genuine or fake. A higher accuracy indicates better model performance."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_186",
+        "pageNumber": 1,
+        "text": "2. LOG LOSS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_187",
+        "pageNumber": 1,
+        "text": "Log Loss measures the uncertainty of prediction probabilities generated by the model. Lower Log Loss indicates better confidence and performance in classification tasks."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_188",
+        "pageNumber": 1,
+        "text": "3. PRECISION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_189",
+        "pageNumber": 1,
+        "text": "Precision measures the correctness of positive predictions. It indicates how many reviews predicted as fake are actually fake. Higher precision means fewer false positive results."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_190",
+        "pageNumber": 1,
+        "text": "4. RECALL"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_191",
+        "pageNumber": 1,
+        "text": "Recall measures the ability of the model to identify all relevant fake reviews. It indicates how many actual fake reviews are correctly detected by the system."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_192",
+        "pageNumber": 1,
+        "text": "Bottom of Form"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_193",
+        "pageNumber": 1,
+        "text": "5.1.2 CONFUSION MATRIX ANALYSIS"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_194",
+        "pageNumber": 1,
+        "text": "FIGURE 5.2: CONFUSION MATRIX"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_195",
+        "pageNumber": 1,
+        "text": "The confusion matrix provides a detailed breakdown of correct and incorrect predictions. It helps in analyzing classification performance."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_196",
+        "pageNumber": 1,
+        "text": "5.1.3 MODEL COMPARISON"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_197",
+        "pageNumber": 1,
+        "text": "FIGURE 5.3: MODEL COMPARISON"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_198",
+        "pageNumber": 1,
+        "text": "Different models can be compared based on performance metrics. In this project, regression provides a balance between simplicity and accuracy."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_199",
+        "pageNumber": 1,
+        "text": "5.2 RESULT DISCUSSION"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_200",
+        "pageNumber": 1,
+        "text": "The The results obtained from the model indicate that the system is capable of classifying product reviews as genuine or fake with high accuracy."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_201",
+        "pageNumber": 1,
+        "text": "The graphical representations provide a clear understanding of classification performance, enabling better decision-making for users and e-commerce platforms. The explanation module further enhances usability by identifying suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. Although the model performs well, there is scope for improvement by incorporating advanced techniques, multilingual support, and additional real-time review data."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_202",
+        "pageNumber": 1,
+        "text": "The Fake Review Classification System successfully demonstrates the practical application of machine learning techniques in addressing real-world challenges related to fake review detection and maintaining trust in e-commerce platforms. The primary objective of the project was to design and develop an efficient and reliable system capable of classifying product reviews as genuine or fake using historical review data, and this objective has been achieved effectively."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_203",
+        "pageNumber": 1,
+        "text": "The system follows a structured workflow that includes data collection, preprocessing, feature extraction, model training, prediction, and visualization. By utilizing the Logistic Regression algorithm, the system is able to identify meaningful patterns within historical review data and generate accurate classifications for new reviews. These predictions assist customers and e-commerce platforms in making informed decisions regarding product trustworthiness, thereby reducing the impact of misleading reviews and improving review authenticity."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_204",
+        "pageNumber": 1,
+        "text": "One of the major strengths of the system lies in its simplicity and efficiency. The use of Logistic Regression ensures low computational complexity while still delivering reliable and interpretable results. Furthermore, the inclusion of visualization techniques such as confusion matrix graphs and performance reports enhances the understanding of model behavior, enabling users to analyze results easily and make better decisions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_205",
+        "pageNumber": 1,
+        "text": "In addition to classification, the system incorporates an explanation module that identifies suspicious indicators such as promotional words, repeated phrases, short generic comments, and excessive punctuation. This feature significantly improves transparency and helps users understand why a review has been flagged as fake, thereby increasing trust in the system."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_206",
+        "pageNumber": 1,
+        "text": "However, the system has certain limitations. The accuracy of predictions depends heavily on the quality, size, and consistency of the dataset used. Since the model is based on Logistic Regression, it may not effectively capture highly complex linguistic or contextual relationships present in real-world review text. Despite these limitations, the system provides a strong foundation for further enhancements and improvements."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_207",
+        "pageNumber": 1,
+        "text": "In conclusion, the proposed system offers a data-driven and practical solution for fake review classification. It overcomes the limitations of traditional manual moderation methods and enhances decision-making through intelligent text analytics. The system not only improves customer confidence but also demonstrates the potential of machine learning in solving everyday digital commerce problems in a simple and effective manner."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_208",
+        "pageNumber": 1,
+        "text": "The project also provides valuable insights into the implementation of machine learning techniques, including data preprocessing, feature extraction, text vectorization, and model evaluation. It serves as a strong foundation for further research and development in the field of natural language processing and predictive analytics."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_209",
+        "pageNumber": 1,
+        "text": "Overall, the system not only fulfils its intended objectives but also demonstrates the potential of intelligent systems in improving everyday online processes. With further improvements, it can be transformed into a fully automated and real-time solution for efficient fake review monitoring and e-commerce trust management."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_210",
+        "pageNumber": 1,
+        "text": "APPENDIX -I"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_211",
+        "pageNumber": 1,
+        "text": "(CODING)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_212",
+        "pageNumber": 1,
+        "text": "!pip install pandas numpy scikit-learn nltk seaborn matplotlib"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_213",
+        "pageNumber": 1,
+        "text": "import pandas as pd"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_214",
+        "pageNumber": 1,
+        "text": "import numpy as np"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_215",
+        "pageNumber": 1,
+        "text": "import re"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_216",
+        "pageNumber": 1,
+        "text": "import nltk"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_217",
+        "pageNumber": 1,
+        "text": "import seaborn as sns"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_218",
+        "pageNumber": 1,
+        "text": "import matplotlib.pyplot as plt"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_219",
+        "pageNumber": 1,
+        "text": "from sklearn.model_selection import train_test_split"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_220",
+        "pageNumber": 1,
+        "text": "from sklearn.feature_extraction.text import TfidfVectorizer"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_221",
+        "pageNumber": 1,
+        "text": "from sklearn.linear_model import LogisticRegression"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_222",
+        "pageNumber": 1,
+        "text": "from sklearn.metrics import accuracy_score, classification_report, confusion_matrix"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_223",
+        "pageNumber": 1,
+        "text": "nltk.download('stopwords')"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_224",
+        "pageNumber": 1,
+        "text": "from nltk.corpus import stopwords"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_225",
+        "pageNumber": 1,
+        "text": "file_path = \"/content/fake reviews dataset (1).csv\""
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_226",
+        "pageNumber": 1,
+        "text": "df = pd.read_csv(file_path)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_227",
+        "pageNumber": 1,
+        "text": "print(\"Dataset Loaded Successfully!\\n\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_228",
+        "pageNumber": 1,
+        "text": "print(df.head())"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_229",
+        "pageNumber": 1,
+        "text": "print(\"\\nDataset Shape:\", df.shape)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_230",
+        "pageNumber": 1,
+        "text": "df = df[['text_', 'label']]"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_231",
+        "pageNumber": 1,
+        "text": "df.columns = ['review', 'label']"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_232",
+        "pageNumber": 1,
+        "text": "df['label'] = df['label'].map({'CG':0, 'OR':1})"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_233",
+        "pageNumber": 1,
+        "text": "df.dropna(inplace=True)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_234",
+        "pageNumber": 1,
+        "text": "print(\"\\nLabel Distribution:\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_235",
+        "pageNumber": 1,
+        "text": "print(df['label'].value_counts())"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_236",
+        "pageNumber": 1,
+        "text": "stop_words = set(stopwords.words('english'))"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_237",
+        "pageNumber": 1,
+        "text": "def clean_text(text):"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_238",
+        "pageNumber": 1,
+        "text": "text = str(text).lower()"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_239",
+        "pageNumber": 1,
+        "text": "text = re.sub(r'http\\S+|www\\S+', '', text)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_240",
+        "pageNumber": 1,
+        "text": "text = re.sub(r'[^a-zA-Z]', ' ', text)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_241",
+        "pageNumber": 1,
+        "text": "words = text.split()"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_242",
+        "pageNumber": 1,
+        "text": "words = [word for word in words if word not in stop_words]"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_243",
+        "pageNumber": 1,
+        "text": "return \" \".join(words)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_244",
+        "pageNumber": 1,
+        "text": "df['review'] = df['review'].apply(clean_text)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_245",
+        "pageNumber": 1,
+        "text": "X = df['review']"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_246",
+        "pageNumber": 1,
+        "text": "y = df['label']"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_247",
+        "pageNumber": 1,
+        "text": "X_train, X_test, y_train, y_test = train_test_split("
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_248",
+        "pageNumber": 1,
+        "text": "X, y, test_size=0.2, random_state=42, stratify=y"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_249",
+        "pageNumber": 1,
+        "text": ")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_250",
+        "pageNumber": 1,
+        "text": "vectorizer = TfidfVectorizer(max_features=6000, ngram_range=(1,2))"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_251",
+        "pageNumber": 1,
+        "text": "X_train_vec = vectorizer.fit_transform(X_train)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_252",
+        "pageNumber": 1,
+        "text": "X_test_vec = vectorizer.transform(X_test)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_253",
+        "pageNumber": 1,
+        "text": "model = LogisticRegression(max_iter=300)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_254",
+        "pageNumber": 1,
+        "text": "model.fit(X_train_vec, y_train)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_255",
+        "pageNumber": 1,
+        "text": "y_pred = model.predict(X_test_vec)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_256",
+        "pageNumber": 1,
+        "text": "accuracy = accuracy_score(y_test, y_pred)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_257",
+        "pageNumber": 1,
+        "text": "print(\"\\nModel Accuracy:\", accuracy)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_258",
+        "pageNumber": 1,
+        "text": "print(\"\\nClassification Report:\\n\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_259",
+        "pageNumber": 1,
+        "text": "print(classification_report(y_test, y_pred))"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_260",
+        "pageNumber": 1,
+        "text": "cm = confusion_matrix(y_test, y_pred)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_261",
+        "pageNumber": 1,
+        "text": "plt.figure(figsize=(5,4))"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_262",
+        "pageNumber": 1,
+        "text": "sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_263",
+        "pageNumber": 1,
+        "text": "plt.title(\"Confusion Matrix\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_264",
+        "pageNumber": 1,
+        "text": "plt.xlabel(\"Predicted Label\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_265",
+        "pageNumber": 1,
+        "text": "plt.ylabel(\"Actual Label\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_266",
+        "pageNumber": 1,
+        "text": "plt.show()"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_267",
+        "pageNumber": 1,
+        "text": "def predict_review(text):"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_268",
+        "pageNumber": 1,
+        "text": "cleaned = clean_text(text)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_269",
+        "pageNumber": 1,
+        "text": "vec = vectorizer.transform([cleaned])"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_270",
+        "pageNumber": 1,
+        "text": "prediction = model.predict(vec)[0]"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_271",
+        "pageNumber": 1,
+        "text": "probability = model.predict_proba(vec)[0]"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_272",
+        "pageNumber": 1,
+        "text": "confidence = max(probability) * 100"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_273",
+        "pageNumber": 1,
+        "text": "if prediction == 1:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_274",
+        "pageNumber": 1,
+        "text": "label = \"Fake Review\""
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_275",
+        "pageNumber": 1,
+        "text": "else:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_276",
+        "pageNumber": 1,
+        "text": "label = \"Genuine Review\""
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_277",
+        "pageNumber": 1,
+        "text": "print(\"\\nReview:\", text)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_278",
+        "pageNumber": 1,
+        "text": "print(\"Prediction:\", label)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_279",
+        "pageNumber": 1,
+        "text": "print(\"Confidence: {:.2f}%\".format(confidence))"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_280",
+        "pageNumber": 1,
+        "text": "sample_reviews = ["
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_281",
+        "pageNumber": 1,
+        "text": "\"I have been using this product for two weeks and it works well.\","
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_282",
+        "pageNumber": 1,
+        "text": "\"This product is amazing and worth every penny!\","
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_283",
+        "pageNumber": 1,
+        "text": "\"Worst product ever, totally scam and fake\","
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_284",
+        "pageNumber": 1,
+        "text": "\"The quality is decent for the price and delivery was fast.\""
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_285",
+        "pageNumber": 1,
+        "text": "]"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_286",
+        "pageNumber": 1,
+        "text": "print(\"\\n----- Sample Predictions -----\")"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_287",
+        "pageNumber": 1,
+        "text": "for review in sample_reviews:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_288",
+        "pageNumber": 1,
+        "text": "predict_review(review)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_289",
+        "pageNumber": 1,
+        "text": "APPENDIX \u2013 II:"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_290",
+        "pageNumber": 1,
+        "text": "(SCREENSHOT)"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_291",
+        "pageNumber": 1,
+        "text": "Fig A2:1 OUTPUT"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_292",
+        "pageNumber": 1,
+        "text": "REFERNCES"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_293",
+        "pageNumber": 1,
+        "text": "[1] Rustagi, A., & Padisetti, V. (2022), Fake Review Detection Using Machine Learning, Journal of Student Research"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_294",
+        "pageNumber": 1,
+        "text": "[2] Yousif, A., & Buckley, J. (2022), Impact of Sentiment Analysis in Fake Review Detection, arXiv"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_295",
+        "pageNumber": 1,
+        "text": "[3] Hameed, W., Ali, Y. H., & Allami, R. (2023), Detection of Fake Reviews Using Machine Learning Techniques, International Journal for Scientific Research"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_296",
+        "pageNumber": 1,
+        "text": "[4] Shaik, M. A., et al. (2023), Fake News Detection using NLP, International Conference on Innovative Data Communication Technologies and Application"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_297",
+        "pageNumber": 1,
+        "text": "[5] Arribathi, A. H., et al. (2024), Logistic Regression and TF-IDF Models for Early Detection of Fake News, Journal Sensi"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_298",
+        "pageNumber": 1,
+        "text": "[6] Nadeem, M., et al. (2024), Enhancing Fake News Detection with a Hybrid NLP-Machine Learning Framework, ICCK Transactions on Intelligent Systematics"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_299",
+        "pageNumber": 1,
+        "text": "[7] Singh, A., & Narang, T. (2024), Deep Learning Approaches for Fake Review Detection: A Comprehensive Survey, Journal of Interdisciplinary Knowledge"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_300",
+        "pageNumber": 1,
+        "text": "[8] Kamel, A. M., Salminen, J., Jansen, B. J., & Jung, S. G. (2022), Creating and Detecting Fake Reviews of Online Products, Journal of Retailing and Consumer Services"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_301",
+        "pageNumber": 1,
+        "text": "[9] Passos, L. A., et al. (2022), A Review of Deep Learning-based Approaches for Fake Content Detection, arXiv"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_302",
+        "pageNumber": 1,
+        "text": "[10] Various Authors (2024), Transformer-based Models for Fake Review Detection, International Journal of Computational Intelligence"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_303",
+        "pageNumber": 1,
+        "text": "MAPPING OF PROJECT GOALS TO SDG"
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_304",
+        "pageNumber": 1,
+        "text": "This project contributes to the achievement of the United Nations Sustainable Development Goals (SDGs) by addressing issues related to digital trust, online transparency, and responsible use of artificial intelligence in identifying deceptive content."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_305",
+        "pageNumber": 1,
+        "text": "The project supports SDG 9: Industry, Innovation and Infrastructure by applying machine learning and natural language processing techniques to detect fake reviews in online platforms. It promotes innovation by integrating text preprocessing, TF-IDF feature extraction, and classification models to build an intelligent system that enhances the reliability of digital marketplaces and review-based platforms."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_306",
+        "pageNumber": 1,
+        "text": "It also contributes to SDG 16: Peace, Justice and Strong Institutions by promoting truthful information and reducing the spread of misleading or fraudulent reviews. Detecting fake reviews helps protect consumers from manipulation, ensures fair business practices, and strengthens trust in online systems and institutions."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_307",
+        "pageNumber": 1,
+        "text": "Additionally, the project aligns with SDG 8: Decent Work and Economic Growth by helping businesses maintain credibility and avoid losses caused by deceptive reviews. By identifying fake feedback, the system supports fair competition and encourages genuine customer engagement, contributing to a healthier digital economy."
+      },
+      {
+        "chunkId": "chunk_src-7a2208c827ee_308",
+        "pageNumber": 1,
+        "text": "Overall, the project supports sustainable development by combining machine learning and text analysis techniques to create a practical solution for detecting fake reviews, improving trust, transparency, and reliability in online platforms."
+      }
+    ],
+    "images": [],
+    "createdAt": "2026-09-26T09:34:51.752086+00:00"
+  },
+  {
+    "sourceId": "src-a582cf4637df",
+    "extractionId": "ext_src-a582cf4637df_ef2105c6",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "document": {
+      "title": "24ALR044 - Cybersecurity SOC Incident.docx",
+      "language": "en",
+      "pageCount": 3
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "Cybersecurity SOC Incident-Response\n\nCopilot\n\nName : Prem M     Roll No : 24ALR044\n\nProblem Statement\n\nSecurity Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools. Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions.\n\nHow It Helps the Business or Public Organisation\n\nThe solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance. It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions.\n\nProblem It Solves\n\nIt addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures. It also helps junior analysts understand security events and follow standardized investigation workflows.\n\nProposed GenAI Solution\n\nBuild a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation.\n\nAnalysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps.\n\nThe system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks. It should provide evidence and source citations for its recommendations rather than making unsupported claims.\n\nThe Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language.\n\nTwo Main Features\n\n1. SOC Chatbot for Incident Investigation",
+        "characterCount": 2000,
+        "wordCount": 254
+      },
+      {
+        "pageNumber": 2,
+        "text": "\n\nThe analyst can interact with the Copilot through a chatbot and ask questions such as:\n\nWhat happened in this alert?\n\nIs this activity suspicious?\n\nWhat is the severity?\n\nWhat are the indicators of compromise?\n\nWhich MITRE ATT&CK technique is involved?\n\nWhat should I investigate next?\n\nWhat response action is recommended?\n\nThe chatbot will use RAG to retrieve relevant security information before generating its answer.\n\n2. Automatic Incident Report Generation\n\nAfter analysing an incident, the Copilot can generate a structured incident report containing:\n\nIncident summary\n\nIncident severity\n\nAffected user or system\n\nIndicators of compromise\n\nEvent timeline\n\nPossible attack technique\n\nEvidence and sources\n\nInvestigation findings\n\nRecommended response actions\n\nThis reduces the time required for analysts to manually prepare incident documentation.\n\nSuggested Data\n\nSynthetic SOC alerts\n\nFirewall logs\n\nAuthentication logs\n\nEndpoint logs\n\nNetwork traffic summaries\n\nThreat-intelligence reports\n\nMITRE ATT&CK techniques\n\nIncident-response playbooks\n\nSecurity policies\n\nVulnerability information\n\nFictional incident cases\n\nTools and Models\n\nUse a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification.\n\nUseful technologies may include:\n\nPython\n\nFastAPI\n\nFAISS or another vector database\n\nSentence Transformers\n\nLLM / GenAI API\n\nMITRE ATT&CK knowledge sources\n\nReact-based chatbot interface\n\nExpected Deliverables\n\nSOC chatbot interface\n\nAlert and log input\n\nIncident summarization\n\nSeverity classification\n\nIOC extraction\n\nAlert correlation\n\nIncident timeline generation\n\nMITRE ATT&CK technique mapping\n\nInvestigation recommendations\n\nResponse-playbook suggestions\n\nRAG-based security knowledge search\n\nEvidence/source citation\n\nAutomatic incident report generation\n\nEvaluation KPIs\n\nMeasure:\n\nAlert-classification accuracy\n\nIncident-severity accuracy\n\nIOC extraction accuracy\n\nMITRE ATT&CK mapping acc",
+        "characterCount": 2000,
+        "wordCount": 245
+      },
+      {
+        "pageNumber": 3,
+        "text": "uracy\n\nRetrieval relevance\n\nChatbot answer accuracy\n\nCitation correctness\n\nIncident-report completeness\n\nResponse-recommendation usefulness\n\nHallucination or unsupported-answer rate\n\nAverage analyst investigation time\n\nRisks and Guardrails\n\nThe Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval.\n\nIt must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results.\n\nSensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information.\n\nThe chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst.\n\nOverall Goal\n\nThe Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts. It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation.\n\nThe system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control.",
+        "characterCount": 1358,
+        "wordCount": 164
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-a582cf4637df_001",
+        "pageNumber": 1,
+        "text": "Cybersecurity SOC Incident-Response"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_002",
+        "pageNumber": 1,
+        "text": "Copilot"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_003",
+        "pageNumber": 1,
+        "text": "Name : Prem M     Roll No : 24ALR044"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_004",
+        "pageNumber": 1,
+        "text": "Problem Statement"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_005",
+        "pageNumber": 1,
+        "text": "Security Operations Center (SOC) teams receive large volumes of security alerts from endpoints, networks, cloud services and security tools. Analysts may struggle to quickly understand incidents, identify their severity, correlate related alerts, investigate indicators of compromise and determine the appropriate response actions."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_006",
+        "pageNumber": 1,
+        "text": "How It Helps the Business or Public Organisation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_007",
+        "pageNumber": 1,
+        "text": "The solution can help security teams reduce alert-investigation time, prioritize critical incidents and provide analysts with structured investigation and response guidance. It can improve consistency in incident handling while allowing human analysts to remain responsible for final security decisions."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_008",
+        "pageNumber": 1,
+        "text": "Problem It Solves"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_009",
+        "pageNumber": 1,
+        "text": "It addresses alert overload, slow manual investigation, fragmented security information, difficulty correlating multiple alerts and inconsistent incident-response procedures. It also helps junior analysts understand security events and follow standardized investigation workflows."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_010",
+        "pageNumber": 1,
+        "text": "Proposed GenAI Solution"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_011",
+        "pageNumber": 1,
+        "text": "Build a RAG-based SOC Incident-Response Copilot over a controlled knowledge base containing fictional or publicly available security policies, incident-response playbooks, threat-intelligence information and security documentation."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_012",
+        "pageNumber": 1,
+        "text": "Analysts can provide alerts, logs or incident summaries, and the Copilot can explain the incident, identify potentially related events, summarize indicators of compromise and suggest investigation steps."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_013",
+        "pageNumber": 1,
+        "text": "The system can classify incidents by severity, generate an investigation timeline and recommend response actions based on approved playbooks. It should provide evidence and source citations for its recommendations rather than making unsupported claims."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_014",
+        "pageNumber": 1,
+        "text": "The Copilot will work primarily as a chatbot, allowing analysts to ask questions about security incidents using natural language."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_015",
+        "pageNumber": 1,
+        "text": "Two Main Features"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_016",
+        "pageNumber": 1,
+        "text": "1. SOC Chatbot for Incident Investigation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_017",
+        "pageNumber": 1,
+        "text": "The analyst can interact with the Copilot through a chatbot and ask questions such as:"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_018",
+        "pageNumber": 1,
+        "text": "What happened in this alert?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_019",
+        "pageNumber": 1,
+        "text": "Is this activity suspicious?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_020",
+        "pageNumber": 1,
+        "text": "What is the severity?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_021",
+        "pageNumber": 1,
+        "text": "What are the indicators of compromise?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_022",
+        "pageNumber": 1,
+        "text": "Which MITRE ATT&CK technique is involved?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_023",
+        "pageNumber": 1,
+        "text": "What should I investigate next?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_024",
+        "pageNumber": 1,
+        "text": "What response action is recommended?"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_025",
+        "pageNumber": 1,
+        "text": "The chatbot will use RAG to retrieve relevant security information before generating its answer."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_026",
+        "pageNumber": 1,
+        "text": "2. Automatic Incident Report Generation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_027",
+        "pageNumber": 1,
+        "text": "After analysing an incident, the Copilot can generate a structured incident report containing:"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_028",
+        "pageNumber": 1,
+        "text": "Incident summary"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_029",
+        "pageNumber": 1,
+        "text": "Incident severity"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_030",
+        "pageNumber": 1,
+        "text": "Affected user or system"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_031",
+        "pageNumber": 1,
+        "text": "Indicators of compromise"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_032",
+        "pageNumber": 1,
+        "text": "Event timeline"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_033",
+        "pageNumber": 1,
+        "text": "Possible attack technique"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_034",
+        "pageNumber": 1,
+        "text": "Evidence and sources"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_035",
+        "pageNumber": 1,
+        "text": "Investigation findings"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_036",
+        "pageNumber": 1,
+        "text": "Recommended response actions"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_037",
+        "pageNumber": 1,
+        "text": "This reduces the time required for analysts to manually prepare incident documentation."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_038",
+        "pageNumber": 1,
+        "text": "Suggested Data"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_039",
+        "pageNumber": 1,
+        "text": "Synthetic SOC alerts"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_040",
+        "pageNumber": 1,
+        "text": "Firewall logs"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_041",
+        "pageNumber": 1,
+        "text": "Authentication logs"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_042",
+        "pageNumber": 1,
+        "text": "Endpoint logs"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_043",
+        "pageNumber": 1,
+        "text": "Network traffic summaries"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_044",
+        "pageNumber": 1,
+        "text": "Threat-intelligence reports"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_045",
+        "pageNumber": 1,
+        "text": "MITRE ATT&CK techniques"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_046",
+        "pageNumber": 1,
+        "text": "Incident-response playbooks"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_047",
+        "pageNumber": 1,
+        "text": "Security policies"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_048",
+        "pageNumber": 1,
+        "text": "Vulnerability information"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_049",
+        "pageNumber": 1,
+        "text": "Fictional incident cases"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_050",
+        "pageNumber": 1,
+        "text": "Tools and Models"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_051",
+        "pageNumber": 1,
+        "text": "Use a RAG architecture with a vector database, embeddings, an LLM, log-parsing tools, structured JSON processing and rule-based severity classification."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_052",
+        "pageNumber": 1,
+        "text": "Useful technologies may include:"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_053",
+        "pageNumber": 1,
+        "text": "Python"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_054",
+        "pageNumber": 1,
+        "text": "FastAPI"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_055",
+        "pageNumber": 1,
+        "text": "FAISS or another vector database"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_056",
+        "pageNumber": 1,
+        "text": "Sentence Transformers"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_057",
+        "pageNumber": 1,
+        "text": "LLM / GenAI API"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_058",
+        "pageNumber": 1,
+        "text": "MITRE ATT&CK knowledge sources"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_059",
+        "pageNumber": 1,
+        "text": "React-based chatbot interface"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_060",
+        "pageNumber": 1,
+        "text": "Expected Deliverables"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_061",
+        "pageNumber": 1,
+        "text": "SOC chatbot interface"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_062",
+        "pageNumber": 1,
+        "text": "Alert and log input"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_063",
+        "pageNumber": 1,
+        "text": "Incident summarization"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_064",
+        "pageNumber": 1,
+        "text": "Severity classification"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_065",
+        "pageNumber": 1,
+        "text": "IOC extraction"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_066",
+        "pageNumber": 1,
+        "text": "Alert correlation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_067",
+        "pageNumber": 1,
+        "text": "Incident timeline generation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_068",
+        "pageNumber": 1,
+        "text": "MITRE ATT&CK technique mapping"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_069",
+        "pageNumber": 1,
+        "text": "Investigation recommendations"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_070",
+        "pageNumber": 1,
+        "text": "Response-playbook suggestions"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_071",
+        "pageNumber": 1,
+        "text": "RAG-based security knowledge search"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_072",
+        "pageNumber": 1,
+        "text": "Evidence/source citation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_073",
+        "pageNumber": 1,
+        "text": "Automatic incident report generation"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_074",
+        "pageNumber": 1,
+        "text": "Evaluation KPIs"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_075",
+        "pageNumber": 1,
+        "text": "Measure:"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_076",
+        "pageNumber": 1,
+        "text": "Alert-classification accuracy"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_077",
+        "pageNumber": 1,
+        "text": "Incident-severity accuracy"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_078",
+        "pageNumber": 1,
+        "text": "IOC extraction accuracy"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_079",
+        "pageNumber": 1,
+        "text": "MITRE ATT&CK mapping accuracy"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_080",
+        "pageNumber": 1,
+        "text": "Retrieval relevance"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_081",
+        "pageNumber": 1,
+        "text": "Chatbot answer accuracy"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_082",
+        "pageNumber": 1,
+        "text": "Citation correctness"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_083",
+        "pageNumber": 1,
+        "text": "Incident-report completeness"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_084",
+        "pageNumber": 1,
+        "text": "Response-recommendation usefulness"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_085",
+        "pageNumber": 1,
+        "text": "Hallucination or unsupported-answer rate"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_086",
+        "pageNumber": 1,
+        "text": "Average analyst investigation time"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_087",
+        "pageNumber": 1,
+        "text": "Risks and Guardrails"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_088",
+        "pageNumber": 1,
+        "text": "The Copilot should not automatically execute destructive security actions such as deleting files, disabling accounts or blocking network infrastructure without explicit human approval."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_089",
+        "pageNumber": 1,
+        "text": "It must clearly distinguish observed evidence from assumptions, cite the sources used for recommendations and avoid fabricating indicators or investigation results."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_090",
+        "pageNumber": 1,
+        "text": "Sensitive logs and credentials must be protected, and the system should minimize unnecessary collection or exposure of personal and confidential information."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_091",
+        "pageNumber": 1,
+        "text": "The chatbot should provide recommendations and assistance, while the final security decision remains with the human SOC analyst."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_092",
+        "pageNumber": 1,
+        "text": "Overall Goal"
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_093",
+        "pageNumber": 1,
+        "text": "The Cybersecurity SOC Incident-Response Copilot aims to function as a GenAI-powered chatbot assistant for SOC analysts. It helps analysts understand security alerts, investigate incidents, identify potential threats and receive evidence-based response guidance through natural-language conversation."
+      },
+      {
+        "chunkId": "chunk_src-a582cf4637df_094",
+        "pageNumber": 1,
+        "text": "The system also generates structured incident reports after investigation, helping reduce manual work while keeping final security decisions under human control."
+      }
+    ],
+    "images": [],
+    "createdAt": "2026-09-26T10:20:15.148467+00:00"
   }
 ]

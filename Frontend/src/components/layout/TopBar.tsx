@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Menu, 
   Sparkles, 
   FolderKanban,
-  Database
+  Database,
+  Wand2
 } from 'lucide-react';
 import { ViewState } from '../../types';
 import { useWorkspace } from '../../context/WorkspaceContext';
+import { ImageStudioModal } from '../results/ImageStudioModal';
 
 interface TopBarProps {
   currentView: ViewState;
@@ -20,6 +22,8 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenMobileSidebar
 }) => {
   const { backendOnline } = useWorkspace();
+  const [isImageStudioOpen, setIsImageStudioOpen] = useState(false);
+
   const getBreadcrumbs = () => {
     switch (currentView) {
       case 'dashboard':
@@ -67,6 +71,15 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       <div className="flex items-center gap-2.5">
+        <button
+          onClick={() => setIsImageStudioOpen(true)}
+          title="AI Image Studio — Stable Diffusion Forge generation"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors cursor-pointer"
+        >
+          <Wand2 className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Image Studio</span>
+        </button>
+
         {currentView !== 'projects' && (
           <button
             onClick={() => onNavigate('projects')}
@@ -94,6 +107,16 @@ export const TopBar: React.FC<TopBarProps> = ({
           <span className="hidden sm:inline">{backendOnline ? 'Backend Online' : backendOnline === false ? 'Local Workspace' : 'Connecting...'}</span>
         </div>
       </div>
+
+      {/* AI Image Studio Modal */}
+      <ImageStudioModal
+        isOpen={isImageStudioOpen}
+        onClose={() => setIsImageStudioOpen(false)}
+        onShowToast={(title, message, type) => {
+          // Toasts are owned by App; surface via a lightweight custom event
+          window.dispatchEvent(new CustomEvent('gentransform:toast', { detail: { title, message, type } }));
+        }}
+      />
     </header>
   );
 };

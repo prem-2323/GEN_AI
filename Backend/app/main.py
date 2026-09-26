@@ -59,12 +59,6 @@ from .api.routes.transformation import router as transformation_engine_router
 
 
 # Initialize centralized logging
-
-
-
-
-
-# Initialize centralized logging
 setup_logging()
 log = get_logger("main")
 settings = get_settings()
@@ -147,6 +141,20 @@ from .api.routes.qubo import router as qubo_router
 app.include_router(qubo_router)
 from .api.routes.student import router as student_router
 app.include_router(student_router)
+
+# ── Media Generation Studio (Image + Video) ─────────────────────────────────
+# Standalone packages at Backend/image and Backend/video. They use top-level
+# package imports (from text..., from image..., from video...), so put the
+# Backend root on sys.path and import by module path.
+_backend_root = str(_backend_dir)
+if _backend_root not in sys.path:
+    sys.path.insert(0, _backend_root)
+
+from image.routes import router as image_studio_router
+from video.routes import router as video_studio_router
+
+app.include_router(image_studio_router, prefix="/api/image-studio", tags=["Image Studio"])
+app.include_router(video_studio_router, prefix="/api/media", tags=["Video Studio"])
 
 
 
