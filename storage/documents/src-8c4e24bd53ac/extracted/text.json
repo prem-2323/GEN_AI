@@ -1,0 +1,28 @@
+{
+  "documentId": "src-8c4e24bd53ac",
+  "filename": "config.json",
+  "fileType": "json",
+  "mimeType": "application/json",
+  "sizeBytes": 30,
+  "metadata": {
+    "lineCount": 1,
+    "characterCount": 30,
+    "wordCount": 4,
+    "pageCount": 1
+  },
+  "content": "{\"env\": \"prod\", \"replicas\": 4}",
+  "pages": [
+    {
+      "pageNumber": 1,
+      "text": "{\"env\": \"prod\", \"replicas\": 4}",
+      "characterCount": 30,
+      "wordCount": 4
+    }
+  ],
+  "sections": [],
+  "tables": [],
+  "images": [],
+  "extractionStatus": "completed",
+  "error": null,
+  "createdAt": "2026-09-26T05:23:24.135575+00:00"
+}

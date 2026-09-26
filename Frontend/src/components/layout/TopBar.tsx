@@ -6,6 +6,7 @@ import {
   Database
 } from 'lucide-react';
 import { ViewState } from '../../types';
+import { useWorkspace } from '../../context/WorkspaceContext';
 
 interface TopBarProps {
   currentView: ViewState;
@@ -18,6 +19,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onNavigate,
   onOpenMobileSidebar
 }) => {
+  const { backendOnline } = useWorkspace();
   const getBreadcrumbs = () => {
     switch (currentView) {
       case 'dashboard':
@@ -87,9 +89,9 @@ export const TopBar: React.FC<TopBarProps> = ({
 
         <div className="h-5 w-px bg-slate-800 mx-0.5" />
 
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-300 text-xs">
-          <Database className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="hidden sm:inline">Local Workspace</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-300 text-xs">
+          <span className={`w-2 h-2 rounded-full ${backendOnline ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : backendOnline === false ? 'bg-amber-400' : 'bg-slate-400 animate-pulse'}`} />
+          <span className="hidden sm:inline">{backendOnline ? 'Backend Online' : backendOnline === false ? 'Local Workspace' : 'Connecting...'}</span>
         </div>
       </div>
     </header>

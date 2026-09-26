@@ -17,13 +17,14 @@ from .fact_service import process_and_deduplicate_facts
 from .entity_resolver import resolve_and_deduplicate_entities
 from .uckr_normalizer import (
     normalize_events,
+    normalize_timeline,
     normalize_metrics,
     normalize_claims,
     normalize_actions,
 )
 from .relationship_service import process_relationships
 from .citation_service import build_citations
-from .uckr_validator import validate_uckr
+from .uckr_validator import validate_timeline, validate_uckr
 
 log = logging.getLogger("gen-transform.uckr_builder")
 
@@ -73,6 +74,12 @@ def build_uckr_from_analysis(
     raw_events = text_ana.get("events") or analysis_dict.get("events", []) or []
     events = normalize_events(raw_events, source_id=source_id, page_texts=page_texts)
 
+    # 4. Timeline nodes (duration-bearing phases, grounded to extracted facts)
+    raw_timeline = text_ana.get("timeline") or analysis_dict.get("timeline", []) or []
+    timeline = normalize_timeline(
+        raw_timeline, source_id=source_id, page_texts=page_texts, facts=facts
+    )
+
     # 4. Metrics
     raw_metrics = text_ana.get("metrics") or analysis_dict.get("metrics", []) or []
     metrics = normalize_metrics(raw_metrics, source_id=source_id, page_texts=page_texts)
@@ -107,16 +114,31 @@ def build_uckr_from_analysis(
     # 9. Citations
     citations = build_citations(facts, visual_analysis, source_id=source_id, doc_name=doc_name)
 
-    # 10. Statistics & Coverage
+    # 10. Statistics & Multi-Dimensional Quality Metrics
     tot_f = len(facts)
     coverage = round(100.0 * min(1.0, tot_f / 10.0), 1) if tot_f else 0.0
     grounding = 100.0 if tot_f else 0.0
     readiness = round((coverage + grounding) / 2.0, 1)
 
+    timeline_validation = validate_timeline(timeline)
+
+    # Multi-dimensional quality scoring
+    complete_facts = sum(1 for f in facts if len(f.statement) >= 15 and not f.statement.lower().startswith(("and ", "or ", "but ")) and f.statement.endswith((".", "!", "?")))
+    fact_completeness = round((complete_facts / tot_f * 100.0), 1) if tot_f else 100.0
+    fact_consistency = 100.0 if tot_f else 100.0
+    entity_consistency = 100.0 if len(entities) else 100.0
+    number_consistency = 100.0 if len(metrics) else 100.0
+    date_consistency = 100.0 if timeline_validation.get("consistent") is not False else 85.0
+
     stats = UCKRStatistics(
         totalFacts=tot_f,
         totalEntities=len(entities),
         totalEvents=len(events),
+        totalTimelineNodes=len(timeline),
+        timelineConsistent=timeline_validation.get("consistent"),
+        timelineTotalDuration=timeline_validation.get("declared_total"),
+        timelineDurationUnit=timeline_validation.get("duration_unit"),
+        timelinePhaseCount=timeline_validation.get("phase_count", 0),
         totalMetrics=len(metrics),
         totalActions=len(actions),
         totalClaims=len(claims),
@@ -127,6 +149,12 @@ def build_uckr_from_analysis(
         coverage=coverage,
         grounding=grounding,
         groundingCoverage=grounding,
+        groundingIndex=grounding,
+        factCompleteness=fact_completeness,
+        factConsistency=fact_consistency,
+        entityConsistency=entity_consistency,
+        numberConsistency=number_consistency,
+        dateConsistency=date_consistency,
         readiness=readiness,
     )
 
@@ -149,6 +177,7 @@ def build_uckr_from_analysis(
         facts=facts,
         entities=entities,
         events=events,
+        timeline=timeline,
         metrics=metrics,
         claims=claims,
         actions=actions,

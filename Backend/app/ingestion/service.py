@@ -78,6 +78,7 @@ class IngestionService:
                 uid=uid,
                 project_id=project_id,
                 source_id=doc_id,
+                persist_images=True,
             )
 
             # 5. Save Extracted Content Sidecar

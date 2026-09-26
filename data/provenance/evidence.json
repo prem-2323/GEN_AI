@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "evidence_id": "ev-001",
+    "document_id": "doc-sec-a",
+    "source_type": "RAG_EVIDENCE",
+    "page": 7,
+    "section": "Product Analysis",
+    "text_span": "Product B was developed by Organization A in 2026.",
+    "chunk_id": "chunk-045",
+    "fact_id": "fact-001",
+    "entity_id": "ent-001",
+    "relation_id": "rel-001",
+    "content_hash": "072bd8f4944f05c1cd5ea5fa3a28bca7acb5f321da93bb5bd17ba4880dc0e763",
+    "content": "Organization A announced Product B on 2026-01-10.",
+    "metadata": {}
+  },
+  {
+    "evidence_id": "ev-002",
+    "document_id": "doc-sec-a",
+    "source_type": "RAG_EVIDENCE",
+    "page": 8,
+    "section": "Technology Stack",
+    "text_span": "Product B uses Technology C.",
+    "chunk_id": "chunk-046",
+    "fact_id": "fact-002",
+    "entity_id": "ent-002",
+    "relation_id": "rel-002",
+    "content_hash": "0d534ec4afd3c7b7f43cd6c47d4d5757958274d73b9b515c1e18796f0d73c4af",
+    "content": "Product B uses Technology C for AI operations.",
+    "metadata": {}
+  },
+  {
+    "evidence_id": "ev-100",
+    "document_id": "doc-100",
+    "source_type": "RAG_EVIDENCE",
+    "page": 1,
+    "section": null,
+    "text_span": null,
+    "chunk_id": null,
+    "fact_id": null,
+    "entity_id": null,
+    "relation_id": null,
+    "content_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "content": "",
+    "metadata": {}
+  }
+]

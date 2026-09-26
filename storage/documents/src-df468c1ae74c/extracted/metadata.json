@@ -1,0 +1,12 @@
+{
+  "imageFormat": "png",
+  "width": 220,
+  "height": 140,
+  "ocrApplied": false,
+  "ocrCharacterCount": 0,
+  "characterCount": 0,
+  "wordCount": 0,
+  "visionChannel": "gemma",
+  "imageId": "img_cb9ac7c52e51",
+  "imagePath": "documents/src-df468c1ae74c/images/img_cb9ac7c52e51.png"
+}

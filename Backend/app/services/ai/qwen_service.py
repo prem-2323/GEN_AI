@@ -20,6 +20,8 @@ from ...models.analysis import (
     SourceLocation,
 )
 from .prompts import QWEN_EXTRACTION_SYSTEM_PROMPT
+from .timeline_extractor import extract_timeline_deterministic as _extract_timeline_deterministic
+from ..uckr.fact_service import merge_and_repair_facts, split_into_sentences, classify_fact_type
 
 log = logging.getLogger("gen-transform.qwen_service")
 
@@ -29,8 +31,6 @@ _DATE_RE = re.compile(r"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\
 _EVENT_KEYWORDS_RE = re.compile(r"\b(detected|exploited|compromised|phishing|ransomware|attack|breach|incident|announced|launched|investigated|released)\b", re.I)
 _ACTION_RE = re.compile(r"\b(must|should|shall|need to|needs to|ensure|implement|deploy|update|patch|review|monitor|establish|conduct)\s+([^.!?\n]+)", re.I)
 _STOP_ENTITIES = {"The", "This", "That", "These", "Those", "With", "From", "There", "When", "Where", "Which", "Because", "Although"}
-
-
 def _clean_json_str(raw: str) -> str:
     """Extract JSON block from markdown code fences or raw string."""
     cleaned = raw.strip()
@@ -70,8 +70,12 @@ def _call_ollama(text: str, model_name: str, timeout: float = 180.0) -> Optional
             return None
         has_content = bool(str(parsed.get("summary", "")).strip()) or any(
             parsed.get(key)
-            for key in ("facts", "entities", "events", "metrics", "claims", "actions", "topics", "relationships")
+            for key in ("facts", "entities", "events", "timeline", "metrics", "claims", "actions", "topics", "relationships")
         )
+        if parsed.get("facts"):
+            parsed["facts"] = merge_and_repair_facts(parsed["facts"], text)
+        if not parsed.get("timeline"):
+            parsed["timeline"] = _extract_timeline_deterministic(text)
         return parsed if has_content else None
     except Exception as exc:
         log.info("Ollama Qwen call skipped (%s), trying fallback", exc)
@@ -92,15 +96,20 @@ def _call_gemini(text: str) -> Optional[dict]:
         )
         content = resp.text or ""
         cleaned = _clean_json_str(content)
-        return json.loads(cleaned)
+        parsed = json.loads(cleaned)
+        if isinstance(parsed, dict):
+            if parsed.get("facts"):
+                parsed["facts"] = merge_and_repair_facts(parsed["facts"], text)
+            if not parsed.get("timeline"):
+                parsed["timeline"] = _extract_timeline_deterministic(text)
+        return parsed
     except Exception as exc:
         log.info("Gemini fallback call skipped (%s)", exc)
         return None
 
 
 def _deterministic_extractive_analysis(text: str) -> dict:
-    """Deterministic, hallucination-free extraction from raw text with exact line & paragraph coordinates."""
-    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    """Deterministic, hallucination-free extraction from raw text with clean sentence boundary preservation."""
     paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
 
     facts: List[dict] = []
@@ -115,33 +124,22 @@ def _deterministic_extractive_analysis(text: str) -> dict:
     seen_entities = set()
     seen_facts = set()
 
-    # 1. Paragraph-level atomic facts & quotes
-    for p_idx, p in enumerate(paragraphs[:30], start=1):
-        raw_sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", p) if len(s.strip()) > 10]
-        for sent in raw_sentences:
-            # Check for compound sentences with clauses
-            clauses = [c.strip() for c in re.split(r";|\band\s+(?=teachers|students|critical|creativity|communication|human)", sent, flags=re.I) if len(c.strip()) > 10]
-            atomic_items = clauses if len(clauses) > 1 else [sent]
-            for item in atomic_items:
-                if item not in seen_facts:
-                    seen_facts.add(item)
-                    f_type = "Proposition"
-                    if re.search(r"\b(risk|depend|over-relian|threat|vulnerab|loss|fail)\b", item, re.I):
-                        f_type = "Risk / Impact"
-                    elif re.search(r"\b(must|should|shall|need to|ensure|implement|preserve|maintain|remain)\b", item, re.I):
-                        f_type = "Action Mandate"
-                    elif re.search(r"\b(can|helps?|provides?|allows?|enables?|create|evaluate|identify)\b", item, re.I):
-                        f_type = "Capability"
-                    elif re.search(r"\b(benefit|save|improve|accessible|advantage)\b", item, re.I):
-                        f_type = "Benefit"
-                    
-                    facts.append({
-                        "id": f"fact_{len(facts) + 1:03d}",
-                        "text": item,
-                        "type": f_type,
-                        "confidence": 0.98,
-                        "source": {"page": max(1, p_idx // 4 + 1), "paragraph": p_idx, "quote": item[:200]},
-                    })
+    # 1. Clean sentence boundary extraction (never splits on 'and', 'or', commas)
+    raw_sentences = split_into_sentences(text)
+    repaired_facts = merge_and_repair_facts(raw_sentences, text)
+
+    for f_idx, item in enumerate(repaired_facts, start=1):
+        f_text = item.get("statement", "").strip()
+        if f_text and f_text not in seen_facts and len(f_text) > 8:
+            seen_facts.add(f_text)
+            f_type = item.get("type") or classify_fact_type(f_text)
+            facts.append({
+                "id": f"fact_{len(facts) + 1:03d}",
+                "text": f_text,
+                "type": f_type,
+                "confidence": 0.98,
+                "source": {"page": max(1, f_idx // 6 + 1), "paragraph": f_idx, "quote": f_text[:200]},
+            })
 
     # 2. Extract metrics / numbers
     for p_idx, p in enumerate(paragraphs[:30], start=1):
@@ -257,6 +255,7 @@ def _deterministic_extractive_analysis(text: str) -> dict:
         "facts": facts,
         "entities": entities,
         "events": events,
+        "timeline": _extract_timeline_deterministic(text),
         "metrics": metrics,
         "claims": claims,
         "actions": actions,

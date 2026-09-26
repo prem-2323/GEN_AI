@@ -1,0 +1,16 @@
+{
+  "name": "gen-transform-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DocLink Grounded RAG Platform - Gen Transform AI",
+  "scripts": {
+    "start": "npm run dev:all",
+    "dev": "npm run dev --prefix Frontend",
+    "frontend": "npm run dev --prefix Frontend",
+    "backend": "python -m uvicorn Backend.app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "dev:all": "start_all.bat",
+    "build": "npm run build --prefix Frontend",
+    "test:backend": "pytest Backend/tests",
+    "lint": "npm run lint --prefix Frontend"
+  }
+}

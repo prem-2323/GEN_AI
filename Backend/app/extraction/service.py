@@ -16,8 +16,10 @@ from typing import Any, Dict, List, Optional
 from ..core.exceptions import ExtractionError
 from ..core.logging import get_logger
 from .docx import extract_docx_document
+from .image import extract_image_document
 from .normalizer import normalize_text
 from .pdf import extract_pdf_document
+from .pptx import extract_pptx_document
 from .schemas import ExtractedDocument
 from .txt import extract_txt_document
 
@@ -66,6 +68,28 @@ class ExtractionService:
                     filename=filename,
                     document_id=document_id,
                     mime_type=mime_type or "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                )
+            elif resolved_ext == "pptx":
+                doc = extract_pptx_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                    persist_images=persist_images,
+                )
+            elif resolved_ext in ("png", "jpg", "jpeg", "webp", "gif", "bmp", "tiff"):
+                doc = extract_image_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or f"image/{resolved_ext}",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                    persist_images=persist_images,
                 )
             elif resolved_ext in ("txt", "md"):
                 doc = extract_txt_document(
@@ -161,5 +185,6 @@ extract_normalized = ExtractionService.extract_normalized
 extract_content = ExtractionService.extract_content
 extract_pdf = extract_pdf_document
 extract_docx = extract_docx_document
+extract_pptx = extract_pptx_document
+extract_image = extract_image_document
 extract_textlike = extract_txt_document
-extract_image = extract_txt_document

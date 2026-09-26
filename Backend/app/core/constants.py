@@ -10,7 +10,7 @@ DEFAULT_PORT = 8000
 # Document & Ingestion Constraints
 DEFAULT_MAX_UPLOAD_MB = 25
 DEFAULT_MAX_UPLOAD_BYTES = DEFAULT_MAX_UPLOAD_MB * 1024 * 1024
-ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "docx", "txt", "md", "png", "jpg", "jpeg"}
+ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "docx", "txt", "md", "pptx", "png", "jpg", "jpeg", "json", "csv", "log", "webp", "gif", "bmp", "tiff"}
 
 MIME_TYPE_MAP = {
     "pdf": "application/pdf",
@@ -22,6 +22,12 @@ MIME_TYPE_MAP = {
     "jpeg": "image/jpeg",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "json": "application/json",
+    "csv": "text/csv",
+    "log": "text/plain",
+    "webp": "image/webp",
+    "gif": "image/gif",
+    "bmp": "image/bmp",
+    "tiff": "image/tiff",
     "mp3": "audio/mpeg",
 }
 

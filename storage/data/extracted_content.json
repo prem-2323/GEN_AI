@@ -1,1 +1,262 @@
-[]
+[
+  {
+    "sourceId": "src-6e2c9ed39bbf",
+    "extractionId": "ext_src-6e2c9ed39bbf_6a144d86",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-d10a6783",
+    "document": {
+      "title": "multimodal_report.pdf",
+      "language": "en",
+      "pageCount": 2
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+        "characterCount": 105,
+        "wordCount": 15
+      },
+      {
+        "pageNumber": 2,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+        "characterCount": 135,
+        "wordCount": 14
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-6e2c9ed39bbf_001",
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+      },
+      {
+        "chunkId": "chunk_src-6e2c9ed39bbf_002",
+        "pageNumber": 1,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_a87c96b0ba1a",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-6e2c9ed39bbf/images/img_a87c96b0ba1a.png"
+      }
+    ],
+    "createdAt": "2026-09-26T04:52:31.261504+00:00"
+  },
+  {
+    "sourceId": "src-f616be860ca8",
+    "extractionId": "ext_src-f616be860ca8_730501dd",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-e7044857",
+    "document": {
+      "title": "multimodal_report.pdf",
+      "language": "en",
+      "pageCount": 2
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+        "characterCount": 105,
+        "wordCount": 15
+      },
+      {
+        "pageNumber": 2,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+        "characterCount": 135,
+        "wordCount": 14
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-f616be860ca8_001",
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+      },
+      {
+        "chunkId": "chunk_src-f616be860ca8_002",
+        "pageNumber": 1,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_a6b8343ce2c9",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-f616be860ca8/images/img_a6b8343ce2c9.png"
+      }
+    ],
+    "createdAt": "2026-09-26T04:56:26.081609+00:00"
+  },
+  {
+    "sourceId": "src-df468c1ae74c",
+    "extractionId": "ext_src-df468c1ae74c_cf9c4eae",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-e7044857",
+    "document": {
+      "title": "chart_evidence.png",
+      "language": "en",
+      "pageCount": 1
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "",
+        "characterCount": 0,
+        "wordCount": 0
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-df468c1ae74c_001",
+        "pageNumber": 1,
+        "text": ""
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_cb9ac7c52e51",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-df468c1ae74c/images/img_cb9ac7c52e51.png"
+      }
+    ],
+    "createdAt": "2026-09-26T04:59:27.545260+00:00"
+  },
+  {
+    "sourceId": "src-0b6fac859aa3",
+    "extractionId": "ext_src-0b6fac859aa3_3a2f8ff9",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-e7044857",
+    "document": {
+      "title": "security_review.pptx",
+      "language": "en",
+      "pageCount": 2
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "QUARTERLY SECURITY REVIEW\nLatency improved by 35 percent after the Q3 patch rollout.",
+        "characterCount": 84,
+        "wordCount": 13
+      },
+      {
+        "pageNumber": 2,
+        "text": "[Table] Metric / Value | Uptime / 99.95",
+        "characterCount": 39,
+        "wordCount": 8
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-0b6fac859aa3_001",
+        "pageNumber": 1,
+        "text": "QUARTERLY SECURITY REVIEW\nLatency improved by 35 percent after the Q3 patch rollout."
+      },
+      {
+        "chunkId": "chunk_src-0b6fac859aa3_002",
+        "pageNumber": 1,
+        "text": "[Table] Metric / Value | Uptime / 99.95"
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_123d500353b9",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-0b6fac859aa3/images/img_123d500353b9.png"
+      }
+    ],
+    "createdAt": "2026-09-26T05:02:28.643862+00:00"
+  },
+  {
+    "sourceId": "src-9ee32510e59c",
+    "extractionId": "ext_src-9ee32510e59c_ea27b621",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-1331528f",
+    "document": {
+      "title": "multimodal_report.pdf",
+      "language": "en",
+      "pageCount": 2
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+        "characterCount": 105,
+        "wordCount": 15
+      },
+      {
+        "pageNumber": 2,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+        "characterCount": 135,
+        "wordCount": 14
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-9ee32510e59c_001",
+        "pageNumber": 1,
+        "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+      },
+      {
+        "chunkId": "chunk_src-9ee32510e59c_002",
+        "pageNumber": 1,
+        "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_a540f63ece67",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-9ee32510e59c/images/img_a540f63ece67.png"
+      }
+    ],
+    "createdAt": "2026-09-26T05:10:14.643916+00:00"
+  },
+  {
+    "sourceId": "src-5e6c725b969a",
+    "extractionId": "ext_src-5e6c725b969a_155559cd",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-1331528f",
+    "document": {
+      "title": "chart_evidence.png",
+      "language": "en",
+      "pageCount": 1
+    },
+    "pages": [
+      {
+        "pageNumber": 1,
+        "text": "",
+        "characterCount": 0,
+        "wordCount": 0
+      }
+    ],
+    "chunks": [
+      {
+        "chunkId": "chunk_src-5e6c725b969a_001",
+        "pageNumber": 1,
+        "text": ""
+      }
+    ],
+    "images": [
+      {
+        "imageId": "img_cc5fd91ea3b4",
+        "fileId": "",
+        "pageNumber": 1,
+        "mimeType": "image/png",
+        "path": "documents/src-5e6c725b969a/images/img_cc5fd91ea3b4.png"
+      }
+    ],
+    "createdAt": "2026-09-26T05:13:35.728304+00:00"
+  }
+]

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "doc_ai_tech_report_2026_chunk_000_cc061fcd",
+    "text": "Executive Summary: OpenAI Technology Stack & Infrastructure\n\nOpenAI utilizes PyTorch as its primary deep learning framework for training large-scale GPT models.\nThe infrastructure runs on high-performance NVIDIA GPU clusters equipped with CUDA and HBM3e high-bandwidth memory.\nModel deployment is orchestrated using Kubernetes and optimized custom C++ CUDA kernels.",
+    "metadata": {
+      "chunk_id": "doc_ai_tech_report_2026_chunk_000_cc061fcd",
+      "document_id": "doc_ai_tech_report_2026",
+      "section": "Section",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 0,
+      "source_filename": "ai_tech_report_2026.pdf",
+      "document_type": "document",
+      "character_count": 365,
+      "token_count": 62,
+      "content_hash": "cc061fcd282564f6973a544948aaeecf66c62ab24552cc83b59fc5d36cb0f629",
+      "created_at": "2026-09-26T04:58:58.444289+00:00",
+      "text": "Executive Summary: OpenAI Technology Stack & Infrastructure\n\nOpenAI utilizes PyTorch as its primary deep learning framework for training large-scale GPT models.\nThe infrastructure runs on high-performance NVIDIA GPU clusters equipped with CUDA and HBM3e high-bandwidth memory.\nModel deployment is orchestrated using Kubernetes and optimized custom C++ CUDA kernels."
+    }
+  },
+  {
+    "id": "doc_ai_tech_report_2026_chunk_001_0126906d",
+    "text": "Section 2: Framework Ecosystem\nPyTorch provides dynamic computation graphs which enable rapid experimentation for transformer architectures.\nOpenAI has also developed custom Triton compilers to accelerate GPU kernel operations.",
+    "metadata": {
+      "chunk_id": "doc_ai_tech_report_2026_chunk_001_0126906d",
+      "document_id": "doc_ai_tech_report_2026",
+      "section": "Section",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 1,
+      "source_filename": "ai_tech_report_2026.pdf",
+      "document_type": "document",
+      "character_count": 227,
+      "token_count": 36,
+      "content_hash": "0126906dfa9c7f8e9dfc65b3262865ea7500c17245e08b202101ba8a5fa644d8",
+      "created_at": "2026-09-26T04:58:58.444289+00:00",
+      "text": "Section 2: Framework Ecosystem\nPyTorch provides dynamic computation graphs which enable rapid experimentation for transformer architectures.\nOpenAI has also developed custom Triton compilers to accelerate GPU kernel operations."
+    }
+  },
+  {
+    "id": "doc_opt_rag_test_chunk_000_dd44e10e",
+    "text": "OpenAI utilizes PyTorch for model training. CUDA GPUs provide hardware acceleration.",
+    "metadata": {
+      "chunk_id": "doc_opt_rag_test_chunk_000_dd44e10e",
+      "document_id": "doc_opt_rag_test",
+      "section": "Main",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 0,
+      "source_filename": "opt_report.pdf",
+      "document_type": "document",
+      "character_count": 84,
+      "token_count": 14,
+      "content_hash": "dd44e10ee3fc75f193df99d09342552fa3a69282ab7e6cb95c6ced9f0ee72581",
+      "created_at": "2026-09-26T04:59:37.955522+00:00",
+      "text": "OpenAI utilizes PyTorch for model training. CUDA GPUs provide hardware acceleration."
+    }
+  },
+  {
+    "id": "doc_service_test_chunk_000_1501830d",
+    "text": "Phase 6 Overview\nSemantic chunking extracts text sections and chunks them efficiently.\nVectors are generated using an embedding model and stored in a Vector Store.",
+    "metadata": {
+      "chunk_id": "doc_service_test_chunk_000_1501830d",
+      "document_id": "doc_service_test",
+      "section": "Section",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 0,
+      "source_filename": "doc_service_test",
+      "document_type": "document",
+      "character_count": 163,
+      "token_count": 32,
+      "content_hash": "1501830d6c07a794b771edf0afc0dfe04fc89a854c4c338b31b2308284f4967c",
+      "created_at": "2026-09-26T05:43:21.558481+00:00",
+      "text": "Phase 6 Overview\nSemantic chunking extracts text sections and chunks them efficiently.\nVectors are generated using an embedding model and stored in a Vector Store."
+    }
+  },
+  {
+    "id": "doc_service_test_chunk_001_042664c5",
+    "text": "RAG Foundation\nPhase 6 establishes the vector search foundation for Phase 7 Hybrid RAG.",
+    "metadata": {
+      "chunk_id": "doc_service_test_chunk_001_042664c5",
+      "document_id": "doc_service_test",
+      "section": "Section",
+      "page_start": 1,
+      "page_end": 1,
+      "chunk_index": 1,
+      "source_filename": "doc_service_test",
+      "document_type": "document",
+      "character_count": 87,
+      "token_count": 18,
+      "content_hash": "042664c517dd1017c27c8cb3e8cf06ff10a3a158a2b60f53c2c5801261919076",
+      "created_at": "2026-09-26T05:43:21.558481+00:00",
+      "text": "RAG Foundation\nPhase 6 establishes the vector search foundation for Phase 7 Hybrid RAG."
+    }
+  }
+]

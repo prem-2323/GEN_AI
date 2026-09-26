@@ -10,9 +10,13 @@ import {
   ShieldCheck, 
   Activity,
   X,
-  Database
+  Database,
+  RefreshCw,
+  Server,
+  HardDrive
 } from 'lucide-react';
 import { ViewState } from '../../types';
+import { useWorkspace } from '../../context/WorkspaceContext';
 
 interface SidebarProps {
   currentView: ViewState;
@@ -29,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   outputsCount
 }) => {
+  const { backendOnline, checkBackend } = useWorkspace();
   const navItems = [
     { id: 'dashboard' as ViewState, label: 'Dashboard', icon: Home },
     { id: 'new_transformation' as ViewState, label: 'New Transformation', icon: Sparkles, badge: 'Core' },
@@ -149,32 +154,64 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-700 flex items-center justify-center font-bold text-white text-xs border border-purple-400/30 shadow-inner">
-                <Database className="w-4 h-4" />
+                {backendOnline ? <Server className="w-4 h-4" /> : <HardDrive className="w-4 h-4" />}
               </div>
               <div className="leading-tight overflow-hidden">
                 <div className="text-sm font-semibold text-slate-200 truncate max-w-[130px]">
                   Local Workspace
                 </div>
                 <div className="text-[11px] text-slate-400 truncate max-w-[130px]">
-                  File-backed storage
+                  {backendOnline ? 'FastAPI + File storage' : 'Browser storage (Offline)'}
                 </div>
               </div>
             </div>
-            <Sparkles className="w-4 h-4 text-purple-400" />
+            <button
+              onClick={() => void checkBackend()}
+              title="Refresh connection status"
+              className="p-1 rounded-md text-slate-400 hover:text-purple-300 hover:bg-slate-800/80 transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
           </div>
 
-          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="font-medium text-[11px]">
-                Local API Ready
-              </span>
+          {backendOnline === true ? (
+            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="font-medium text-[11px]">
+                  Backend Online (Port 8000)
+                </span>
+              </div>
+              <Activity className="w-3.5 h-3.5 opacity-70" />
             </div>
-            <Activity className="w-3.5 h-3.5 opacity-70" />
-          </div>
+          ) : backendOnline === false ? (
+            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                <span className="font-medium text-[11px]">
+                  Offline Mode (Local Active)
+                </span>
+              </div>
+              <button
+                onClick={() => void checkBackend()}
+                className="text-[10px] font-semibold underline text-amber-300 hover:text-amber-100"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/50 text-slate-400 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-400 animate-pulse"></span>
+                <span className="font-medium text-[11px]">
+                  Checking Backend...
+                </span>
+              </div>
+            </div>
+          )}
 
         </div>
       </aside>

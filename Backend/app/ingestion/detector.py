@@ -33,10 +33,12 @@ def detect_document_type(filename: str, content_bytes: bytes, mime_type: str = "
         return "image", "jpg"
 
     if content_bytes.startswith(_ZIP_HEADER):
-        # Could be docx or generic zip
+        # Could be docx, pptx, or generic zip
         if ext == "docx" or "wordprocessingml" in mime_type:
             return "docx", "docx"
-        if ext in ("pptx", "xlsx"):
+        if ext == "pptx" or "presentationml" in mime_type:
+            return "pptx", "pptx"
+        if ext in ("xlsx",):
             return ext, ext
 
     # 2. Extension fallbacks
@@ -44,11 +46,13 @@ def detect_document_type(filename: str, content_bytes: bytes, mime_type: str = "
         return "pdf", "pdf"
     if ext == "docx":
         return "docx", "docx"
-    if ext in ("txt", "text"):
-        return "txt", "txt"
+    if ext == "pptx":
+        return "pptx", "pptx"
+    if ext in ("txt", "text", "csv", "log", "json"):
+        return "txt", ext
     if ext in ("md", "markdown"):
         return "md", "md"
-    if ext in ("png", "jpg", "jpeg"):
+    if ext in ("png", "jpg", "jpeg", "webp", "gif", "bmp", "tiff"):
         return "image", ext
 
     return ext or "unknown", ext or "bin"

@@ -108,6 +108,7 @@ export type UckrFactType = 'Metric' | 'Proposition' | 'Entity Finding' | 'Timeli
 
 export interface UckrFact {
   id: string; // e.g. "F-001"
+  factId?: string;
   value: string;
   type: UckrFactType;
   sourceDoc: string;
@@ -140,6 +141,19 @@ export interface UckrEvent {
   timestamp: string;
   impact: string;
   actors: string[];
+}
+
+export interface UckrTimelineNode {
+  id: string;
+  description: string;
+  duration_value?: number | null;
+  duration_unit?: string | null;
+  sequence?: number | null;
+  kind?: 'total' | 'phase' | 'milestone' | string;
+  sourceFactId?: string | null;
+  sourceText?: string;
+  startRelationship?: string | null;
+  endRelationship?: string | null;
 }
 
 export interface UckrMetric {
@@ -186,6 +200,11 @@ export interface UckrKnowledgeBase {
     totalFacts: number;
     totalEntities: number;
     totalEvents: number;
+    totalTimelineNodes?: number;
+    timelineConsistent?: boolean | null;
+    timelineTotalDuration?: number | null;
+    timelineDurationUnit?: string | null;
+    timelinePhaseCount?: number;
     totalMetrics: number;
     totalClaims?: number;
     totalActions: number;
@@ -199,22 +218,43 @@ export interface UckrKnowledgeBase {
     totalFacts: number;
     totalEntities: number;
     totalEvents: number;
+    totalTimelineNodes?: number;
+    timelineConsistent?: boolean | null;
+    timelineTotalDuration?: number | null;
+    timelineDurationUnit?: string | null;
+    timelinePhaseCount?: number;
     totalMetrics: number;
     totalActions: number;
     totalSources: number;
     totalRelationships: number;
     coverage: number; // e.g. 96%
     grounding: number; // e.g. 99%
+    groundingIndex?: number;
+    factCompleteness?: number;
+    factConsistency?: number;
+    entityConsistency?: number;
+    numberConsistency?: number;
+    dateConsistency?: number;
     readiness: number; // e.g. 98%
   };
   facts: UckrFact[];
   entities: UckrEntity[];
   events: UckrEvent[];
+  timeline?: UckrTimelineNode[];
   metrics: UckrMetric[];
   claims?: any[];
   relationships: UckrRelationship[];
   actions: UckrAction[];
   sources: UckrSourceRef[];
+  validation?: {
+    timelineConsistency?: {
+      consistent?: boolean | null;
+      declared_total?: number;
+      calculated_total?: number;
+      duration_unit?: string;
+      phase_count?: number;
+    };
+  };
   createdAt?: string;
   updatedAt?: string;
 }

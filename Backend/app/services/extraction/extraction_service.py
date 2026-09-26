@@ -8,6 +8,7 @@ from ...extraction.service import (
     extract_image,
     extract_normalized,
     extract_pdf,
+    extract_pptx,
     extract_textlike,
 )
 
@@ -17,6 +18,7 @@ __all__ = [
     "extract_content",
     "extract_pdf",
     "extract_docx",
+    "extract_pptx",
     "extract_textlike",
     "extract_image",
 ]

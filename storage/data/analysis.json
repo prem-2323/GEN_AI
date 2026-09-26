@@ -1,1 +1,2307 @@
-[]
+[
+  {
+    "id": "ANA_src-0a3ff9dd4d41_5b543622",
+    "analysisId": "ANA_src-0a3ff9dd4d41_5b543622",
+    "projectId": "proj_default",
+    "sourceId": "src-0a3ff9dd4d41",
+    "userId": "local-workspace",
+    "contentHash": "5b5436225442f749cbf3e6d9c81465daa8601e90910ade4e8adf7d080917f96d",
+    "textAnalysis": {
+      "summary": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours. Here is the technical breakdown and mitigation protocol.",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.",
+          "confidence": 0.98,
+          "type": "Risk / Impact",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways."
+          }
+        },
+        {
+          "id": "fact_002",
+          "text": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours."
+          }
+        },
+        {
+          "id": "fact_003",
+          "text": "Here is the technical breakdown and mitigation protocol.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Here is the technical breakdown and mitigation protocol."
+          }
+        },
+        {
+          "id": "fact_004",
+          "text": "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit."
+          }
+        },
+        {
+          "id": "fact_005",
+          "text": "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.",
+          "confidence": 0.98,
+          "type": "Capability",
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding."
+          }
+        },
+        {
+          "id": "fact_006",
+          "text": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation."
+          }
+        },
+        {
+          "id": "fact_007",
+          "text": "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry."
+          }
+        },
+        {
+          "id": "fact_008",
+          "text": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n"
+          }
+        },
+        {
+          "id": "fact_009",
+          "text": "[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads.",
+          "confidence": 0.98,
+          "type": "Risk / Impact",
+          "source": {
+            "page": 2,
+            "paragraph": 5,
+            "line": null,
+            "section": null,
+            "quote": "[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads."
+          }
+        },
+        {
+          "id": "fact_010",
+          "text": "Stay fortified.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 2,
+            "paragraph": 5,
+            "line": null,
+            "section": null,
+            "quote": "Stay fortified."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Post",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_002",
+          "name": "THREAT INTEL",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_003",
+          "name": "CVE-2026-4418",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_004",
+          "name": "State-linked",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_005",
+          "name": "Midnight Storm",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_006",
+          "name": "Here",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_007",
+          "name": "THE VECTOR",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_008",
+          "name": "Attackers",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_009",
+          "name": "OAuth",
+          "type": "technology",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_010",
+          "name": "SAML",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_011",
+          "name": "FIDO2",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_012",
+          "name": "THE SPEED",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_013",
+          "name": "Observability",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_014",
+          "name": "Exfiltration",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_015",
+          "name": "IMMEDIATE MITIGATION ACTIONS",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_016",
+          "name": "Revoke ALL",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_017",
+          "name": "Enforce",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_018",
+          "name": "Rotate",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_019",
+          "name": "Stay",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 2,
+            "paragraph": 5,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "event": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+          "date": null,
+          "impact": "Documented event milestone",
+          "actors": [
+            "Post",
+            "THREAT INTEL"
+          ],
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "event_002",
+          "event": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrati",
+          "date": null,
+          "impact": "Documented event milestone",
+          "actors": [
+            "Post",
+            "THREAT INTEL"
+          ],
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "2026",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" ha"
+          }
+        },
+        {
+          "id": "metric_002",
+          "name": "Metric 2",
+          "value": "4418",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" ha"
+          }
+        },
+        {
+          "id": "metric_003",
+          "name": "Metric 3",
+          "value": "34",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" ha"
+          }
+        },
+        {
+          "id": "metric_004",
+          "name": "Metric 4",
+          "value": "72 hours",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" ha"
+          }
+        },
+        {
+          "id": "metric_005",
+          "name": "Metric 5",
+          "value": "18",
+          "unit": "",
+          "context": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tena",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privile"
+          }
+        },
+        {
+          "id": "metric_006",
+          "name": "Metric 6",
+          "value": "53",
+          "unit": "",
+          "context": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tena",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 3,
+            "line": null,
+            "section": null,
+            "quote": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privile"
+          }
+        },
+        {
+          "id": "metric_007",
+          "name": "Metric 7",
+          "value": "15",
+          "unit": "",
+          "context": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute eph",
+          "confidence": 0.98,
+          "source": {
+            "page": 2,
+            "paragraph": 4,
+            "line": null,
+            "section": null,
+            "quote": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run c"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hour",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Deploy an eBPF kernel rootkit",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Post",
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized agains",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Post",
+          "relation": "correlates with",
+          "target": "THREAT INTEL",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "THREAT INTEL",
+          "relation": "targets/configures",
+          "target": "CVE-2026-4418",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "CVE-2026-4418",
+          "relation": "correlates with",
+          "target": "State-linked",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "State-linked",
+          "relation": "targets/configures",
+          "target": "Midnight Storm",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Midnight Storm",
+          "relation": "correlates with",
+          "target": "Here",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Here",
+          "relation": "targets/configures",
+          "target": "THE VECTOR",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_007",
+          "source": "THE VECTOR",
+          "relation": "correlates with",
+          "target": "Attackers",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_008",
+          "source": "Attackers",
+          "relation": "targets/configures",
+          "target": "OAuth",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_009",
+          "source": "OAuth",
+          "relation": "correlates with",
+          "target": "SAML",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_010",
+          "source": "SAML",
+          "relation": "targets/configures",
+          "target": "FIDO2",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_011",
+          "source": "FIDO2",
+          "relation": "correlates with",
+          "target": "THE SPEED",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_012",
+          "source": "THE SPEED",
+          "relation": "targets/configures",
+          "target": "Observability",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "visualAnalysis": [],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T03:05:44.949644+00:00",
+    "updatedAt": "2026-09-26T03:05:44.949644+00:00"
+  },
+  {
+    "id": "ANA_src-text-1790396061325_ef9c6930",
+    "analysisId": "ANA_src-text-1790396061325_ef9c6930",
+    "projectId": "proj_default",
+    "sourceId": "src-text-1790396061325",
+    "userId": "local-workspace",
+    "contentHash": "ef9c69309d65b11effd7c3a1876e9a30e793ec08d3dd595c601b3a14ac593b67",
+    "textAnalysis": {
+      "summary": "Artificial Intelligence (AI) is changing the way students learn and teachers teach. AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses. They can also help students understand difficult topics, answer questions, and practice lessons. Teachers ",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "Artificial Intelligence (AI) is changing the way students learn",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Artificial Intelligence (AI) is changing the way students learn"
+          }
+        },
+        {
+          "id": "fact_002",
+          "text": "teachers teach.",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "teachers teach."
+          }
+        },
+        {
+          "id": "fact_003",
+          "text": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses.",
+          "confidence": 0.98,
+          "type": "Capability",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses."
+          }
+        },
+        {
+          "id": "fact_004",
+          "text": "They can also help students understand difficult topics, answer questions, and practice lessons.",
+          "confidence": 0.98,
+          "type": "Capability",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "They can also help students understand difficult topics, answer questions, and practice lessons."
+          }
+        },
+        {
+          "id": "fact_005",
+          "text": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support.",
+          "confidence": 0.98,
+          "type": "Capability",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support."
+          }
+        },
+        {
+          "id": "fact_006",
+          "text": "AI can save time and make education more accessible.",
+          "confidence": 0.98,
+          "type": "Capability",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "AI can save time and make education more accessible."
+          }
+        },
+        {
+          "id": "fact_007",
+          "text": "However, AI should be used responsibly.",
+          "confidence": 0.98,
+          "type": "Action Mandate",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "However, AI should be used responsibly."
+          }
+        },
+        {
+          "id": "fact_008",
+          "text": "Students should not depend completely on AI for their studies.",
+          "confidence": 0.98,
+          "type": "Risk / Impact",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Students should not depend completely on AI for their studies."
+          }
+        },
+        {
+          "id": "fact_009",
+          "text": "Human teachers, critical thinking, creativity,",
+          "confidence": 0.98,
+          "type": "Proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Human teachers, critical thinking, creativity,"
+          }
+        },
+        {
+          "id": "fact_010",
+          "text": "communication skills remain important.",
+          "confidence": 0.98,
+          "type": "Action Mandate",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "communication skills remain important."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Artificial Intelligence",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_002",
+          "name": "AI-powered",
+          "type": "technology",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_003",
+          "name": "They",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_004",
+          "name": "Teachers",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_005",
+          "name": "However",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_006",
+          "name": "Students",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_007",
+          "name": "Human",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [],
+      "timeline": [],
+      "metrics": [],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "Artificial Intelligence (AI) is changing the way students learn and teachers teach. AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses. They c",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Should be used responsibly",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Artificial Intelligence",
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "action_002",
+          "action": "Should not depend completely on AI for their studies",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Artificial Intelligence",
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "Artificial Intelligence (AI) is changing the way students learn and teachers tea",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Artificial Intelligence",
+          "relation": "correlates with",
+          "target": "AI-powered",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "AI-powered",
+          "relation": "targets/configures",
+          "target": "They",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "They",
+          "relation": "correlates with",
+          "target": "Teachers",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "Teachers",
+          "relation": "targets/configures",
+          "target": "However",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "However",
+          "relation": "correlates with",
+          "target": "Students",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Students",
+          "relation": "targets/configures",
+          "target": "Human",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "visualAnalysis": [],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T04:14:21.406003+00:00",
+    "updatedAt": "2026-09-26T04:14:21.406003+00:00"
+  },
+  {
+    "id": "ANA_src-f616be860ca8_b30ec7d0",
+    "analysisId": "ANA_src-f616be860ca8_b30ec7d0",
+    "projectId": "proj-mm-e7044857",
+    "sourceId": "src-f616be860ca8",
+    "userId": "local-workspace",
+    "contentHash": "b30ec7d02bcd915179fdb8e867379a5eb6af502a76d940176779be74bd7c9b1e",
+    "textAnalysis": {
+      "summary": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "fact_002",
+          "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "MULTIMODAL INCIDENT REPORT",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_002",
+          "name": "August",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_003",
+          "name": "CVE-2026-4418.",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_004",
+          "name": "IMPACT METRICS\nSystems Impacted",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_005",
+          "name": "Contained\nCVSS Score",
+          "type": "technology",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_006",
+          "name": "Critical\nDowntime",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_007",
+          "name": "Resolved",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "event": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "date": "15 August 2026",
+          "impact": "Documented event milestone",
+          "actors": [
+            "MULTIMODAL INCIDENT REPORT",
+            "August"
+          ],
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "description": "Resolved",
+          "duration_value": 6.0,
+          "duration_unit": "hours",
+          "sequence": 1,
+          "kind": "phase",
+          "source_text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+          "start_relationship": null,
+          "end_relationship": null,
+          "confidence": 0.95,
+          "source": null
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_002",
+          "name": "Metric 2",
+          "value": "240 systems",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_003",
+          "name": "Metric 3",
+          "value": "15",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_004",
+          "name": "Metric 4",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_005",
+          "name": "Metric 5",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_006",
+          "name": "Metric 6",
+          "value": "4418",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_007",
+          "name": "Metric 7",
+          "value": "240",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_008",
+          "name": "Metric 8",
+          "value": "9.8",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_009",
+          "name": "Metric 9",
+          "value": "6 hours",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 ",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "MULTIMODAL INCIDENT REPORT",
+          "relation": "correlates with",
+          "target": "August",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "August",
+          "relation": "targets/configures",
+          "target": "CVE-2026-4418.",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "CVE-2026-4418.",
+          "relation": "correlates with",
+          "target": "IMPACT METRICS\nSystems Impacted",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "IMPACT METRICS\nSystems Impacted",
+          "relation": "targets/configures",
+          "target": "Contained\nCVSS Score",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Contained\nCVSS Score",
+          "relation": "correlates with",
+          "target": "Critical\nDowntime",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Critical\nDowntime",
+          "relation": "targets/configures",
+          "target": "Resolved",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "visualAnalysis": [],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T04:56:26.184347+00:00",
+    "updatedAt": "2026-09-26T04:56:26.184347+00:00"
+  },
+  {
+    "id": "ANA_src-df468c1ae74c_471903f1",
+    "analysisId": "ANA_src-df468c1ae74c_471903f1",
+    "projectId": "proj-mm-e7044857",
+    "sourceId": "src-df468c1ae74c",
+    "userId": "local-workspace",
+    "contentHash": "471903f14280561d99b778311bb82234940e540ee20205d29875793352f2d4e8",
+    "textAnalysis": {
+      "summary": "Multimodal Test Project",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "Multimodal Test Project.",
+          "confidence": 0.98,
+          "type": "proposition",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "Multimodal Test Project."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Multimodal Test Project",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [],
+      "timeline": [],
+      "metrics": [],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "Multimodal Test Project",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "Multimodal Test Project",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": []
+    },
+    "visualAnalysis": [],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T04:59:27.595703+00:00",
+    "updatedAt": "2026-09-26T04:59:27.595703+00:00"
+  },
+  {
+    "id": "ANA_src-9ee32510e59c_b30ec7d0",
+    "analysisId": "ANA_src-9ee32510e59c_b30ec7d0",
+    "projectId": "proj-mm-1331528f",
+    "sourceId": "src-9ee32510e59c",
+    "userId": "local-workspace",
+    "contentHash": "b30ec7d02bcd915179fdb8e867379a5eb6af502a76d940176779be74bd7c9b1e",
+    "textAnalysis": {
+      "summary": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "fact_002",
+          "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "MULTIMODAL INCIDENT REPORT",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_002",
+          "name": "August",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_003",
+          "name": "CVE-2026-4418.",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_004",
+          "name": "IMPACT METRICS\nSystems Impacted",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_005",
+          "name": "Contained\nCVSS Score",
+          "type": "technology",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_006",
+          "name": "Critical\nDowntime",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_007",
+          "name": "Resolved",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "event": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "date": "15 August 2026",
+          "impact": "Documented event milestone",
+          "actors": [
+            "MULTIMODAL INCIDENT REPORT",
+            "August"
+          ],
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "description": "Resolved",
+          "duration_value": 6.0,
+          "duration_unit": "hours",
+          "sequence": 1,
+          "kind": "phase",
+          "source_text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+          "start_relationship": null,
+          "end_relationship": null,
+          "confidence": 0.95,
+          "source": null
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_002",
+          "name": "Metric 2",
+          "value": "240 systems",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_003",
+          "name": "Metric 3",
+          "value": "15",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_004",
+          "name": "Metric 4",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_005",
+          "name": "Metric 5",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_006",
+          "name": "Metric 6",
+          "value": "4418",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_007",
+          "name": "Metric 7",
+          "value": "240",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_008",
+          "name": "Metric 8",
+          "value": "9.8",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_009",
+          "name": "Metric 9",
+          "value": "6 hours",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 ",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "MULTIMODAL INCIDENT REPORT",
+          "relation": "correlates with",
+          "target": "August",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "August",
+          "relation": "targets/configures",
+          "target": "CVE-2026-4418.",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "CVE-2026-4418.",
+          "relation": "correlates with",
+          "target": "IMPACT METRICS\nSystems Impacted",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "IMPACT METRICS\nSystems Impacted",
+          "relation": "targets/configures",
+          "target": "Contained\nCVSS Score",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Contained\nCVSS Score",
+          "relation": "correlates with",
+          "target": "Critical\nDowntime",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Critical\nDowntime",
+          "relation": "targets/configures",
+          "target": "Resolved",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "visualAnalysis": [
+      {
+        "imageId": "img_a540f63ece67",
+        "type": "flag",
+        "description": "A flag depicting a yellow circle on a blue background. The flag is framed by a white border.",
+        "textDetected": [],
+        "entities": [
+          "Rwanda"
+        ],
+        "metrics": [],
+        "confidence": 0.98,
+        "source": {
+          "page": 1,
+          "paragraph": null,
+          "line": null,
+          "section": null,
+          "quote": null
+        }
+      }
+    ],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T05:10:14.716935+00:00",
+    "updatedAt": "2026-09-26T05:10:14.716935+00:00"
+  },
+  {
+    "id": "ANA_src-57c7efa56c74_b30ec7d0",
+    "analysisId": "ANA_src-57c7efa56c74_b30ec7d0",
+    "projectId": "proj-mm-2da1d546",
+    "sourceId": "src-57c7efa56c74",
+    "userId": "local-workspace",
+    "contentHash": "b30ec7d02bcd915179fdb8e867379a5eb6af502a76d940176779be74bd7c9b1e",
+    "textAnalysis": {
+      "summary": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+      "facts": [
+        {
+          "id": "fact_001",
+          "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "fact_002",
+          "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved.",
+          "confidence": 0.98,
+          "type": "risk_fact",
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved."
+          }
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "MULTIMODAL INCIDENT REPORT",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_002",
+          "name": "August",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_003",
+          "name": "CVE-2026-4418.",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_004",
+          "name": "IMPACT METRICS\nSystems Impacted",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_005",
+          "name": "Contained\nCVSS Score",
+          "type": "technology",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_006",
+          "name": "Critical\nDowntime",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        },
+        {
+          "id": "entity_007",
+          "name": "Resolved",
+          "type": "organization",
+          "role": "Source Actor / Technology",
+          "confidence": 0.99,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "event": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "date": "15 August 2026",
+          "impact": "Documented event milestone",
+          "actors": [
+            "MULTIMODAL INCIDENT REPORT",
+            "August"
+          ],
+          "confidence": 0.95,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": null
+          }
+        }
+      ],
+      "timeline": [
+        {
+          "description": "Resolved",
+          "duration_value": 6.0,
+          "duration_unit": "hours",
+          "sequence": 1,
+          "kind": "phase",
+          "source_text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+          "start_relationship": null,
+          "end_relationship": null,
+          "confidence": 0.95,
+          "source": null
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_002",
+          "name": "Metric 2",
+          "value": "240 systems",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_003",
+          "name": "Metric 3",
+          "value": "15",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_004",
+          "name": "Metric 4",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_005",
+          "name": "Metric 5",
+          "value": "2026",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_006",
+          "name": "Metric 6",
+          "value": "4418",
+          "unit": "",
+          "context": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 1,
+            "line": null,
+            "section": null,
+            "quote": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418."
+          }
+        },
+        {
+          "id": "metric_007",
+          "name": "Metric 7",
+          "value": "240",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_008",
+          "name": "Metric 8",
+          "value": "9.8",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        },
+        {
+          "id": "metric_009",
+          "name": "Metric 9",
+          "value": "6 hours",
+          "unit": "",
+          "context": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 ",
+          "confidence": 0.98,
+          "source": {
+            "page": 1,
+            "paragraph": 2,
+            "line": null,
+            "section": null,
+            "quote": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved"
+          }
+        }
+      ],
+      "claims": [
+        {
+          "id": "claim_001",
+          "claim": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "evidence": "Primary thesis grounded in executive section",
+          "confidence": 0.96,
+          "source": null
+        }
+      ],
+      "actions": [],
+      "topics": [
+        {
+          "id": "topic_001",
+          "topic": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 ",
+          "relevance": 0.99,
+          "source": null
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "MULTIMODAL INCIDENT REPORT",
+          "relation": "correlates with",
+          "target": "August",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "August",
+          "relation": "targets/configures",
+          "target": "CVE-2026-4418.",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "CVE-2026-4418.",
+          "relation": "correlates with",
+          "target": "IMPACT METRICS\nSystems Impacted",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "IMPACT METRICS\nSystems Impacted",
+          "relation": "targets/configures",
+          "target": "Contained\nCVSS Score",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Contained\nCVSS Score",
+          "relation": "correlates with",
+          "target": "Critical\nDowntime",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Critical\nDowntime",
+          "relation": "targets/configures",
+          "target": "Resolved",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "visualAnalysis": [
+      {
+        "imageId": "img_fe8e775a9335",
+        "type": "flag",
+        "description": "A flag depicting a yellow circle on a blue background. The flag is framed by a white border.",
+        "textDetected": [],
+        "entities": [
+          "Rwanda"
+        ],
+        "metrics": [],
+        "confidence": 0.98,
+        "source": {
+          "page": 1,
+          "paragraph": null,
+          "line": null,
+          "section": null,
+          "quote": null
+        }
+      }
+    ],
+    "modelInfo": {
+      "textModel": "deterministic_extractor",
+      "visionModel": "gemma3:4b"
+    },
+    "analysisMode": "local_llm",
+    "status": "completed",
+    "stage": "completed",
+    "progress": 100,
+    "errorMessage": null,
+    "createdAt": "2026-09-26T05:14:54.415204+00:00",
+    "updatedAt": "2026-09-26T05:14:54.415204+00:00"
+  }
+]

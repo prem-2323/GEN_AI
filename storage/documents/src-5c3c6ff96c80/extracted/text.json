@@ -1,0 +1,71 @@
+{
+  "documentId": "src-5c3c6ff96c80",
+  "filename": "security_review.pptx",
+  "fileType": "pptx",
+  "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "sizeBytes": 79702,
+  "metadata": {
+    "title": "",
+    "author": "",
+    "subject": "",
+    "slideCount": 2,
+    "sectionsCount": 1,
+    "tablesCount": 1,
+    "imageCount": 1,
+    "characterCount": 125,
+    "wordCount": 21
+  },
+  "content": "Quarterly Security Review\nLatency improved by 35 percent after the Q3 patch rollout.\n\n[Table] Metric / Value | Uptime / 99.95",
+  "pages": [
+    {
+      "pageNumber": 1,
+      "text": "Quarterly Security Review\nLatency improved by 35 percent after the Q3 patch rollout.",
+      "characterCount": 84,
+      "wordCount": 13
+    },
+    {
+      "pageNumber": 2,
+      "text": "[Table] Metric / Value | Uptime / 99.95",
+      "characterCount": 39,
+      "wordCount": 8
+    }
+  ],
+  "sections": [
+    {
+      "heading": "Quarterly Security Review",
+      "level": 1,
+      "content": "Latency improved by 35 percent after the Q3 patch rollout."
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "TBL-s02-001",
+      "pageNumber": 2,
+      "rows": [
+        [
+          "Metric",
+          "Value"
+        ],
+        [
+          "Uptime",
+          "99.95"
+        ]
+      ],
+      "source": "pptx"
+    }
+  ],
+  "images": [
+    {
+      "imageId": "img_f685492eb5ea",
+      "filename": "img_f685492eb5ea.png",
+      "path": "documents/src-5c3c6ff96c80/images/img_f685492eb5ea.png",
+      "pageNumber": 1,
+      "width": null,
+      "height": null,
+      "format": ""
+    }
+  ],
+  "extractionStatus": "completed",
+  "error": null,
+  "createdAt": "2026-09-26T05:23:24.054218+00:00"
+}

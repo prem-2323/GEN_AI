@@ -63,6 +63,19 @@ export interface UckrEvent {
   actors: string[];
 }
 
+export interface UckrTimelineNode {
+  id: string;
+  description: string;
+  duration_value?: number | null;
+  duration_unit?: string | null;
+  sequence?: number | null;
+  kind?: 'total' | 'phase' | 'milestone' | string;
+  sourceFactId?: string | null;
+  sourceText?: string;
+  startRelationship?: string | null;
+  endRelationship?: string | null;
+}
+
 export interface UckrMetric {
   id: string;
   metricId?: string;
@@ -121,6 +134,11 @@ export interface UckrStatistics {
   totalFacts: number;
   totalEntities: number;
   totalEvents: number;
+  totalTimelineNodes?: number;
+  timelineConsistent?: boolean | null;
+  timelineTotalDuration?: number | null;
+  timelineDurationUnit?: string | null;
+  timelinePhaseCount?: number;
   totalMetrics: number;
   totalClaims?: number;
   totalActions: number;
@@ -128,6 +146,12 @@ export interface UckrStatistics {
   totalRelationships: number;
   coverage: number;
   grounding: number;
+  groundingIndex?: number;
+  factCompleteness?: number;
+  factConsistency?: number;
+  entityConsistency?: number;
+  numberConsistency?: number;
+  dateConsistency?: number;
   readiness: string;
 }
 
@@ -143,12 +167,22 @@ export interface UckrKnowledgeBase {
   facts: UckrFact[];
   entities: UckrEntity[];
   events: UckrEvent[];
+  timeline?: UckrTimelineNode[];
   metrics: UckrMetric[];
   claims?: UckrClaim[];
   relationships: UckrRelationship[];
   actions: UckrAction[];
   citations?: UckrSourceCitation[];
   sources: UckrSourceCitation[];
+  validation?: {
+    timelineConsistency?: {
+      consistent?: boolean | null;
+      declared_total?: number;
+      calculated_total?: number;
+      duration_unit?: string;
+      phase_count?: number;
+    };
+  };
   createdAt?: string;
   updatedAt?: string;
 }

@@ -19,11 +19,9 @@ import {
   BarChart3,
   Presentation,
   Video,
-  FileCheck2,
-  ChevronRight
+  FileCheck2
 } from 'lucide-react';
 import { ViewState, SourceFile } from '../../types';
-import { SAMPLE_SOURCES } from '../../data/sampleSources';
 
 interface DashboardViewProps {
   onNavigate: (view: ViewState) => void;
@@ -324,44 +322,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </p>
               <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700">
                 Browse Files
-              </div>
-            </div>
-
-            {/* Quick-start sample library */}
-            <div>
-              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
-                <span>Or start with a pre-loaded sample report</span>
-                <span className="text-[11px] text-purple-400 lowercase font-normal">1-click AI generation</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {SAMPLE_SOURCES.map((sample) => (
-                  <div
-                    key={sample.id}
-                    onClick={() => {
-                      onQuickStartUpload({
-                        name: sample.name,
-                        type: sample.type,
-                        size: sample.size,
-                        extractedText: sample.content
-                      });
-                      onNavigate('new_transformation');
-                    }}
-                    className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 transition-all cursor-pointer group flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-semibold text-purple-400 uppercase tracking-wider">{sample.category}</span>
-                        <span className="text-[10px] font-mono text-slate-500">{sample.type}</span>
-                      </div>
-                      <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-1">{sample.name}</h4>
-                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">{sample.summary}</p>
-                    </div>
-                    <div className="mt-3 text-[11px] text-purple-400 font-medium flex items-center gap-1">
-                      <span>Load into studio</span>
-                      <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>

@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List, Tuple
-from ...models.uckr import Action, Claim, Event, Metric, SourceRef
+from typing import Any, Dict, List, Optional, Tuple
+from ...models.uckr import Action, Claim, Event, Fact, Metric, SourceRef, TimelineNode
 
 _EVENT_TYPES = {
     "attack": "CYBER_ATTACK",
@@ -90,6 +90,87 @@ def normalize_events(
         events.append(ev)
 
     return events
+
+
+def normalize_timeline(
+    raw_timeline: List[Any],
+    source_id: str,
+    page_texts: Dict[int, str],
+    facts: List[Fact],
+) -> List[TimelineNode]:
+    """Normalize extracted durations and connect them to their supporting facts."""
+    timeline: List[TimelineNode] = []
+
+    for idx, item in enumerate(raw_timeline, start=1):
+        if not isinstance(item, dict):
+            continue
+        description = str(item.get("description") or item.get("event") or "").strip()
+        if not description:
+            continue
+
+        raw_duration = item.get("duration_value", item.get("durationValue"))
+        try:
+            duration_value = float(raw_duration) if raw_duration is not None else None
+        except (TypeError, ValueError):
+            duration_value = None
+        if duration_value is not None and duration_value <= 0:
+            continue
+
+        duration_unit = item.get("duration_unit") or item.get("durationUnit")
+        duration_unit = str(duration_unit).lower().strip() if duration_unit else None
+        if duration_unit and not duration_unit.endswith("s"):
+            duration_unit += "s"
+        source_text = str(
+            item.get("source_text") or item.get("sourceText") or item.get("quote") or ""
+        ).strip()
+
+        source_fact = next(
+            (
+                fact for fact in facts
+                if source_text and (
+                    source_text.casefold() in fact.quote.casefold()
+                    or fact.quote.casefold() in source_text.casefold()
+                )
+            ),
+            None,
+        )
+        page_no = source_fact.page if source_fact else 1
+        if source_text and not source_fact:
+            for pn, page_text in page_texts.items():
+                if source_text[:40].casefold() in page_text.casefold():
+                    page_no = pn
+                    break
+
+        kind = str(item.get("kind") or "phase").lower().strip()
+        is_total = bool(item.get("is_total") or item.get("isTotal")) or kind == "total"
+        if not is_total and re.match(r"^total\b", description, re.I):
+            is_total = True
+        if kind not in {"total", "phase", "milestone"}:
+            kind = "total" if is_total else "phase"
+        elif is_total:
+            kind = "total"
+
+        source_ref = SourceRef(
+            sourceId=source_id,
+            chunkId=source_fact.chunkId if source_fact else f"chunk_{page_no:03d}",
+            pageNumber=page_no,
+            textQuote=(source_text or (source_fact.quote if source_fact else description))[:200],
+        )
+        timeline.append(TimelineNode(
+            id=f"T-{len(timeline) + 1}",
+            description=description,
+            duration_value=duration_value,
+            duration_unit=duration_unit,
+            sequence=item.get("sequence") or idx,
+            kind=kind,
+            sourceFactId=source_fact.factId if source_fact else None,
+            sourceText=source_text or (source_fact.quote if source_fact else ""),
+            sourceRefs=[source_ref],
+            startRelationship=item.get("start_relationship") or item.get("startRelationship"),
+            endRelationship=item.get("end_relationship") or item.get("endRelationship"),
+        ))
+
+    return timeline
 
 
 def normalize_metrics(

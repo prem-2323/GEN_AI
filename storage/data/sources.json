@@ -1,1 +1,313 @@
-[]
+[
+  {
+    "sourceId": "src-text-1790398980415",
+    "id": "src-text-1790398980415",
+    "userId": "local-workspace",
+    "projectId": "proj_default",
+    "name": "Pasted_Source_Text.txt",
+    "extractedText": "",
+    "status": "ready",
+    "createdAt": "2026-09-26T05:03:00.475573+00:00",
+    "updatedAt": "2026-09-26T05:03:00.475573+00:00"
+  },
+  {
+    "sourceId": "src-9ee32510e59c",
+    "id": "src-9ee32510e59c",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-1331528f",
+    "fileId": "src-9ee32510e59c",
+    "originalFilename": "multimodal_report.pdf",
+    "fileType": "pdf",
+    "mimeType": "application/pdf",
+    "fileSize": 48308,
+    "sha256": "",
+    "status": "processed",
+    "file": {
+      "originalName": "multimodal_report.pdf",
+      "storedName": "multimodal_report.pdf",
+      "mimeType": "application/pdf",
+      "size": 48308,
+      "storagePath": "documents/src-9ee32510e59c/original/multimodal_report.pdf",
+      "fileId": "src-9ee32510e59c"
+    },
+    "processing": {
+      "status": "completed",
+      "stage": "completed",
+      "progress": 100,
+      "error": null
+    },
+    "extraction": {
+      "textLength": 242,
+      "wordCount": 29,
+      "pageCount": 2,
+      "chunkCount": 2,
+      "imageCount": 1,
+      "tableCount": 1
+    },
+    "createdAt": "2026-09-26T05:10:14.633545+00:00",
+    "updatedAt": "2026-09-26T05:10:14.652176+00:00",
+    "extractedText": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.\n\nIMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+    "normalized": {
+      "sourceId": "src-9ee32510e59c",
+      "document": {
+        "name": "multimodal_report.pdf",
+        "type": "pdf"
+      },
+      "text": {
+        "content": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.\n\nIMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+        "characterCount": 242
+      },
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "characterCount": 105,
+          "wordCount": 15
+        },
+        {
+          "pageNumber": 2,
+          "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+          "characterCount": 135,
+          "wordCount": 14
+        }
+      ],
+      "sections": [],
+      "tables": [
+        {
+          "tableId": "TBL-p02-1",
+          "pageNumber": 2,
+          "rows": [
+            [
+              "Systems Impacted",
+              "240",
+              "Contained"
+            ],
+            [
+              "CVSS Score",
+              "9.8",
+              "Critical"
+            ],
+            [
+              "Downtime",
+              "6 hours  Resolved"
+            ]
+          ],
+          "source": "pdf_heuristic"
+        }
+      ],
+      "images": [
+        {
+          "imageId": "img_a540f63ece67",
+          "filename": "img_a540f63ece67.png",
+          "path": "documents/src-9ee32510e59c/images/img_a540f63ece67.png",
+          "pageNumber": 1,
+          "width": null,
+          "height": null,
+          "format": ""
+        }
+      ],
+      "metadata": {
+        "title": "Multimodal Incident Report",
+        "author": "anonymous",
+        "creator": "anonymous",
+        "producer": "ReportLab PDF Library - (opensource)",
+        "pageCount": 2,
+        "characterCount": 242,
+        "wordCount": 29,
+        "imageCount": 1,
+        "tableCount": 1
+      }
+    }
+  },
+  {
+    "sourceId": "src-5e6c725b969a",
+    "id": "src-5e6c725b969a",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-1331528f",
+    "fileId": "src-5e6c725b969a",
+    "originalFilename": "chart_evidence.png",
+    "fileType": "png",
+    "mimeType": "image/png",
+    "fileSize": 50660,
+    "sha256": "",
+    "status": "processed",
+    "file": {
+      "originalName": "chart_evidence.png",
+      "storedName": "chart_evidence.png",
+      "mimeType": "image/png",
+      "size": 50660,
+      "storagePath": "documents/src-5e6c725b969a/original/chart_evidence.png",
+      "fileId": "src-5e6c725b969a"
+    },
+    "processing": {
+      "status": "completed",
+      "stage": "completed",
+      "progress": 100,
+      "error": null
+    },
+    "extraction": {
+      "textLength": 0,
+      "wordCount": 0,
+      "pageCount": 1,
+      "chunkCount": 1,
+      "imageCount": 1,
+      "tableCount": 0
+    },
+    "createdAt": "2026-09-26T05:13:35.719415+00:00",
+    "updatedAt": "2026-09-26T05:13:35.734979+00:00",
+    "extractedText": "",
+    "normalized": {
+      "sourceId": "src-5e6c725b969a",
+      "document": {
+        "name": "chart_evidence.png",
+        "type": "image"
+      },
+      "text": {
+        "content": "",
+        "characterCount": 0
+      },
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "",
+          "characterCount": 0,
+          "wordCount": 0
+        }
+      ],
+      "sections": [],
+      "tables": [],
+      "images": [
+        {
+          "imageId": "img_cc5fd91ea3b4",
+          "filename": "img_cc5fd91ea3b4.png",
+          "path": "documents/src-5e6c725b969a/images/img_cc5fd91ea3b4.png",
+          "pageNumber": 1,
+          "width": 320,
+          "height": 240,
+          "format": "png"
+        }
+      ],
+      "metadata": {
+        "imageFormat": "png",
+        "width": 320,
+        "height": 240,
+        "ocrApplied": false,
+        "ocrCharacterCount": 0,
+        "characterCount": 0,
+        "wordCount": 0,
+        "visionChannel": "gemma",
+        "imageId": "img_cc5fd91ea3b4",
+        "imagePath": "documents/src-5e6c725b969a/images/img_cc5fd91ea3b4.png"
+      }
+    }
+  },
+  {
+    "sourceId": "src-57c7efa56c74",
+    "id": "src-57c7efa56c74",
+    "userId": "local-workspace",
+    "projectId": "proj-mm-2da1d546",
+    "fileId": "src-57c7efa56c74",
+    "originalFilename": "multimodal_report.pdf",
+    "fileType": "pdf",
+    "mimeType": "application/pdf",
+    "fileSize": 48308,
+    "sha256": "",
+    "status": "processed",
+    "file": {
+      "originalName": "multimodal_report.pdf",
+      "storedName": "multimodal_report.pdf",
+      "mimeType": "application/pdf",
+      "size": 48308,
+      "storagePath": "documents/src-57c7efa56c74/original/multimodal_report.pdf",
+      "fileId": "src-57c7efa56c74"
+    },
+    "processing": {
+      "status": "completed",
+      "stage": "completed",
+      "progress": 100,
+      "error": null
+    },
+    "extraction": {
+      "textLength": 242,
+      "wordCount": 29,
+      "pageCount": 2,
+      "chunkCount": 2,
+      "imageCount": 1,
+      "tableCount": 1
+    },
+    "createdAt": "2026-09-26T05:14:54.310581+00:00",
+    "updatedAt": "2026-09-26T05:14:54.344669+00:00",
+    "extractedText": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.\n\nIMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+    "normalized": {
+      "sourceId": "src-57c7efa56c74",
+      "document": {
+        "name": "multimodal_report.pdf",
+        "type": "pdf"
+      },
+      "text": {
+        "content": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.\n\nIMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+        "characterCount": 242
+      },
+      "pages": [
+        {
+          "pageNumber": 1,
+          "text": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+          "characterCount": 105,
+          "wordCount": 15
+        },
+        {
+          "pageNumber": 2,
+          "text": "IMPACT METRICS\nSystems Impacted      240      Contained\nCVSS Score            9.8      Critical\nDowntime              6 hours  Resolved",
+          "characterCount": 135,
+          "wordCount": 14
+        }
+      ],
+      "sections": [],
+      "tables": [
+        {
+          "tableId": "TBL-p02-1",
+          "pageNumber": 2,
+          "rows": [
+            [
+              "Systems Impacted",
+              "240",
+              "Contained"
+            ],
+            [
+              "CVSS Score",
+              "9.8",
+              "Critical"
+            ],
+            [
+              "Downtime",
+              "6 hours  Resolved"
+            ]
+          ],
+          "source": "pdf_heuristic"
+        }
+      ],
+      "images": [
+        {
+          "imageId": "img_fe8e775a9335",
+          "filename": "img_fe8e775a9335.png",
+          "path": "documents/src-57c7efa56c74/images/img_fe8e775a9335.png",
+          "pageNumber": 1,
+          "width": null,
+          "height": null,
+          "format": ""
+        }
+      ],
+      "metadata": {
+        "title": "Multimodal Incident Report",
+        "author": "anonymous",
+        "creator": "anonymous",
+        "producer": "ReportLab PDF Library - (opensource)",
+        "pageCount": 2,
+        "characterCount": 242,
+        "wordCount": 29,
+        "imageCount": 1,
+        "tableCount": 1
+      }
+    }
+  }
+]

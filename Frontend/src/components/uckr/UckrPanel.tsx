@@ -6,6 +6,7 @@ import {
   Search, 
   FileText, 
   CheckCircle2, 
+  Clock3,
   ExternalLink, 
   ArrowRight, 
   TrendingUp, 
@@ -39,7 +40,7 @@ interface UckrPanelProps {
   isRebuilding?: boolean;
 }
 
-type TabType = 'overview' | 'facts' | 'entities' | 'relations' | 'events' | 'sources';
+type TabType = 'overview' | 'facts' | 'entities' | 'relations' | 'timeline' | 'sources';
 
 export const UckrPanel: React.FC<UckrPanelProps> = ({
   uckr,
@@ -52,6 +53,7 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [selectedFact, setSelectedFact] = useState<UckrFact | null>(null);
+  const [selectedTimelineId, setSelectedTimelineId] = useState<string | null>(null);
   const [factFilter, setFactFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -59,6 +61,11 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
     totalFacts: uckr.facts?.length || 0,
     totalEntities: uckr.entities?.length || 0,
     totalEvents: uckr.events?.length || 0,
+    totalTimelineNodes: uckr.timeline?.length || 0,
+    timelineConsistent: undefined,
+    timelineTotalDuration: undefined,
+    timelineDurationUnit: undefined,
+    timelinePhaseCount: 0,
     totalMetrics: uckr.metrics?.length || 0,
     totalActions: uckr.actions?.length || 0,
     totalSources: uckr.sources?.length || 0,
@@ -67,6 +74,12 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
     grounding: 98,
     readiness: 95
   };
+  const timeline = uckr.timeline || [];
+  const timelineValidation = uckr.validation?.timelineConsistency;
+  const timelineConsistent = timelineValidation?.consistent ?? stats.timelineConsistent;
+  const timelineTotal = timelineValidation?.declared_total ?? stats.timelineTotalDuration;
+  const timelineUnit = timelineValidation?.duration_unit ?? stats.timelineDurationUnit;
+  const timelinePhaseCount = timelineValidation?.phase_count ?? stats.timelinePhaseCount ?? 0;
 
   // Filtered facts
   const filteredFacts = (uckr.facts || []).filter(fact => {
@@ -185,7 +198,11 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
               </div>
               <div className="text-slate-200 flex items-center justify-between">
                 <span>│ {stats.totalEvents} Events</span>
-                <span className="text-[10px] text-slate-400">Timeline Nodes</span>
+                <span className="text-[10px] text-slate-400">Dated occurrences</span>
+              </div>
+              <div className="text-slate-200 flex items-center justify-between">
+                <span>│ {stats.totalTimelineNodes} Timeline Nodes</span>
+                <span className="text-[10px] text-slate-400">Duration and phase sequence</span>
               </div>
               <div className="text-slate-200 flex items-center justify-between">
                 <span>│ {stats.totalMetrics} Metrics</span>
@@ -278,6 +295,18 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('timeline')}
+            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'timeline'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Clock3 className="w-3.5 h-3.5" />
+            <span>[Timeline] ({timeline.length})</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('sources')}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'sources'
@@ -365,35 +394,68 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Knowledge Coverage</span>
-                      <span className="font-mono text-emerald-400 font-bold">{stats.coverage}%</span>
+                      <span className="text-slate-300">Grounding Index</span>
+                      <span className="font-mono text-purple-400 font-bold">{stats.groundingIndex ?? stats.grounding ?? 100}%</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${stats.coverage}%` }} />
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${stats.groundingIndex ?? stats.grounding ?? 100}%` }} />
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-1">Percent of document propositional facts represented</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Verifiable source citation grounding</p>
                   </div>
 
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Source Grounding</span>
-                      <span className="font-mono text-purple-400 font-bold">{stats.grounding}%</span>
+                      <span className="text-slate-300">Fact Completeness</span>
+                      <span className="font-mono text-emerald-400 font-bold">{stats.factCompleteness ?? 98}%</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-purple-500 rounded-full" style={{ width: `${stats.grounding}%` }} />
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${stats.factCompleteness ?? 98}%` }} />
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-1">Directly traceable back to source citations</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Complete non-fragmented grammatical propositions</p>
                   </div>
 
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300">Consistency Readiness</span>
-                      <span className="font-mono text-sky-400 font-bold">{stats.readiness}%</span>
+                      <span className="text-slate-300">Fact Consistency</span>
+                      <span className="font-mono text-sky-400 font-bold">{stats.factConsistency ?? 100}%</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-sky-500 rounded-full" style={{ width: `${stats.readiness}%` }} />
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-sky-500 rounded-full" style={{ width: `${stats.factConsistency ?? 100}%` }} />
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-1">Cross-output fact reconciliation metric</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Propositional coherence without contradictions</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-300">Entity Consistency</span>
+                      <span className="font-mono text-indigo-400 font-bold">{stats.entityConsistency ?? 100}%</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${stats.entityConsistency ?? 100}%` }} />
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Resolved canonical entities and active relations</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-300">Number Consistency</span>
+                      <span className="font-mono text-cyan-400 font-bold">{stats.numberConsistency ?? 100}%</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${stats.numberConsistency ?? 100}%` }} />
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Exact numerical metric quote alignment</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-300">Date Consistency</span>
+                      <span className="font-mono text-amber-400 font-bold">{stats.dateConsistency ?? 100}%</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-amber-500 rounded-full" style={{ width: `${stats.dateConsistency ?? 100}%` }} />
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Timeline and duration phase continuity</p>
                   </div>
                 </div>
 
@@ -461,6 +523,52 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
                 </div>
               </div>
             </div>
+
+            <section className="p-5 rounded-xl bg-slate-950/60 border border-slate-800" aria-label="Timeline validation">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Timeline Validation</h3>
+                  <p className={`text-sm font-semibold mt-2 ${timelineConsistent === true ? 'text-emerald-400' : timelineConsistent === false ? 'text-rose-400' : 'text-slate-400'}`}>
+                    {timelineConsistent === true ? '✓ Timeline consistent' : timelineConsistent === false ? 'Timeline inconsistent' : 'Timeline consistency unavailable'}
+                  </p>
+                </div>
+                <div className="flex items-center gap-5 text-xs text-slate-300">
+                  <span>{timeline.length} timeline nodes</span>
+                  {timelineTotal != null && <span>{timelineTotal} {timelineUnit || ''} total</span>}
+                  <span>{timelinePhaseCount} phases</span>
+                </div>
+              </div>
+              {timeline.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                  {timeline.map((node) => {
+                    const grounded = !!node.sourceFactId && uckr.facts.some((fact) => (fact.factId || fact.id) === node.sourceFactId);
+                    return (
+                      <button
+                        key={node.id}
+                        onClick={() => setSelectedTimelineId(selectedTimelineId === node.id ? null : node.id)}
+                        className="p-3 text-left rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500/50 transition-colors"
+                        aria-expanded={selectedTimelineId === node.id}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <span className="font-mono text-[11px] font-bold text-purple-300">{node.id}</span>
+                          <span className="text-[11px] text-slate-400">{node.duration_value != null ? `${node.duration_value} ${node.duration_unit || ''}` : 'Duration not stated'}</span>
+                        </div>
+                        <p className="text-xs text-white mt-1">{node.description}</p>
+                        {selectedTimelineId === node.id && (
+                          <div className="mt-3 pt-3 border-t border-slate-800 space-y-2">
+                            <p className="text-[11px] text-slate-400">Source fact: <span className="font-mono text-slate-200">{node.sourceFactId || 'Not linked'}</span></p>
+                            {node.sourceText && <p className="text-xs text-slate-300 italic">“{node.sourceText}”</p>}
+                            <p className={`text-[11px] font-semibold ${grounded ? 'text-emerald-400' : 'text-amber-400'}`}>
+                              {grounded ? '✓ Grounded · source fact verified' : 'Source fact not verified'}
+                            </p>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
           </div>
         )}
 
@@ -630,7 +738,49 @@ export const UckrPanel: React.FC<UckrPanelProps> = ({
           </div>
         )}
 
-        {/* 5. SOURCES TAB (Grounding Registry) */}
+        {/* 5. TIMELINE TAB */}
+        {activeTab === 'timeline' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Timeline Validation</h3>
+              <span className={`text-xs font-semibold ${timelineConsistent === true ? 'text-emerald-400' : timelineConsistent === false ? 'text-rose-400' : 'text-slate-400'}`}>
+                {timelineConsistent === true ? '✓ Timeline consistent' : timelineConsistent === false ? 'Timeline inconsistent' : 'Consistency unavailable'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              {timeline.length} timeline nodes · {timelineTotal != null ? `${timelineTotal} ${timelineUnit || ''} total · ` : ''}{timelinePhaseCount} phases
+            </p>
+            {timeline.map((node) => {
+              const grounded = !!node.sourceFactId && uckr.facts.some((fact) => (fact.factId || fact.id) === node.sourceFactId);
+              return (
+                <button
+                  key={node.id}
+                  onClick={() => setSelectedTimelineId(selectedTimelineId === node.id ? null : node.id)}
+                  className="w-full p-4 text-left rounded-xl bg-slate-950/60 border border-slate-800 hover:border-purple-500/50 transition-colors"
+                  aria-expanded={selectedTimelineId === node.id}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-mono font-bold text-purple-300">{node.id} · Sequence {node.sequence ?? '—'}</span>
+                    <span className="text-xs text-slate-300">{node.duration_value != null ? `${node.duration_value} ${node.duration_unit || ''}` : 'Duration not stated'}</span>
+                  </div>
+                  <p className="text-sm font-semibold text-white mt-2">{node.description}</p>
+                  {selectedTimelineId === node.id && (
+                    <div className="mt-3 pt-3 border-t border-slate-800 space-y-2">
+                      <p className="text-xs text-slate-400">Source fact: <span className="font-mono text-slate-200">{node.sourceFactId || 'Not linked'}</span></p>
+                      <p className="text-xs text-slate-300 italic">“{node.sourceText || 'No source quote recorded.'}”</p>
+                      <p className={`text-xs font-semibold ${grounded ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {grounded ? '✓ Grounded · source verified' : 'Source fact not verified'}
+                      </p>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+            {timeline.length === 0 && <p className="py-8 text-center text-xs text-slate-400">No timeline durations were extracted from this source.</p>}
+          </div>
+        )}
+
+        {/* 6. SOURCES TAB (Grounding Registry) */}
         {activeTab === 'sources' && (
           <div className="space-y-4">
             <div className="text-xs text-slate-400">

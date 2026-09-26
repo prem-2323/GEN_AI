@@ -1,0 +1,28 @@
+{
+  "documentId": "src-0a3ff9dd4d41",
+  "filename": "X_Twitter_Thread_1790164069128.txt",
+  "fileType": "txt",
+  "mimeType": "text/plain",
+  "sizeBytes": 1213,
+  "metadata": {
+    "lineCount": 18,
+    "characterCount": 1202,
+    "wordCount": 167,
+    "pageCount": 1
+  },
+  "content": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours. Here is the technical breakdown and mitigation protocol.\n\n[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit. This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.\n\n[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation. Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.\n\n[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys\n\n[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads. Stay fortified.",
+  "pages": [
+    {
+      "pageNumber": 1,
+      "text": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours. Here is the technical breakdown and mitigation protocol.\n\n[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit. This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.\n\n[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation. Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.\n\n[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys\n\n[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads. Stay fortified.",
+      "characterCount": 1202,
+      "wordCount": 167
+    }
+  ],
+  "sections": [],
+  "tables": [],
+  "images": [],
+  "extractionStatus": "completed",
+  "error": null,
+  "createdAt": "2026-09-26T03:02:42.619625+00:00"
+}

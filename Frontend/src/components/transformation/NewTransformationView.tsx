@@ -25,7 +25,6 @@ import {
   Info,
   SlidersHorizontal,
   Bell,
-  BookOpen,
   AlertTriangle
 } from 'lucide-react';
 import { 
@@ -43,8 +42,7 @@ import {
 } from '../../types';
 import { StatusBadge } from '../common/StatusBadge';
 import { analyzeSourceContent, buildUckrKnowledge } from '../../services/aiService';
-import { backendApi, backendEnabled } from '../../services/backendService';
-import { SAMPLE_SOURCES, SampleSourceDoc } from '../../data/sampleSources';
+import { backendApi, backendEnabled, checkBackendHealth } from '../../services/backendService';
 
 interface NewTransformationViewProps {
   source: SourceFile | null;
@@ -83,7 +81,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
   onShowToast
 }) => {
   const activeUckr = uckr;
-  const [inputTab, setInputTab] = useState<'upload' | 'paste' | 'samples' | 'context'>('upload');
+  const [inputTab, setInputTab] = useState<'upload' | 'paste' | 'context'>('upload');
   const [pasteContent, setPasteContent] = useState(getSourceContent(source));
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
   const [showSourcePreviewModal, setShowSourcePreviewModal] = useState(false);
@@ -159,20 +157,28 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
         onUpdateAnalysis(null);
         onUpdateUckr(null);
 
-        if (!backendEnabled) {
-          const extractedText = !isPdf && !isDoc && !isImg && !isVid ? await file.text() : '';
-          uploadedSource = {
-            id: `src-${Date.now()}`,
-            name: file.name,
-            type: fileType,
-            size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-            status: extractedText ? 'ready' : 'pending',
-            uploadedAt: new Date().toISOString(),
-            extractedText,
-          };
-          onUpdateSource(uploadedSource);
-          if (extractedText) setPasteContent(extractedText);
-          return;
+        const isBackendUp = backendEnabled && (await checkBackendHealth());
+
+        if (!isBackendUp) {
+          // If offline, extract text directly in browser for text/markdown/json files
+          if (fileType === 'TXT' || file.name.endsWith('.md') || file.name.endsWith('.json') || file.name.endsWith('.csv')) {
+            const extractedText = await file.text();
+            uploadedSource = {
+              id: `src-${Date.now()}`,
+              name: file.name,
+              type: fileType,
+              size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+              status: extractedText ? 'ready' : 'pending',
+              uploadedAt: new Date().toISOString(),
+              extractedText,
+            };
+            onUpdateSource(uploadedSource);
+            if (extractedText) setPasteContent(extractedText);
+            onShowToast('Source Loaded (Local Mode)', `Read "${file.name}" locally. Backend is offline.`, 'info');
+            return;
+          } else {
+            throw new Error(`The FastAPI backend is not running at http://127.0.0.1:8000. Start the backend with 'python -m uvicorn Backend.app.main:app --port 8000' or run 'start_all.bat' to process ${fileType} files.`);
+          }
         }
 
         const projectId = 'proj_default';
@@ -208,19 +214,19 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
         setPasteContent(extractedText);
 
         if (extractedText.trim()) {
-          const doclinkResult = await backendApi.analyzeDocLink(projectId, sourceId);
-          const analysisResult = await backendApi.startPhase3Analysis(projectId, sourceId, false, extractedText);
-          const uckrResult = await backendApi.buildUckr(projectId, sourceId);
+          const doclinkResult = await backendApi.analyzeDocLink(projectId, sourceId).catch(() => null);
+          const analysisResult = await backendApi.startPhase3Analysis(projectId, sourceId, false, extractedText).catch(() => null);
+          const uckrResult = await backendApi.buildUckr(projectId, sourceId).catch(() => null);
           onUpdateSource({
             ...uploadedSource,
             status: 'ready',
             doclinkResult,
             analysisResult,
-            uckrReference: {
+            uckrReference: uckrResult ? {
               uckrId: uckrResult?.uckrId || uckrResult?.uckr?.uckrId,
               version: uckrResult?.version || uckrResult?.uckr?.version,
               status: uckrResult?.status || uckrResult?.uckr?.status,
-            },
+            } : undefined,
           });
           onShowToast('Document Ready', `Processed ${file.name} through DocLink, Qwen/Gemma, and UCKR.`, 'success');
         } else {
@@ -235,7 +241,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
             processing: { ...uploadedSource.processing, status: 'failed', stage: 'failed', error: err instanceof Error ? err.message : 'Document processing failed.' },
           });
         }
-        onShowToast('Upload Failed', err instanceof Error ? err.message : 'Could not process the source document.', 'error');
+        onShowToast('Upload Notice', err instanceof Error ? err.message : 'Could not process the source document.', 'error');
       } finally {
         setIsExtracting(false);
       }
@@ -256,22 +262,6 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
       extractedText: pasteContent
     });
     onShowToast('Source Text Saved', 'Text ready for AI analysis and transformation.', 'success');
-  };
-
-  const handleLoadSample = (sample: SampleSourceDoc) => {
-    onUpdateAnalysis(null);
-    onUpdateUckr(null);
-    setPasteContent(sample.content);
-    onUpdateSource({
-      id: `sample-${sample.id}-${Date.now()}`,
-      name: sample.name,
-      type: sample.type,
-      size: sample.size,
-      status: 'ready',
-      uploadedAt: new Date().toISOString(),
-      extractedText: sample.content
-    });
-    onShowToast('Sample Loaded', `Loaded sample document "${sample.name}".`, 'success');
   };
 
   const handleClearSource = () => {
@@ -301,7 +291,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     setInputTab('paste');
     onShowToast(
       'Source Text Required',
-      'Please paste source text or load a sample document before generating deliverables.',
+      'Please upload a document or paste source text before generating deliverables.',
       'error'
     );
   };
@@ -397,9 +387,13 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
     'English',
     'Tamil',
     'Hindi',
+    'Malayalam',
+    'Telugu',
+    'Kannada',
     'Spanish',
     'French',
     'German',
+    'Japanese',
     'Custom'
   ];
 
@@ -425,6 +419,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
   ];
 
   const sourceContent = getSourceContent(source);
+  const analysisModelInfo = source?.analysisResult?.modelInfo as Record<string, unknown> | undefined;
   const hasSourceText = Boolean(sourceContent || pasteContent.trim());
 
   return (
@@ -473,7 +468,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
                 SOURCE CONTENT
               </h2>
-              <p className="text-xs text-slate-400">Upload documents, paste text, or load a realistic sample report</p>
+              <p className="text-xs text-slate-400">Upload source documents or paste raw text</p>
             </div>
           </div>
 
@@ -496,15 +491,6 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               Paste Text
             </button>
             <button
-              onClick={() => setInputTab('samples')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                inputTab === 'samples' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <BookOpen className="w-3 h-3" />
-              <span>Sample Reports</span>
-            </button>
-            <button
               onClick={() => setInputTab('context')}
               className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                 inputTab === 'context' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
@@ -524,7 +510,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                 type="file"
                 onChange={handleFileUpload}
                 className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                accept=".pdf,.docx,.doc,.txt,.md,.json,.csv,.log,.jpg,.jpeg,.png,.mp4"
+                accept=".pdf,.docx,.doc,.pptx,.txt,.md,.json,.csv,.log,.jpg,.jpeg,.png,.webp,.gif,.bmp,.tiff,.mp4"
               />
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2">
                 {isExtracting ? (
@@ -537,11 +523,8 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                 {isExtracting ? 'Processing document…' : 'Drop files here or click to browse'}
               </p>
               <p className="text-xs text-slate-400 mt-1">
-                PDF • DOCX • TXT • MD • JSON • PNG • JPG
+                PDF • DOCX • PPTX • TXT • MD • JSON • CSV • PNG • JPG — text is analyzed by Qwen, images by Gemma vision
               </p>
-              <div className="mt-3 text-xs text-slate-500">
-                Or switch to <button type="button" onClick={() => setInputTab('samples')} className="text-purple-400 hover:underline inline-flex items-center gap-0.5">Sample Reports</button> for 1-click testing
-              </div>
             </div>
 
             {/* Currently Active Source Card */}
@@ -549,7 +532,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               {!source ? (
                 <div className="p-6 text-center space-y-2">
                   <p className="text-sm font-semibold text-white">No source selected</p>
-                  <p className="text-xs text-slate-400">Upload a file, paste text, or pick a sample report below.</p>
+                  <p className="text-xs text-slate-400">Upload a file or paste text to begin.</p>
                   {isAnalyzing && <p className="text-xs text-purple-300 animate-pulse">Analyzing with Gemini…</p>}
                 </div>
               ) : (
@@ -587,8 +570,11 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                       <span className="text-[11px] text-purple-300 animate-pulse">Processing document pipeline…</span>
                     )}
                     {!isAnalyzing && source.status === 'ready' && source.doclinkResult && source.analysisResult && (
-                      <span className="text-[11px] text-emerald-300">
-                        DocLink {String(source.doclinkResult.status || 'completed')} · Qwen/Gemma {String(source.analysisResult.status || 'completed')} · UCKR {source.uckrReference?.version ? `v${source.uckrReference.version}` : 'ready'} · Content available
+                      <span
+                        className="text-[11px] text-emerald-300"
+                        title={`Text model: ${String(analysisModelInfo?.textModel || 'not reported')}; vision model: ${String(analysisModelInfo?.visionModel || 'not reported')}`}
+                      >
+                        DocLink {String(source.doclinkResult.status || 'completed')} · AI {String(source.analysisResult.status || 'completed')} · UCKR {source.uckrReference?.version ? `v${source.uckrReference.version}` : 'ready'} · Content available
                       </span>
                     )}
                     {!isAnalyzing && !sourceContent && (
@@ -607,7 +593,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
 
                   {!sourceContent && (
                     <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 mt-1">
-                      This file provided metadata only. Switch to <strong>Paste Text</strong> or <strong>Sample Reports</strong> to add content.
+                      This file provided metadata only. Switch to <strong>Paste Text</strong> to add content.
                     </div>
                   )}
                 </div>
@@ -651,13 +637,6 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  type="button"
-                  onClick={() => handleLoadSample(SAMPLE_SOURCES[0])}
-                  className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
-                >
-                  Fill Sample Advisory
-                </button>
-                <button
                   onClick={handleApplyPaste}
                   disabled={!pasteContent.trim()}
                   className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-medium text-xs transition-colors cursor-pointer"
@@ -666,47 +645,6 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
-          </div>
-        )}
-
-        {inputTab === 'samples' && (
-          <div className="rounded-xl border border-slate-800 bg-[#0d121f] p-5 space-y-4">
-            <div>
-              <h3 className="text-sm font-bold text-white">Pre-Loaded Enterprise Industry Reports</h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Select any curated realistic document to instantly populate source text and test full multi-format AI generation.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-              {SAMPLE_SOURCES.map((sample) => (
-                <div
-                  key={sample.id}
-                  className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col justify-between hover:border-purple-500/50 hover:bg-slate-900 transition-all"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                        {sample.category}
-                      </span>
-                      <span className="text-[11px] font-mono text-slate-500">{sample.type}</span>
-                    </div>
-                    <h4 className="text-xs font-bold text-white line-clamp-1">{sample.name}</h4>
-                    <p className="text-[11px] text-slate-400 mt-1.5 line-clamp-3 leading-relaxed">
-                      {sample.summary}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => handleLoadSample(sample)}
-                    className="mt-4 w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 hover:border-purple-500 text-xs font-semibold transition-all cursor-pointer"
-                  >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Use this Sample</span>
-                  </button>
-                </div>
-              ))}
             </div>
           </div>
         )}

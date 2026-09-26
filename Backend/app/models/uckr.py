@@ -93,6 +93,20 @@ class Event(BaseModel):
             self.participants = self.actors
 
 
+class TimelineNode(BaseModel):
+    id: str
+    description: str
+    duration_value: Optional[float] = None
+    duration_unit: Optional[str] = None
+    sequence: Optional[int] = None
+    kind: str = "phase"
+    sourceFactId: Optional[str] = None
+    sourceText: str = ""
+    sourceRefs: List[Union[SourceRef, Dict[str, Any], str]] = Field(default_factory=list)
+    startRelationship: Optional[str] = None
+    endRelationship: Optional[str] = None
+
+
 class Metric(BaseModel):
     metricId: str = Field(default_factory=lambda: "metric_001")
     id: Optional[str] = None
@@ -219,6 +233,11 @@ class UCKRStatistics(BaseModel):
     totalFacts: int = 0
     totalEntities: int = 0
     totalEvents: int = 0
+    totalTimelineNodes: int = 0
+    timelineConsistent: Optional[bool] = None
+    timelineTotalDuration: Optional[float] = None
+    timelineDurationUnit: Optional[str] = None
+    timelinePhaseCount: int = 0
     totalMetrics: int = 0
     totalActions: int = 0
     totalClaims: int = 0
@@ -229,6 +248,12 @@ class UCKRStatistics(BaseModel):
     coverage: float = 0.0
     grounding: float = 100.0
     groundingCoverage: float = 100.0
+    groundingIndex: float = 100.0
+    factCompleteness: float = 100.0
+    factConsistency: float = 100.0
+    entityConsistency: float = 100.0
+    numberConsistency: float = 100.0
+    dateConsistency: float = 100.0
     readiness: float = 95.0
 
     # UI aliases
@@ -243,6 +268,7 @@ class UCKRStatistics(BaseModel):
     factCount: Optional[int] = None
     entityCount: Optional[int] = None
     eventCount: Optional[int] = None
+    timelineNodes: Optional[int] = None
     metricCount: Optional[int] = None
     citationCount: Optional[int] = None
 
@@ -250,6 +276,7 @@ class UCKRStatistics(BaseModel):
         self.facts = self.totalFacts
         self.entities = self.totalEntities
         self.events = self.totalEvents
+        self.timelineNodes = self.totalTimelineNodes
         self.metrics = self.totalMetrics
         self.claims = self.totalClaims
         self.actions = self.totalActions
@@ -262,6 +289,8 @@ class UCKRStatistics(BaseModel):
         self.metricCount = self.totalMetrics
         self.citationCount = self.totalCitations
         self.groundingCoverage = self.grounding
+        if not self.groundingIndex:
+            self.groundingIndex = self.grounding
 
 
 class UCKRValidationResult(BaseModel):
@@ -272,9 +301,16 @@ class UCKRValidationResult(BaseModel):
     stats: Dict[str, int] = Field(default_factory=dict)
     citationCoverage: float = 100.0
     groundingCoverage: float = 100.0
+    groundingIndex: float = 100.0
+    factCompleteness: float = 100.0
+    factConsistency: float = 100.0
+    entityConsistency: float = 100.0
+    numberConsistency: float = 100.0
+    dateConsistency: float = 100.0
     errors: List[str] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
     checks: Dict[str, bool] = Field(default_factory=dict)
+    timelineConsistency: Dict[str, Any] = Field(default_factory=dict)
     brokenReferences: List[str] = Field(default_factory=list)
     missingCitations: List[str] = Field(default_factory=list)
     duplicateIds: List[str] = Field(default_factory=list)
@@ -298,6 +334,7 @@ class UCKRRecord(BaseModel):
     facts: List[Fact] = Field(default_factory=list)
     entities: List[Entity] = Field(default_factory=list)
     events: List[Event] = Field(default_factory=list)
+    timeline: List[TimelineNode] = Field(default_factory=list)
     metrics: List[Metric] = Field(default_factory=list)
     claims: List[Claim] = Field(default_factory=list)
     actions: List[Action] = Field(default_factory=list)

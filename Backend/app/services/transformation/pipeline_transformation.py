@@ -40,8 +40,15 @@ def _mark_used(uckr: dict, dtype: str) -> None:
             used.append(dtype)
 
 
+from .templates import translate_text, _get_ui_labels, _normalize_lang
+
+
+def _translate_str(text: str, lang: str) -> str:
+    return translate_text(text, lang)
+
+
 def _gen(dtype: str, uckr: dict, cfg: dict) -> dict:
-    facts = _fact_values(uckr)
+    raw_facts = _fact_values(uckr)
     metrics = _top(uckr, "metrics", 5)
     actions = _top(uckr, "actions", 5)
     entities = [e.get("name", "") for e in _top(uckr, "entities", 5) if e.get("name")]
@@ -49,66 +56,77 @@ def _gen(dtype: str, uckr: dict, cfg: dict) -> dict:
     audience = cfg.get("audience", "executive")
     tone = cfg.get("tone", "professional")
     language = cfg.get("language", "English")
-    title = (uckr.get("summary", "")[:90] or "Key update").strip()
+    code = _normalize_lang(language)
+    lbl = _get_ui_labels(code)
+    raw_title = (uckr.get("summary", "")[:90] or "Key update").strip()
+
+    facts = [_translate_str(f, language) for f in raw_facts]
+    title = _translate_str(raw_title, language)
 
     if dtype == "linkedin":
-        return {"hook": title or "What you need to know today",
+        hook_default = _translate_str("What you need to know today", language)
+        cta = lbl["cta"]
+        return {"hook": title or hook_default,
                 "body": "\n".join(f"• {v}" for v in facts[:5]),
-                "callToAction": "Follow for more intelligence briefings.",
-                "hashtags": ["ThreatIntel", "CyberSecurity", "ExecutiveBrief"],
+                "callToAction": cta,
+                "hashtags": lbl["tags"],
                 "characterCount": sum(len(v) for v in facts[:5]),
                 "targetAudience": audience, "tone": tone, "language": language}
     if dtype == "twitter":
         thread = [{"index": i + 1, "text": v[:270], "charCount": min(len(v), 270)}
                   for i, v in enumerate(facts[:5])]
-        return {"singlePost": (facts[0][:277] if facts else "Update"), "thread": thread}
+        return {"singlePost": (facts[0][:277] if facts else _translate_str("Update", language)), "thread": thread}
     if dtype == "advisory":
-        sev = "HIGH" if any("critical" in v.lower() or "risk" in v.lower() for v in facts) else "MEDIUM"
+        sev = "HIGH" if any("critical" in v.lower() or "risk" in v.lower() for v in raw_facts) else "MEDIUM"
+        adv_title = _translate_str("Security Advisory", language)
         return {"advisoryId": f"ADV-{uuid.uuid4().hex[:6].upper()}",
-                "title": title or "Security Advisory",
+                "title": f"{adv_title}: {title}" if title else adv_title,
                 "severity": sev, "dateIssued": utcnow_iso()[:10],
-                "situation": uckr.get("summary", ""),
+                "situation": _translate_str(uckr.get("summary", ""), language),
                 "keyInformation": facts[:6],
                 "threatImpact": "; ".join(facts[1:3]) if len(facts) > 1 else "",
-                "recommendedActions": [{"phase": "Immediate",
-                                        "steps": [a.get("action", "") for a in actions[:4]]}],
+                "recommendedActions": [{"phase": _translate_str("Immediate", language),
+                                        "steps": [_translate_str(a.get("action", ""), language) for a in actions[:4]]}],
                 "entities": entities,
                 "complianceReferences": []}
     if dtype == "executive_summary":
         return {"priority": "High" if metrics else "Medium",
                 "keyFindingsCount": len(facts[:5]), "recommendationsCount": len(actions[:4]),
-                "executiveOverview": uckr.get("summary", ""),
+                "executiveOverview": _translate_str(uckr.get("summary", ""), language),
                 "keyFindings": [{"metric": (metrics[i].get("value", "") if i < len(metrics) else ""),
                                  "title": v[:90], "description": v} for i, v in enumerate(facts[:5])],
                 "implications": facts[2:5] if len(facts) > 2 else [],
-                "strategicActions": [a.get("action", "") for a in actions[:4]]}
+                "strategicActions": [_translate_str(a.get("action", ""), language) for a in actions[:4]]}
     if dtype == "infographic":
-        return {"keyMessage": title or "At a glance",
+        share_cta = _translate_str("Share this briefing with your team.", language)
+        return {"keyMessage": title or _translate_str("At a glance", language),
                 "keyStatistics": [{"value": m.get("value", ""), "label": m.get("name", "")[:60],
                                    "subtext": (m.get("context", "") or "")[:80]} for m in metrics[:4]],
                 "supportingPoints": [{"iconName": "shield", "title": v[:60], "description": v}
                                       for v in facts[1:5]],
-                "callToAction": "Share this briefing with your team.",
+                "callToAction": share_cta,
                 "layoutRecommendation": "Vertical", "visualStyle": "Corporate"}
     if dtype == "presentation":
-        slides = [{"slideNumber": 1, "title": title or "Briefing", "bullets": facts[:4],
-                   "visualRecommendation": "Title visual", "speakerNotes": uckr.get("summary", "")}]
+        deck_title = _translate_str("Briefing deck", language)
+        slides = [{"slideNumber": 1, "title": title or deck_title, "bullets": facts[:4],
+                   "visualRecommendation": "Title visual", "speakerNotes": _translate_str(uckr.get("summary", ""), language)}]
         for i, v in enumerate(facts[1:5], start=2):
             slides.append({"slideNumber": i, "title": v[:70], "bullets": [v],
                            "visualRecommendation": "Supporting chart",
                            "speakerNotes": v})
         if actions:
-            slides.append({"slideNumber": len(slides) + 1, "title": "Recommended actions",
-                           "bullets": [a.get("action", "") for a in actions[:4]],
+            slides.append({"slideNumber": len(slides) + 1, "title": _translate_str("Recommended actions", language),
+                           "bullets": [_translate_str(a.get("action", ""), language) for a in actions[:4]],
                            "visualRecommendation": "Checklist visual", "speakerNotes": ""})
-        return {"deckTitle": title or "Briefing deck", "totalSlides": len(slides), "slides": slides,
+        return {"deckTitle": title or deck_title, "totalSlides": len(slides), "slides": slides,
                 "events": [{"title": e.get("title", ""), "timestamp": e.get("timestamp", "")} for e in events]}
     if dtype == "video":
         scenes = [{"sceneNumber": i + 1, "title": v[:60], "durationSeconds": 20,
                    "sceneDescription": v, "visualRecommendation": "Kinetic text over imagery",
                    "narration": v, "onScreenText": v[:80]} for i, v in enumerate(facts[:4])]
         total = sum(s["durationSeconds"] for s in scenes)
-        return {"title": title or "Video briefing", "aspectRatio": "16:9", "style": "Professional",
+        video_title = _translate_str("Video briefing", language)
+        return {"title": title or video_title, "aspectRatio": "16:9", "style": "Professional",
                 "totalDurationSeconds": total,
                 "script": "\n\n".join(s["narration"] for s in scenes),
                 "scenes": scenes, "subtitlesSrt": ""}

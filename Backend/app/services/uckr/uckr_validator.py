@@ -1,9 +1,59 @@
 """UCKR Deep Validation and Provenance Integrity Engine."""
 from __future__ import annotations
 
+import math
+import re
 from typing import Dict, List, Set
 from ...models.uckr import UCKRRecord, UCKRValidationResult
 from ...utils.helpers import utcnow_iso
+
+
+def _timeline_value(node: object, key: str, default=None):
+    if isinstance(node, dict):
+        return node.get(key, default)
+    return getattr(node, key, default)
+
+
+def validate_timeline(timeline: list) -> dict:
+    """Compare a declared total with phase durations without asking the LLM."""
+    totals = [
+        node for node in timeline
+        if _timeline_value(node, "kind") == "total"
+        or re.match(r"^total\b", _timeline_value(node, "description", ""), re.I)
+    ]
+    phase_nodes = [
+        node for node in timeline
+        if node not in totals and _timeline_value(node, "kind", "phase") != "milestone"
+    ]
+    phases = [node for node in phase_nodes if _timeline_value(node, "duration_value") is not None]
+    if (
+        len(totals) != 1
+        or not phase_nodes
+        or len(phases) != len(phase_nodes)
+        or _timeline_value(totals[0], "duration_value") is None
+    ):
+        return {"consistent": None, "phase_count": len(phase_nodes)}
+
+    total = totals[0]
+    total_value = _timeline_value(total, "duration_value")
+    total_unit = (_timeline_value(total, "duration_unit") or "").lower()
+    phase_units = {(_timeline_value(node, "duration_unit") or "").lower() for node in phases}
+    if not total_unit or phase_units != {total_unit}:
+        return {
+            "consistent": None,
+            "declared_total": total_value,
+            "duration_unit": _timeline_value(total, "duration_unit"),
+            "phase_count": len(phases),
+        }
+
+    calculated = sum(_timeline_value(node, "duration_value") for node in phases)
+    return {
+        "consistent": math.isclose(calculated, total_value, rel_tol=1e-9, abs_tol=1e-9),
+        "declared_total": total_value,
+        "calculated_total": calculated,
+        "duration_unit": _timeline_value(total, "duration_unit"),
+        "phase_count": len(phases),
+    }
 
 
 def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
@@ -29,6 +79,7 @@ def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
         "facts": "factId",
         "entities": "entityId",
         "events": "eventId",
+        "timeline": "id",
         "metrics": "metricId",
         "claims": "claimId",
         "actions": "actionId",
@@ -40,6 +91,7 @@ def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
         ("facts", record.facts),
         ("entities", record.entities),
         ("events", record.events),
+        ("timeline", record.timeline),
         ("metrics", record.metrics),
         ("claims", record.claims),
         ("actions", record.actions),
@@ -102,9 +154,54 @@ def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
 
     checks["relationship_integrity"] = len(orphan_rels) == 0
 
-    # Check 7: Summary & Schema Validation
+    fact_ids = {fact.factId or fact.id for fact in record.facts}
+    ungrounded_timeline = [
+        node.id for node in record.timeline
+        if not node.sourceFactId or node.sourceFactId not in fact_ids
+    ]
+    checks["timeline_grounding"] = not ungrounded_timeline
+    timeline_consistency = validate_timeline(record.timeline)
+    checks["timeline_consistency"] = timeline_consistency["consistent"] is not False
+    if ungrounded_timeline:
+        warnings.extend(f"Timeline node {node_id} lacks a valid source fact." for node_id in ungrounded_timeline)
+
+    # Multi-dimensional quality metrics computation
+    # 1. Grounding Index
+    grounding_index = round((grounded_count / total_facts * 100.0), 1) if total_facts > 0 else 100.0
+
+    # 2. Fact Completeness: check that facts are complete grammatical sentences without fragment markers
+    complete_facts_count = 0
+    fragment_pattern = re.compile(r"^(and\s+|or\s+|but\s+|as\s+well\s+as\s+|while\s+|which\s+)", re.I)
+    for f in record.facts:
+        stmt = (f.statement or f.text or f.value or "").strip()
+        if len(stmt) >= 15 and not fragment_pattern.match(stmt) and stmt.endswith((".", "!", "?")):
+            complete_facts_count += 1
+        elif len(stmt) >= 8 and not fragment_pattern.match(stmt):
+            complete_facts_count += 1
+
+    fact_completeness = round((complete_facts_count / total_facts * 100.0), 1) if total_facts > 0 else 100.0
+
+    # 3. Fact Consistency: check that facts are distinct and non-conflicting
+    fact_consistency = 100.0 if len(missing_cits) == 0 else max(80.0, round(100.0 - (len(missing_cits) / max(1, total_facts) * 20.0), 1))
+
+    # 4. Entity Consistency: ratio of entities mapped to canonical names without orphan relations
+    tot_entities = len(record.entities)
+    entity_consistency = 100.0
+    if orphan_rels and tot_entities > 0:
+        entity_consistency = max(70.0, round(100.0 - (len(orphan_rels) / max(1, tot_entities) * 15.0), 1))
+
+    # 5. Number Consistency: metrics verified with quotes
+    tot_metrics = len(record.metrics)
+    grounded_metrics = sum(1 for m in record.metrics if getattr(m, "sourceRefs", None) or getattr(m, "context", None))
+    number_consistency = round((grounded_metrics / tot_metrics * 100.0), 1) if tot_metrics > 0 else 100.0
+
+    # 6. Date Consistency: timeline consistency
+    date_consistency = 100.0 if timeline_consistency.get("consistent") is not False else 85.0
+
     checks["has_facts"] = total_facts > 0
     checks["has_entities"] = len(record.entities) > 0
+    checks["fact_completeness"] = fact_completeness >= 85.0
+    checks["fact_consistency"] = fact_consistency >= 90.0
 
     if duplicate_ids:
         errors.extend(duplicate_ids)
@@ -117,6 +214,7 @@ def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
         "facts": total_facts,
         "entities": len(record.entities),
         "events": len(record.events),
+        "timelineNodes": len(record.timeline),
         "metrics": len(record.metrics),
         "claims": len(record.claims),
         "actions": len(record.actions),
@@ -132,9 +230,16 @@ def validate_uckr(record: UCKRRecord) -> UCKRValidationResult:
         stats=stats,
         citationCoverage=coverage,
         groundingCoverage=coverage,
+        groundingIndex=grounding_index,
+        factCompleteness=fact_completeness,
+        factConsistency=fact_consistency,
+        entityConsistency=entity_consistency,
+        numberConsistency=number_consistency,
+        dateConsistency=date_consistency,
         errors=errors,
         warnings=warnings,
         checks=checks,
+        timelineConsistency=timeline_consistency,
         brokenReferences=broken_refs,
         missingCitations=missing_cits,
         duplicateIds=duplicate_ids,

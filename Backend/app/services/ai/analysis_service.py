@@ -55,10 +55,8 @@ def analyze_source(
         if not extracted_text:
             extracted_text = project.get("description") or project.get("title") or ""
 
-    if not extracted_text.strip():
-        raise HTTPException(status_code=400, detail="Source contains no extracted text to analyze.")
-
-    if extracted_images is None:
+    # Vision-only sources (image files with no OCR text) are valid: Gemma handles them.
+    if not extracted_images:
         extracted_images = []
         for image in (source_obj.get("normalized") or {}).get("images", []):
             path = image.get("path")
@@ -74,6 +72,9 @@ def analyze_source(
                 "page": image.get("pageNumber"),
                 "bytes": image_bytes,
             })
+
+    if not extracted_text.strip() and not extracted_images:
+        raise HTTPException(status_code=400, detail="Source contains no extractable text or images to analyze.")
 
     # 3. Check deduplication hash in repository
     c_hash = compute_content_hash(extracted_text)

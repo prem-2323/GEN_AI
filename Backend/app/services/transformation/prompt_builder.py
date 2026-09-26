@@ -233,6 +233,10 @@ def build_transformation_prompt(
     context = format_uckr_context(uckr)
     schema = get_schema_for_type(dtype)
 
+    lang_constraint = ""
+    if cfg.language and cfg.language.strip().lower() not in ("english", "en"):
+        lang_constraint = f"\n5. MANDATORY TARGET LANGUAGE: The entire content (all titles, headlines, summaries, hooks, call to action, descriptions, bullet points, recommendations, narration, notes, and text values) MUST BE WRITTEN FLUENTLY IN {cfg.language.upper()} (e.g. if Tamil, write in Tamil script தமிழ்; if Hindi, write in Devanagari script हिन्दी). Do NOT output English content text when {cfg.language} is requested. JSON structural keys must remain in English."
+
     prompt = f"""[ROLE]
 You are a senior communications and intelligence transformation specialist. Your mission is to generate professional {dtype.upper()} deliverables derived EXCLUSIVELY from the canonical Unified Content Knowledge Representation (UCKR) provided below.
 
@@ -251,7 +255,7 @@ Generate a complete, high-quality '{dtype}' output matching the user's configura
 1. ZERO HALLUCINATIONS: Use ONLY facts, entities, events, metrics, claims, and actions explicitly stated in the UCKR above. Do not extrapolate, assume, or invent details.
 2. PRESERVE NUMBERS & DATES: Do not change 240 into 'over 200' or alter dates/version numbers.
 3. GROUNDED PROVENANCE: Every fact used MUST include its exact fact ID (e.g. "fact_001", "fact_002") in the `usedFactIds` list.
-4. JSON FORMAT ONLY: Output ONLY valid, parsable JSON matching the schema below. Do not wrap in conversational preamble.
+4. JSON FORMAT ONLY: Output ONLY valid, parsable JSON matching the schema below. Do not wrap in conversational preamble.{lang_constraint}
 
 [TARGET JSON SCHEMA]
 ```json

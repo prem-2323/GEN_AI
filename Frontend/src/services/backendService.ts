@@ -7,6 +7,36 @@ const BASE = (import.meta as unknown as { env?: Record<string, string | undefine
 
 export const backendEnabled = true;
 
+let _isBackendReachableCache: boolean | null = null;
+let _lastCheckTime = 0;
+
+export function getBackendUrl(): string {
+  return BASE;
+}
+
+export async function checkBackendHealth(forceRefresh: boolean = false): Promise<boolean> {
+  const now = Date.now();
+  if (!forceRefresh && _isBackendReachableCache !== null && now - _lastCheckTime < 3000) {
+    return _isBackendReachableCache;
+  }
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`${BASE}/health`, {
+      method: 'GET',
+      signal: controller.signal,
+    }).catch(() => null);
+    clearTimeout(timeoutId);
+    _isBackendReachableCache = Boolean(res && res.ok);
+    _lastCheckTime = Date.now();
+    return _isBackendReachableCache;
+  } catch {
+    _isBackendReachableCache = false;
+    _lastCheckTime = Date.now();
+    return false;
+  }
+}
+
 async function headers(): Promise<HeadersInit> {
   return {
     'Content-Type': 'application/json',
@@ -20,12 +50,23 @@ async function uploadHeaders(): Promise<HeadersInit> {
 async function req(path: string, init?: RequestInit) {
   if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
   const h = await headers();
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...h, ...(init?.headers || {}) } });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+  try {
+    const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...h, ...(init?.headers || {}) } });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+    }
+    _isBackendReachableCache = true;
+    _lastCheckTime = Date.now();
+    return res.json().catch(() => ({}));
+  } catch (err) {
+    _isBackendReachableCache = false;
+    _lastCheckTime = Date.now();
+    if (err instanceof Error && err.message.startsWith('Backend ')) {
+      throw err;
+    }
+    throw new Error(`Backend server unavailable at ${BASE}`);
   }
-  return res.json().catch(() => ({}));
 }
 
 async function uploadReq(path: string, file: File) {
@@ -33,12 +74,23 @@ async function uploadReq(path: string, file: File) {
   const h = await uploadHeaders();
   const form = new FormData();
   form.append('file', file);
-  const res = await fetch(`${BASE}${path}`, { method: 'POST', headers: h, body: form });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+  try {
+    const res = await fetch(`${BASE}${path}`, { method: 'POST', headers: h, body: form });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
+    }
+    _isBackendReachableCache = true;
+    _lastCheckTime = Date.now();
+    return res.json().catch(() => ({}));
+  } catch (err) {
+    _isBackendReachableCache = false;
+    _lastCheckTime = Date.now();
+    if (err instanceof Error && err.message.startsWith('Backend ')) {
+      throw err;
+    }
+    throw new Error(`Backend server unavailable at ${BASE}`);
   }
-  return res.json().catch(() => ({}));
 }
 
 export const backendApi = {

@@ -40,6 +40,19 @@ class ExtractedEvent(BaseModel):
     source: Optional[SourceLocation] = None
 
 
+class ExtractedTimelineNode(BaseModel):
+    description: str
+    duration_value: Optional[float] = None
+    duration_unit: Optional[str] = None
+    sequence: Optional[int] = None
+    kind: str = "phase"
+    source_text: Optional[str] = None
+    start_relationship: Optional[str] = None
+    end_relationship: Optional[str] = None
+    confidence: float = 0.95
+    source: Optional[SourceLocation] = None
+
+
 class ExtractedMetric(BaseModel):
     id: str = Field(default_factory=lambda: "metric_001")
     name: Optional[str] = ""
@@ -99,6 +112,7 @@ class TextAnalysis(BaseModel):
     facts: List[ExtractedFact] = Field(default_factory=list)
     entities: List[ExtractedEntity] = Field(default_factory=list)
     events: List[ExtractedEvent] = Field(default_factory=list)
+    timeline: List[ExtractedTimelineNode] = Field(default_factory=list)
     metrics: List[ExtractedMetric] = Field(default_factory=list)
     claims: List[ExtractedClaim] = Field(default_factory=list)
     actions: List[ExtractedAction] = Field(default_factory=list)

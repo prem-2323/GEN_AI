@@ -24,6 +24,7 @@ import re
 from typing import Any, Optional
 
 from ...config.settings import get_settings
+from .timeline_extractor import extract_timeline_deterministic
 
 log = logging.getLogger("gen-transform.ai")
 
@@ -62,9 +63,12 @@ def _ollama_text_analysis(text: str) -> Optional[dict]:
         "Analyse the document below and return STRICT JSON with keys: "
         "summary (string), facts (array of {value, quote}), "
         "entities (array of {name, role}), events (array of {title, timestamp}), "
+        "timeline (array of {description, duration_value, duration_unit, sequence, kind, source_text, start_relationship, end_relationship}), "
         "metrics (array of {name, value, context}), "
         "relationships (array of {source, relation, target}), "
         "actions (array of {action, priority}). "
+        "Extract total durations, phases, phase durations, and order into timeline. Include exact verbatim source_text; "
+        "do not invent dates, durations, phases, or relationships. Use kind total or phase. "
         "Ground every fact in a verbatim quote from the text. Do not invent statistics.\n\n"
         f"TEXT:\n{text[:12000]}"
     )
@@ -130,8 +134,11 @@ def _gemini_text_analysis(text: str) -> Optional[dict]:
             contents=(
                 "Analyse the document and return STRICT JSON with keys summary, facts[{value,quote}], "
                 "entities[{name,role}], events[{title,timestamp}], metrics[{name,value,context}], "
+                "timeline[{description,duration_value,duration_unit,sequence,kind,source_text,start_relationship,end_relationship}], "
                 "relationships[{source,relation,target}], actions[{action,priority}]. "
-                "Ground every fact in a verbatim quote. Do not invent statistics.\n\n"
+                "Extract explicitly stated total durations and ordered phases with exact source_text. "
+                "Do not invent dates, durations, or relationships. Ground every fact in a verbatim quote. "
+                "Do not invent statistics.\n\n"
                 f"TEXT:\n{text[:12000]}"
             ),
             config={"responseMimeType": "application/json"},
@@ -153,7 +160,7 @@ def _sentences(text: str) -> list[str]:
 def _extractive_analysis(text: str) -> dict:
     sents = _sentences(text)
     if not sents:
-        return {"summary": "", "facts": [], "entities": [], "events": [],
+        return {"summary": "", "facts": [], "entities": [], "events": [], "timeline": [],
                 "metrics": [], "relationships": [], "actions": [], "provider": "extractive-empty"}
 
     freq: dict[str, int] = {}
@@ -197,6 +204,7 @@ def _extractive_analysis(text: str) -> dict:
                for s in sents if _IMPERATIVE_RE.search(s)][:8]
 
     return {"summary": summary, "facts": facts, "entities": entities, "events": events,
+            "timeline": extract_timeline_deterministic(text),
             "metrics": metrics, "relationships": relationships[:10], "actions": actions,
             "provider": "extractive"}
 
@@ -220,8 +228,10 @@ def analyze_text(text: str, use_cache_on_source: Optional[dict] = None) -> dict:
         result = _extractive_analysis(text)
         provider = result.pop("provider", "extractive")
     result.setdefault("summary", "")
-    for k in ("facts", "entities", "events", "metrics", "relationships", "actions"):
+    for k in ("facts", "entities", "events", "timeline", "metrics", "relationships", "actions"):
         result.setdefault(k, [])
+    if not result["timeline"]:
+        result["timeline"] = extract_timeline_deterministic(text)
     result.update({"provider": provider, "textHash": h, "cached": False})
     return result
 

@@ -1,0 +1,28 @@
+{
+  "documentId": "src-75bfa6eed30b",
+  "filename": "incident_log.txt",
+  "fileType": "txt",
+  "mimeType": "text/plain",
+  "sizeBytes": 98,
+  "metadata": {
+    "lineCount": 5,
+    "characterCount": 98,
+    "wordCount": 13,
+    "pageCount": 1
+  },
+  "content": "CYBER SECURITY INCIDENT\n\nDate: 15 August 2026\nTarget: Identity Gateway\nResolution: Patch deployed.",
+  "pages": [
+    {
+      "pageNumber": 1,
+      "text": "CYBER SECURITY INCIDENT\n\nDate: 15 August 2026\nTarget: Identity Gateway\nResolution: Patch deployed.",
+      "characterCount": 98,
+      "wordCount": 13
+    }
+  ],
+  "sections": [],
+  "tables": [],
+  "images": [],
+  "extractionStatus": "completed",
+  "error": null,
+  "createdAt": "2026-09-26T05:27:15.785416+00:00"
+}

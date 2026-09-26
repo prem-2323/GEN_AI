@@ -11,7 +11,15 @@ import {
   Layers,
   FileCheck2
 } from 'lucide-react';
-import { TransformationConfig, AudienceType, ToneType, LanguageType } from '../../types';
+import { 
+  TransformationConfig, 
+  AudienceType, 
+  ToneType, 
+  LanguageType,
+  DetailLevel,
+  ObjectiveType,
+  ContentStyle
+} from '../../types';
 
 interface SettingsViewProps {
   config: TransformationConfig;
@@ -137,27 +145,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <select
               value={config.targetAudience}
               onChange={(e) => onUpdateConfig({ ...config, targetAudience: e.target.value as AudienceType })}
-              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500"
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
             >
               <option value="General Public">General Public</option>
               <option value="Executives">Executives</option>
               <option value="Government Officials">Government Officials</option>
               <option value="Technical Team">Technical Team</option>
               <option value="Security Team">Security Team</option>
+              <option value="Customers">Customers</option>
+              <option value="Students">Students</option>
+              <option value="Custom">Custom</option>
             </select>
           </div>
 
           <div>
-            <label className="font-semibold text-slate-300 block mb-1.5">Default Tone</label>
+            <label className="font-semibold text-slate-300 block mb-1.5">Tone of Voice</label>
             <select
               value={config.tone}
               onChange={(e) => onUpdateConfig({ ...config, tone: e.target.value as ToneType })}
-              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500"
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
             >
               <option value="Professional">Professional</option>
               <option value="Formal">Formal</option>
               <option value="Informative">Informative</option>
+              <option value="Persuasive">Persuasive</option>
               <option value="Urgent">Urgent</option>
+              <option value="Friendly">Friendly</option>
               <option value="Technical">Technical</option>
             </select>
           </div>
@@ -167,14 +180,67 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <select
               value={config.language}
               onChange={(e) => onUpdateConfig({ ...config, language: e.target.value as LanguageType })}
-              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500"
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
             >
               <option value="English">English</option>
               <option value="Tamil">Tamil</option>
               <option value="Hindi">Hindi</option>
+              <option value="Malayalam">Malayalam</option>
+              <option value="Telugu">Telugu</option>
+              <option value="Kannada">Kannada</option>
               <option value="Spanish">Spanish</option>
               <option value="French">French</option>
               <option value="German">German</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="font-semibold text-slate-300 block mb-1.5">Default Objective</label>
+            <select
+              value={config.objective}
+              onChange={(e) => onUpdateConfig({ ...config, objective: e.target.value as ObjectiveType })}
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+            >
+              <option value="Inform">Inform</option>
+              <option value="Educate">Educate</option>
+              <option value="Alert">Alert</option>
+              <option value="Persuade">Persuade</option>
+              <option value="Summarize">Summarize</option>
+              <option value="Engage">Engage</option>
+              <option value="Brief">Brief</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="font-semibold text-slate-300 block mb-1.5">Content Style</label>
+            <select
+              value={config.contentStyle}
+              onChange={(e) => onUpdateConfig({ ...config, contentStyle: e.target.value as ContentStyle })}
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+            >
+              <option value="Professional">Professional</option>
+              <option value="Executive">Executive</option>
+              <option value="Technical">Technical</option>
+              <option value="Social Media">Social Media</option>
+              <option value="News Style">News Style</option>
+              <option value="Storytelling">Storytelling</option>
+              <option value="Academic">Academic</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="font-semibold text-slate-300 block mb-1.5">Level of Detail</label>
+            <select
+              value={config.levelOfDetail}
+              onChange={(e) => onUpdateConfig({ ...config, levelOfDetail: e.target.value as DetailLevel })}
+              className="w-full rounded-xl bg-slate-900 border border-slate-800 p-2.5 text-white focus:outline-none focus:border-purple-500 cursor-pointer"
+            >
+              <option value="Concise">Concise</option>
+              <option value="Balanced">Balanced</option>
+              <option value="Detailed">Detailed</option>
             </select>
           </div>
         </div>

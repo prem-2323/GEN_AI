@@ -1,1 +1,1141 @@
-[]
+[
+  {
+    "id": "proj_default",
+    "projectId": "proj_default",
+    "userId": "local-workspace",
+    "name": "Default Project",
+    "projectName": "Default Project",
+    "title": "Default Project",
+    "status": "created",
+    "createdAt": "2026-09-26T03:02:42.607501+00:00",
+    "updatedAt": "2026-09-26T03:02:42.607501+00:00",
+    "analysis": {
+      "analysisId": "ANA_src-text-1790396061325_ef9c6930",
+      "summary": "Artificial Intelligence (AI) is changing the way students learn and teachers teach. AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses. They can also help students understand difficult topics, answer questions, and practice lessons. Teachers ",
+      "factsCount": 10,
+      "entitiesCount": 7,
+      "eventsCount": 0,
+      "metricsCount": 0,
+      "updatedAt": "2026-09-26T04:14:41.798769+00:00"
+    }
+  },
+  {
+    "id": "proj-1790392125395",
+    "projectId": "proj-1790392125395",
+    "userId": "local-workspace",
+    "name": "X_Twitter_Thread_1790164069128",
+    "projectName": "X_Twitter_Thread_1790164069128",
+    "title": "X_Twitter_Thread_1790164069128",
+    "description": "General Public \u00b7 Professional \u00b7 2 deliverables",
+    "sourceFile": null,
+    "source": {
+      "id": "src-0a3ff9dd4d41",
+      "name": "X_Twitter_Thread_1790164069128.txt",
+      "type": "TXT",
+      "size": "0.0 MB",
+      "status": "ready",
+      "uploadedAt": "2026-09-26T03:02:42.628735+00:00",
+      "extractedText": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours. Here is the technical breakdown and mitigation protocol.\n\n[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit. This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.\n\n[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation. Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.\n\n[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys\n\n[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads. Stay fortified."
+    },
+    "sourceCount": 1,
+    "status": "Completed",
+    "config": {
+      "targetAudience": "General Public",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Balanced",
+      "objective": "Inform",
+      "contentStyle": "Professional"
+    },
+    "selectedOutputs": [
+      "linkedin",
+      "twitter"
+    ],
+    "analysis": {
+      "detectedTopic": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized agains",
+      "confidenceScore": 0.98,
+      "keyEntities": [
+        "Post",
+        "THREAT INTEL",
+        "CVE-2026-4418",
+        "State-linked",
+        "Midnight Storm",
+        "Here",
+        "THE VECTOR",
+        "Attackers"
+      ],
+      "importantFacts": [
+        "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.",
+        "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+        "Here is the technical breakdown and mitigation protocol.",
+        "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.",
+        "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.",
+        "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation.",
+        "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.",
+        "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys"
+      ],
+      "audienceSignals": [
+        "Executive Leadership",
+        "Security Operations",
+        "IT Infrastructure"
+      ],
+      "communicationObjective": "Inform stakeholders of critical vulnerabilities and immediate mandates.",
+      "sentiment": "Formal & Action-Oriented",
+      "readabilityScore": "Technical / Professional (Grade 12)"
+    },
+    "uckr": {
+      "stats": {
+        "totalFacts": 10,
+        "totalEntities": 19,
+        "totalEvents": 2,
+        "totalMetrics": 7,
+        "totalActions": 1,
+        "totalSources": 1,
+        "totalRelationships": 12,
+        "coverage": 100,
+        "grounding": 100,
+        "readiness": 100
+      },
+      "facts": [
+        {
+          "id": "fact_001",
+          "value": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.",
+          "type": "Risk / Impact",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_002",
+          "value": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_003",
+          "value": "Here is the technical breakdown and mitigation protocol.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Here is the technical breakdown and mitigation protocol.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_004",
+          "value": "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_005",
+          "value": "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.",
+          "type": "Capability",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_006",
+          "value": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_007",
+          "value": "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_008",
+          "value": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n\u2022 Rotate identity provider root signing keys",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_009",
+          "value": "[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads.",
+          "type": "Risk / Impact",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_010",
+          "value": "Stay fortified.",
+          "type": "Proposition",
+          "sourceDoc": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Stay fortified.",
+          "usedInDeliverables": []
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Post",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_002",
+          "name": "THREAT INTEL",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_003",
+          "name": "CVE-2026-4418",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_004",
+          "name": "State-linked",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_005",
+          "name": "Midnight Storm",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_006",
+          "name": "Here",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_007",
+          "name": "THE VECTOR",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_008",
+          "name": "Attackers",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_009",
+          "name": "OAuth",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_010",
+          "name": "SAML",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_011",
+          "name": "FIDO2",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_012",
+          "name": "THE SPEED",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_013",
+          "name": "Observability",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_014",
+          "name": "Exfiltration",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_015",
+          "name": "IMMEDIATE MITIGATION ACTIONS",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_016",
+          "name": "Revoke ALL",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_017",
+          "name": "Enforce",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_018",
+          "name": "Rotate",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_019",
+          "name": "Stay",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        }
+      ],
+      "events": [
+        {
+          "id": "event_001",
+          "title": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Post",
+            "THREAT INTEL"
+          ]
+        },
+        {
+          "id": "event_002",
+          "title": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrati",
+          "timestamp": "",
+          "impact": "Documented event milestone",
+          "actors": [
+            "Post",
+            "THREAT INTEL"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric_001",
+          "name": "Metric 1",
+          "value": "2026",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_002",
+          "name": "Metric 2",
+          "value": "4418",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_003",
+          "name": "Metric 3",
+          "value": "34",
+          "unit": "",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_004",
+          "name": "Metric 4",
+          "value": "72 hours",
+          "unit": "hours",
+          "context": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways. State-li",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_005",
+          "name": "Metric 5",
+          "value": "18",
+          "unit": "",
+          "context": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tena",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_006",
+          "name": "Metric 6",
+          "value": "53",
+          "unit": "",
+          "context": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tena",
+          "confidence": 0.98
+        },
+        {
+          "id": "metric_007",
+          "name": "Metric 7",
+          "value": "15",
+          "unit": "",
+          "context": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute eph",
+          "confidence": 0.98
+        }
+      ],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Post",
+          "relation": "RELATED_TO",
+          "target": "THREAT INTEL",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "THREAT INTEL",
+          "relation": "TARGETED",
+          "target": "CVE-2026-4418",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "CVE-2026-4418",
+          "relation": "RELATED_TO",
+          "target": "State-linked",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "State-linked",
+          "relation": "TARGETED",
+          "target": "Midnight Storm",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "Midnight Storm",
+          "relation": "RELATED_TO",
+          "target": "Here",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Here",
+          "relation": "TARGETED",
+          "target": "THE VECTOR",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_007",
+          "source": "THE VECTOR",
+          "relation": "RELATED_TO",
+          "target": "Attackers",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_008",
+          "source": "Attackers",
+          "relation": "TARGETED",
+          "target": "OAuth",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_009",
+          "source": "OAuth",
+          "relation": "RELATED_TO",
+          "target": "SAML",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_010",
+          "source": "SAML",
+          "relation": "TARGETED",
+          "target": "FIDO2",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_011",
+          "source": "FIDO2",
+          "relation": "RELATED_TO",
+          "target": "THE SPEED",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_012",
+          "source": "THE SPEED",
+          "relation": "TARGETED",
+          "target": "Observability",
+          "confidence": 0.95
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Deploy an eBPF kernel rootkit",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Post"
+        }
+      ],
+      "sources": [
+        {
+          "id": "citation_001",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "[Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways."
+        },
+        {
+          "id": "citation_002",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours."
+        },
+        {
+          "id": "citation_003",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Here is the technical breakdown and mitigation protocol."
+        },
+        {
+          "id": "citation_004",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "[Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit."
+        },
+        {
+          "id": "citation_005",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding."
+        },
+        {
+          "id": "citation_006",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "[Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation."
+        },
+        {
+          "id": "citation_007",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Exfiltration uses stealth DNS tunneling over port 53 disguised as routine system telemetry."
+        },
+        {
+          "id": "citation_008",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "[Post 4/5]\n4/5 IMMEDIATE MITIGATION ACTIONS:\n\u2022 Revoke ALL active session refresh tokens globally\n\u2022 Enforce 15-minute ephemeral token lifetimes\n\u2022 Run cryptographic verification on loaded eBPF programs\n"
+        },
+        {
+          "id": "citation_009",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "[Post 5/5]\n5/5 We have synthesized the full threat package into an executive brief, slide presentation, and technical advisory checklist for engineering leads."
+        },
+        {
+          "id": "citation_010",
+          "title": "X_Twitter_Thread_1790164069128.txt",
+          "page": 2,
+          "section": "chunk_002",
+          "excerpt": "Stay fortified."
+        }
+      ]
+    },
+    "deliverables": {
+      "linkedin": {
+        "hook": "\ud83d\udea8 Key Update: [Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterpr",
+        "body": "Key Insights & Developments:\n\n\u2022 [Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.\n\u2022 State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.\n\u2022 Here is the technical breakdown and mitigation protocol.\n\u2022 [Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.\n\u2022 This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.\n\u2022 [Post 3/5]\n3/5 THE SPEED: Observability logs record a terrifying 18-minute mean time from initial gateway breach to tenant-wide administrative privilege escalation.\n\nHuman insight, critical thinking, and responsible governance remain irreplaceable cornerstones.",
+        "callToAction": "How is your team navigating this transition? Let us know in the comments.",
+        "hashtags": [
+          "#ArtificialIntelligence",
+          "#Leadership",
+          "#Innovation",
+          "#Strategy"
+        ],
+        "characterCount": 520,
+        "targetAudience": "General Public"
+      },
+      "twitter": {
+        "singlePost": "\ud83e\uddf5 [Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterpr #AI #Innovation",
+        "thread": [
+          {
+            "index": 1,
+            "text": "1/5 [Post 1/5]\n1/5 \ud83d\udea8 THREAT INTEL: CVE-2026-4418 zero-day actively weaponized against enterprise identity gateways.",
+            "charCount": 112
+          },
+          {
+            "index": 2,
+            "text": "2/5 State-linked actor \"Midnight Storm\" has compromised 34 global enterprises within 72 hours.",
+            "charCount": 90
+          },
+          {
+            "index": 3,
+            "text": "3/5 Here is the technical breakdown and mitigation protocol.",
+            "charCount": 56
+          },
+          {
+            "index": 4,
+            "text": "4/5 [Post 2/5]\n2/5 THE VECTOR: Attackers compromise edge TLS termination proxies and deploy an eBPF kernel rootkit.",
+            "charCount": 111
+          },
+          {
+            "index": 5,
+            "text": "5/5 This allows real-time scraping of OAuth bearer tokens and SAML assertions directly out of memory, completely bypassing standard FIDO2 token binding.",
+            "charCount": 148
+          }
+        ]
+      }
+    },
+    "createdAt": "2026-09-26T03:08:45.406262+00:00",
+    "updatedAt": "2026-09-26T03:08:45.406262+00:00"
+  },
+  {
+    "id": "proj-1790396081850",
+    "projectId": "proj-1790396081850",
+    "userId": "local-workspace",
+    "name": "Pasted_Source_Text",
+    "projectName": "Pasted_Source_Text",
+    "title": "Pasted_Source_Text",
+    "description": "General Public \u00b7 Professional \u00b7 1 deliverables",
+    "sourceFile": null,
+    "source": {
+      "id": "src-text-1790396061325",
+      "name": "Pasted_Source_Text.txt",
+      "type": "TEXT",
+      "size": "0.7 KB",
+      "status": "ready",
+      "uploadedAt": "2026-09-26T04:14:21.325Z",
+      "extractedText": "Artificial Intelligence (AI) is changing the way students learn and teachers teach. AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses. They can also help students understand difficult topics, answer questions, and practice lessons. Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support. AI can save time and make education more accessible. However, AI should be used responsibly. Students should not depend completely on AI for their studies. Human teachers, critical thinking, creativity, and communication skills remain important."
+    },
+    "sourceCount": 1,
+    "status": "Completed",
+    "config": {
+      "targetAudience": "General Public",
+      "tone": "Professional",
+      "language": "English",
+      "levelOfDetail": "Balanced",
+      "objective": "Inform",
+      "contentStyle": "Professional"
+    },
+    "selectedOutputs": [
+      "executive_summary"
+    ],
+    "analysis": {
+      "detectedTopic": "Artificial Intelligence (AI) is changing the way students learn and teachers tea",
+      "confidenceScore": 0.98,
+      "keyEntities": [
+        "Artificial Intelligence",
+        "AI-powered",
+        "They",
+        "Teachers",
+        "However",
+        "Students",
+        "Human"
+      ],
+      "importantFacts": [
+        "Artificial Intelligence (AI) is changing the way students learn",
+        "teachers teach.",
+        "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses.",
+        "They can also help students understand difficult topics, answer questions, and practice lessons.",
+        "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support.",
+        "AI can save time and make education more accessible.",
+        "However, AI should be used responsibly.",
+        "Students should not depend completely on AI for their studies."
+      ],
+      "audienceSignals": [
+        "Executive Leadership",
+        "Security Operations",
+        "IT Infrastructure"
+      ],
+      "communicationObjective": "Inform stakeholders of critical vulnerabilities and immediate mandates.",
+      "sentiment": "Formal & Action-Oriented",
+      "readabilityScore": "Technical / Professional (Grade 12)"
+    },
+    "uckr": {
+      "stats": {
+        "totalFacts": 10,
+        "totalEntities": 7,
+        "totalEvents": 0,
+        "totalMetrics": 0,
+        "totalActions": 2,
+        "totalSources": 1,
+        "totalRelationships": 6,
+        "coverage": 100,
+        "grounding": 100,
+        "readiness": 100
+      },
+      "facts": [
+        {
+          "id": "fact_001",
+          "value": "Artificial Intelligence (AI) is changing the way students learn",
+          "type": "Proposition",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Artificial Intelligence (AI) is changing the way students learn",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_002",
+          "value": "teachers teach.",
+          "type": "Proposition",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "teachers teach.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_003",
+          "value": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses.",
+          "type": "Capability",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_004",
+          "value": "They can also help students understand difficult topics, answer questions, and practice lessons.",
+          "type": "Capability",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "They can also help students understand difficult topics, answer questions, and practice lessons.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_005",
+          "value": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support.",
+          "type": "Capability",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_006",
+          "value": "AI can save time and make education more accessible.",
+          "type": "Capability",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "AI can save time and make education more accessible.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_007",
+          "value": "However, AI should be used responsibly.",
+          "type": "Action Mandate",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "However, AI should be used responsibly.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_008",
+          "value": "Students should not depend completely on AI for their studies.",
+          "type": "Risk / Impact",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Students should not depend completely on AI for their studies.",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_009",
+          "value": "Human teachers, critical thinking, creativity,",
+          "type": "Proposition",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "Human teachers, critical thinking, creativity,",
+          "usedInDeliverables": []
+        },
+        {
+          "id": "fact_010",
+          "value": "communication skills remain important.",
+          "type": "Action Mandate",
+          "sourceDoc": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "",
+          "confidence": 0.98,
+          "quote": "communication skills remain important.",
+          "usedInDeliverables": []
+        }
+      ],
+      "entities": [
+        {
+          "id": "entity_001",
+          "name": "Artificial Intelligence",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_002",
+          "name": "AI-powered",
+          "category": "Technology / Standard",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_003",
+          "name": "They",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_004",
+          "name": "Teachers",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_005",
+          "name": "However",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_006",
+          "name": "Students",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        },
+        {
+          "id": "entity_007",
+          "name": "Human",
+          "category": "Actor / Stakeholder",
+          "mentions": 1,
+          "role": "Source Actor / Technology"
+        }
+      ],
+      "events": [],
+      "metrics": [],
+      "relationships": [
+        {
+          "id": "rel_001",
+          "source": "Artificial Intelligence",
+          "relation": "RELATED_TO",
+          "target": "AI-powered",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_002",
+          "source": "AI-powered",
+          "relation": "TARGETED",
+          "target": "They",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_003",
+          "source": "They",
+          "relation": "RELATED_TO",
+          "target": "Teachers",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_004",
+          "source": "Teachers",
+          "relation": "TARGETED",
+          "target": "However",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_005",
+          "source": "However",
+          "relation": "RELATED_TO",
+          "target": "Students",
+          "confidence": 0.95
+        },
+        {
+          "id": "rel_006",
+          "source": "Students",
+          "relation": "TARGETED",
+          "target": "Human",
+          "confidence": 0.95
+        }
+      ],
+      "actions": [
+        {
+          "id": "action_001",
+          "action": "Should be used responsibly",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Artificial Intelligence"
+        },
+        {
+          "id": "action_002",
+          "action": "Should not depend completely on AI for their studies",
+          "priority": "P2 Medium",
+          "timeframe": "Operational Timeline",
+          "owner": "Artificial Intelligence"
+        }
+      ],
+      "sources": [
+        {
+          "id": "citation_001",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Artificial Intelligence (AI) is changing the way students learn"
+        },
+        {
+          "id": "citation_002",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "teachers teach."
+        },
+        {
+          "id": "citation_003",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses."
+        },
+        {
+          "id": "citation_004",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "They can also help students understand difficult topics, answer questions, and practice lessons."
+        },
+        {
+          "id": "citation_005",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support."
+        },
+        {
+          "id": "citation_006",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "AI can save time and make education more accessible."
+        },
+        {
+          "id": "citation_007",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "However, AI should be used responsibly."
+        },
+        {
+          "id": "citation_008",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Students should not depend completely on AI for their studies."
+        },
+        {
+          "id": "citation_009",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "Human teachers, critical thinking, creativity,"
+        },
+        {
+          "id": "citation_010",
+          "title": "Pasted_Source_Text.txt",
+          "page": 1,
+          "section": "chunk_001",
+          "excerpt": "communication skills remain important."
+        }
+      ]
+    },
+    "deliverables": {
+      "executive_summary": {
+        "priority": "High",
+        "keyFindingsCount": 6,
+        "recommendationsCount": 2,
+        "executiveOverview": "Artificial Intelligence (AI) is changing the way students learn teachers teach. AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses.",
+        "keyFindings": [
+          {
+            "metric": "Point 1",
+            "title": "Artificial Intelligence (AI) is changing the way students learn",
+            "description": "Artificial Intelligence (AI) is changing the way students learn"
+          },
+          {
+            "metric": "Point 2",
+            "title": "teachers teach.",
+            "description": "teachers teach."
+          },
+          {
+            "metric": "Point 3",
+            "title": "AI-powered tools can provide personalized learning experiences ba",
+            "description": "AI-powered tools can provide personalized learning experiences based on a student's strengths and weaknesses."
+          },
+          {
+            "metric": "Point 4",
+            "title": "They can also help students understand difficult topics, answer q",
+            "description": "They can also help students understand difficult topics, answer questions, and practice lessons."
+          },
+          {
+            "metric": "Point 5",
+            "title": "Teachers can use AI to create learning materials, evaluate assign",
+            "description": "Teachers can use AI to create learning materials, evaluate assignments, and identify areas where students need additional support."
+          },
+          {
+            "metric": "Point 6",
+            "title": "AI can save time and make education more accessible.",
+            "description": "AI can save time and make education more accessible."
+          }
+        ],
+        "implications": [
+          "Students should not depend completely on AI for their studies."
+        ],
+        "strategicActions": [
+          "Implement structured institutional guidelines for responsible AI adoption.",
+          "Empower practitioners and stakeholders with targeted skill preservation and oversight."
+        ]
+      }
+    },
+    "createdAt": "2026-09-26T04:14:41.853058+00:00",
+    "updatedAt": "2026-09-26T04:14:41.853058+00:00"
+  },
+  {
+    "id": "proj-mm-e7044857",
+    "projectId": "proj-mm-e7044857",
+    "userId": "local-workspace",
+    "name": "Multimodal Test Project",
+    "projectName": "Multimodal Test Project",
+    "title": "Multimodal Test Project",
+    "description": "",
+    "sourceFile": null,
+    "source": null,
+    "sourceCount": 0,
+    "status": "created",
+    "config": null,
+    "selectedOutputs": [],
+    "analysis": {
+      "analysisId": "ANA_src-df468c1ae74c_471903f1",
+      "summary": "Multimodal Test Project",
+      "factsCount": 1,
+      "entitiesCount": 1,
+      "eventsCount": 0,
+      "metricsCount": 0,
+      "updatedAt": "2026-09-26T05:02:28.312447+00:00"
+    },
+    "uckr": null,
+    "deliverables": null,
+    "createdAt": "2026-09-26T04:56:25.435233+00:00",
+    "updatedAt": "2026-09-26T04:56:25.435233+00:00"
+  },
+  {
+    "id": "proj-mm-1331528f",
+    "projectId": "proj-mm-1331528f",
+    "userId": "local-workspace",
+    "name": "Multimodal Test Project",
+    "projectName": "Multimodal Test Project",
+    "title": "Multimodal Test Project",
+    "description": "",
+    "sourceFile": null,
+    "source": null,
+    "sourceCount": 0,
+    "status": "created",
+    "config": null,
+    "selectedOutputs": [],
+    "analysis": {
+      "analysisId": "ANA_src-9ee32510e59c_b30ec7d0",
+      "summary": "MULTIMODAL INCIDENT REPORT 2026\nA breach affected 240 systems on 15 August 2026 exploiting CVE-2026-4418.",
+      "factsCount": 2,
+      "entitiesCount": 7,
+      "eventsCount": 1,
+      "metricsCount": 9,
+      "updatedAt": "2026-09-26T05:13:35.588416+00:00"
+    },
+    "uckr": null,
+    "deliverables": null,
+    "createdAt": "2026-09-26T05:10:14.209963+00:00",
+    "updatedAt": "2026-09-26T05:10:14.209963+00:00"
+  },
+  {
+    "id": "proj-mm-2da1d546",
+    "projectId": "proj-mm-2da1d546",
+    "userId": "local-workspace",
+    "name": "Multimodal Test Project",
+    "projectName": "Multimodal Test Project",
+    "title": "Multimodal Test Project",
+    "description": "",
+    "sourceFile": null,
+    "source": null,
+    "sourceCount": 0,
+    "status": "created",
+    "config": null,
+    "selectedOutputs": [],
+    "analysis": null,
+    "uckr": null,
+    "deliverables": null,
+    "createdAt": "2026-09-26T05:14:53.833140+00:00",
+    "updatedAt": "2026-09-26T05:14:53.833140+00:00"
+  }
+]

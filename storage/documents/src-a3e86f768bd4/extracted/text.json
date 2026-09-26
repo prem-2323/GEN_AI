@@ -1,0 +1,44 @@
+{
+  "documentId": "src-a3e86f768bd4",
+  "filename": "chart_evidence.png",
+  "fileType": "image",
+  "mimeType": "image/png",
+  "sizeBytes": 50660,
+  "metadata": {
+    "imageFormat": "png",
+    "width": 320,
+    "height": 240,
+    "ocrApplied": false,
+    "ocrCharacterCount": 0,
+    "characterCount": 0,
+    "wordCount": 0,
+    "visionChannel": "gemma",
+    "imageId": "img_6bf0e4b1f21d",
+    "imagePath": "documents/src-a3e86f768bd4/images/img_6bf0e4b1f21d.png"
+  },
+  "content": "",
+  "pages": [
+    {
+      "pageNumber": 1,
+      "text": "",
+      "characterCount": 0,
+      "wordCount": 0
+    }
+  ],
+  "sections": [],
+  "tables": [],
+  "images": [
+    {
+      "imageId": "img_6bf0e4b1f21d",
+      "filename": "img_6bf0e4b1f21d.png",
+      "path": "documents/src-a3e86f768bd4/images/img_6bf0e4b1f21d.png",
+      "pageNumber": 1,
+      "width": 320,
+      "height": 240,
+      "format": "png"
+    }
+  ],
+  "extractionStatus": "completed",
+  "error": null,
+  "createdAt": "2026-09-26T05:18:22.237332+00:00"
+}

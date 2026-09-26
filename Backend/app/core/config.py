@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     document_storage_root: str = "./storage/documents"
     data_storage_root: str = "./storage/data"
     max_upload_mb: int = DEFAULT_MAX_UPLOAD_MB
-    allowed_upload_exts: str = "pdf,docx,txt,md,png,jpg,jpeg"
+    allowed_upload_exts: str = "pdf,docx,txt,md,pptx,png,jpg,jpeg,json,csv,log,webp,gif,bmp,tiff"
 
     # AI Model Configuration
     ollama_enabled: bool = True

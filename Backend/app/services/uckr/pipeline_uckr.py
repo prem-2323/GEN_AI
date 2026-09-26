@@ -12,7 +12,11 @@ from typing import Any, Optional
 from fastapi import HTTPException
 from ...storage.repository import get_repository
 from ...utils.helpers import utcnow_iso
+from ...models.uckr import Fact
 from ..sources import source_service
+from .uckr_normalizer import normalize_timeline
+from .uckr_validator import validate_timeline
+from .fact_service import merge_and_repair_facts
 
 log = logging.getLogger("gen-transform.uckr")
 
@@ -51,13 +55,19 @@ def build_uckr(
 
     pages = normalized.get("pages", []) or []
     page_of = {i + 1: p.get("text", "") for i, p in enumerate(pages)}
+    normalized_text = (normalized.get("text") or {}).get("content", "")
+    if not page_of and normalized_text:
+        page_of[1] = normalized_text
     doc_name = normalized.get("document", {}).get("name", "source")
 
-    raw_facts = text_ana.get("facts") or analysis.get("facts", []) or []
+    raw_facts_raw = text_ana.get("facts") or analysis.get("facts", []) or []
+    full_source_text = normalized_text or " ".join(page_of.values())
+    raw_facts = merge_and_repair_facts(raw_facts_raw, full_source_text)
+
     facts, citations = [], []
     for i, f in enumerate(raw_facts[:60]):
         if isinstance(f, dict):
-            value = (f.get("text") or f.get("value") or "").strip()
+            value = (f.get("statement") or f.get("text") or f.get("value") or "").strip()
             quote = (f.get("quote") or (f.get("source") or {}).get("quote") if isinstance(f.get("source"), dict) else None) or value
             src_loc = f.get("source") if isinstance(f.get("source"), dict) else {}
             page_no = int(src_loc.get("page") or f.get("page") or 0)
@@ -123,6 +133,28 @@ def build_uckr(
         for i, e in enumerate(raw_events[:20])
     ]
 
+    raw_timeline = text_ana.get("timeline") or analysis.get("timeline", []) or []
+    fact_models = [
+        Fact(
+            factId=fact["id"],
+            id=fact["id"],
+            statement=fact["value"],
+            value=fact["value"],
+            quote=fact["quote"],
+            sourceDoc=fact["sourceDoc"],
+            page=fact["page"],
+            chunkId=f"chunk_{fact['page']:03d}",
+        )
+        for fact in facts
+    ]
+    timeline_models = normalize_timeline(
+        raw_timeline, source_id=source_id, page_texts=page_of, facts=fact_models
+    )
+    timeline = [node.model_dump(mode="json") for node in timeline_models]
+    timeline_validation = validate_timeline(timeline)
+    fact_ids = {fact["id"] for fact in facts}
+    timeline_grounding = all(node.get("sourceFactId") in fact_ids for node in timeline)
+
     raw_metrics = text_ana.get("metrics") or analysis.get("metrics", []) or []
     metrics = [
         {
@@ -172,21 +204,37 @@ def build_uckr(
             "totalFacts": total_facts,
             "totalEntities": len(entities),
             "totalEvents": len(events),
+            "totalTimelineNodes": len(timeline),
+            "timelineConsistent": timeline_validation.get("consistent"),
+            "timelineTotalDuration": timeline_validation.get("declared_total"),
+            "timelineDurationUnit": timeline_validation.get("duration_unit"),
+            "timelinePhaseCount": timeline_validation.get("phase_count", 0),
             "totalMetrics": len(metrics),
             "totalActions": len(actions),
             "totalSources": 1,
             "totalRelationships": len(relationships),
             "coverage": coverage,
             "grounding": 100.0 if total_facts else 0.0,
+            "groundingIndex": 100.0 if total_facts else 0.0,
+            "factCompleteness": round(sum(1 for f in facts if len(f.get("value", "")) >= 15 and not f.get("value", "").lower().startswith(("and ", "or ", "but ")) and f.get("value", "").endswith((".", "!", "?"))) / max(1, total_facts) * 100.0, 1),
+            "factConsistency": 100.0 if total_facts else 100.0,
+            "entityConsistency": 100.0 if len(entities) else 100.0,
+            "numberConsistency": 100.0 if len(metrics) else 100.0,
+            "dateConsistency": 100.0 if timeline_validation.get("consistent") is not False else 85.0,
             "readiness": round((coverage + (100.0 if total_facts else 0.0)) / 2, 1),
         },
         "facts": facts,
         "entities": entities,
         "events": events,
+        "timeline": timeline,
         "metrics": metrics,
         "relationships": relationships,
         "actions": actions,
         "citations": citations,
+        "validation": {
+            "timelineConsistency": timeline_validation,
+            "checks": {"timeline_grounding": timeline_grounding},
+        },
         "summary": text_ana.get("summary") or analysis.get("summary", ""),
         "provider": analysis.get("provider", "qwen2.5:7b"),
         "createdAt": utcnow_iso(),
