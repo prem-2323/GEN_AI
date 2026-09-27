@@ -6,7 +6,7 @@ serviceAccountKey.json
 serviceAccount*.json
 mock_db.json
 # local file bytes + generated exports (metadata lives in the JSON repository)
-storage/
+/storage/
 uploads/
 outputs/
 # Media Studio generated artifacts

@@ -444,10 +444,51 @@ Maintains complete regulatory auditability for every claim generated.
 
 ## 🚀 Installation & Setup
 
-### 1. Clone Repository & Setup Virtual Environment
+### Option 0: Quickstart with Docker (Recommended)
+
+Run the entire platform (Frontend, Backend API, and Neo4j Graph Database) with a single command — no local Python, Node.js, or Neo4j installation required!
+
+#### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or Docker Engine + Docker Compose.
+
+#### 1. Copy Environment File
 ```bash
 # Clone the repository
-### Option A: One-Click Installation (Recommended)
+git clone https://github.com/prem-2323/GEN_AI.git
+cd GEN_AI
+
+# Create your local environment file from template
+cp .env.example .env
+```
+*(Optionally set `NEO4J_PASSWORD` or `GEMINI_API_KEY` in `.env`).*
+
+#### 2. Launch the Stack
+```bash
+docker compose up --build
+```
+
+#### 3. Access Services
+- **Frontend Application UI**: [http://localhost](http://localhost)
+- **FastAPI Interactive API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **FastAPI Health Status**: [http://localhost:8000/health](http://localhost:8000/health)
+- **Neo4j Graph Database Browser**: [http://localhost:7474](http://localhost:7474) *(User: `neo4j`, Password: matching `NEO4J_PASSWORD`)*
+
+#### Optional: Local Ollama LLM Connection
+To connect the Dockerized backend to an Ollama LLM running natively on your host machine:
+Set `OLLAMA_BASE_URL=http://host.docker.internal:11434` in your `.env` file.
+
+#### Stop & Reset Stack
+```bash
+# Stop containers
+docker compose down
+
+# Stop containers and wipe all persistent storage volumes (FAISS, Neo4j, uploads)
+docker compose down -v
+```
+
+---
+
+### Option A: One-Click Native Script Installation
 
 #### On Windows (Command Prompt):
 ```cmd

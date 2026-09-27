@@ -68,6 +68,13 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Application startup and graceful shutdown lifecycle."""
     log.info("Starting %s in %s mode (port %d)", settings.app_name, settings.environment, settings.port)
+    # Background model cache initialization (bge-small-en-v1.5)
+    try:
+        import asyncio
+        from .embeddings.embedder import get_embedder
+        asyncio.create_task(asyncio.to_thread(get_embedder))
+    except Exception as exc:
+        log.warning("Embedding model pre-fetch deferred: %s", exc)
     yield
     log.info("%s backend shutdown complete.", settings.app_name)
 
