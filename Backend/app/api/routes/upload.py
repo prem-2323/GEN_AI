@@ -1,6 +1,7 @@
 """Upload API routes for projects and standalone documents (Phase 3 Ingestion)."""
 from __future__ import annotations
 
+import asyncio
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from ..dependencies import get_workspace_identity
@@ -25,7 +26,9 @@ async def upload_project_source(
     contents = await file.read()
 
     try:
-        return ingestion_service.process_project_upload(
+        # Run in thread pool — ingestion does file I/O, extraction, and potentially Ollama calls
+        return await asyncio.to_thread(
+            ingestion_service.process_project_upload,
             project_id=project_id,
             uid=uid,
             filename=filename,
@@ -51,7 +54,9 @@ async def upload_source(
     contents = await file.read()
 
     try:
-        doc = ingestion_service.process_document_ingestion(
+        # Run in thread pool — ingestion does file I/O and extraction
+        doc = await asyncio.to_thread(
+            ingestion_service.process_document_ingestion,
             filename=filename,
             content_bytes=contents,
             content_type=file.content_type or "",

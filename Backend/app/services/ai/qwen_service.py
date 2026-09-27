@@ -49,13 +49,24 @@ def _ollama_client(timeout: float = 180.0):
         return None
 
 
-def _call_ollama(text: str, model_name: str, timeout: float = 180.0) -> Optional[dict]:
+def _call_ollama(text: str, model_name: str, timeout: float = 60.0) -> Optional[dict]:
     client = _ollama_client(timeout=timeout)
     if client is None:
         return None
     try:
+        # Dynamically check available models in Ollama
+        tags_resp = client.list()
+        available = [m.get("name", m.get("model", "")) for m in tags_resp.get("models", [])]
+        target_model = model_name
+        # Match by name prefix or exact
+        if target_model not in available and not any(target_model.split(":")[0] in m for m in available):
+            if available:
+                target_model = available[0]
+            else:
+                return None
+
         resp = client.chat(
-            model=model_name,
+            model=target_model,
             messages=[
                 {"role": "system", "content": QWEN_EXTRACTION_SYSTEM_PROMPT},
                 {"role": "user", "content": f"Document text to analyze:\n\n{text[:16000]}"},
@@ -270,7 +281,7 @@ def analyze_text_with_qwen(
 def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict: Optional[int] = None) -> str:
     """Send generation prompt exclusively to local Ollama Qwen model."""
     settings = get_settings()
-    client = _ollama_client(timeout=timeout or 8.0)
+    client = _ollama_client(timeout=timeout or 180.0)
     if client:
         try:
             resp = client.chat(

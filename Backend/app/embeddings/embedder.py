@@ -89,8 +89,22 @@ class SentenceTransformerEmbeddingModel(EmbeddingModelInterface):
 
         try:
             from sentence_transformers import SentenceTransformer
+            import os
 
-            self._model = SentenceTransformer(self._model_name, device=self._device)
+            # Disable noisy HuggingFace warnings
+            os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+            os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+
+            # Prefer cached local files first for instant startup (0s network delay)
+            try:
+                self._model = SentenceTransformer(
+                    self._model_name,
+                    device=self._device,
+                    local_files_only=True,
+                )
+            except Exception:
+                self._model = SentenceTransformer(self._model_name, device=self._device)
+
             get_dim = getattr(self._model, "get_embedding_dimension", getattr(self._model, "get_sentence_embedding_dimension", None))
             self._dim = get_dim() if get_dim else 384
         except Exception as exc:

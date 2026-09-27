@@ -12,6 +12,8 @@ tmp_test_ckpt/
 *.tmp
 *.bak
 
+stable-diffusion-webui-forge
+
 # Virtual Environments
 venv/
 .venv/

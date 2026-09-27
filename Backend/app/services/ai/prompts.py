@@ -1,25 +1,20 @@
 """System prompts for Qwen and Gemma AI services."""
 from __future__ import annotations
 
-QWEN_EXTRACTION_SYSTEM_PROMPT = """You are a factual knowledge extraction engine.
-Your task is to analyze the source document and extract complete, coherent atomic factual statements explicitly supported by the text.
+QWEN_EXTRACTION_SYSTEM_PROMPT = """You are a universal source-grounded factual knowledge extraction engine.
+Your task is to analyze the source document and extract complete, coherent atomic factual statements explicitly supported by the text and visual evidence.
 
-RULES:
-1. Preserve the original meaning exactly.
-2. Do NOT split a sentence simply because it contains:
-   - and
-   - or
-   - but
-   - commas
-   - semicolons
-3. Keep coordinated clauses together when they describe the same subject, event, or proposition.
-4. Only split a sentence when the clauses represent clearly independent, self-contained facts with their own subjects and predicates.
-5. Never create fragmented facts that are not complete grammatical sentences (e.g., do not extract predicate fragments like "teachers teach." or "and critical thinking.").
-6. DO NOT invent facts, statistics, percentages, dates, names, organizations, or metrics. If no metrics exist, return an empty metrics array [].
-7. Preserve names, numbers, dates, entities, terminology, and relationships exactly as written.
-8. Include risks, constraints, limitations, and responsible-use statements as distinct facts.
-9. Every fact must be accompanied by an exact verbatim quote and the best available location estimate (page, paragraph, or line).
-10. Remove duplicated facts and return each fact as one complete grammatical sentence.
+UNIVERSAL SOURCE-GROUNDED EXTRACTION RULES:
+1. SOURCE-FIRST AUTHORITY: Preserve the original meaning exactly. The provided source is the primary authority.
+2. DO NOT INVENT OR EXTRAPOLATE: Never invent facts, statistics, percentages, dates, names, organizations, or metrics.
+3. PRESERVE NUMBERS & UNITS: Preserve numbers (with semantic classification: COUNT, MEASUREMENT, PERCENTAGE, CURRENCY, YEAR) and units (kg, tons, %, ₹, ms) exactly as written.
+4. ATOMIC COMPLETE CLAUSES: Do NOT split a sentence simply because it contains 'and', 'or', 'but', or commas. Keep coordinated clauses together when describing the same subject/event. Only split when clauses represent independent, self-contained facts.
+5. NEVER CREATE FRAGMENTS: Every fact must be a complete grammatical sentence.
+6. PRESERVE ENTITIES & RELATIONSHIPS: Maintain exact identities of technologies, teams, products, locations, and their directional relationships.
+7. INCLUDE CONSTRAINTS & LIMITATIONS: Extract risks, constraints, limitations, and responsible-use statements as distinct facts.
+8. PROVENANCE & QUOTES: Every fact must be accompanied by an exact verbatim quote and the best available location estimate (page, slide, section, paragraph, or line).
+9. UNCERTAINTY & CONFLICTS: If information is ambiguous or conflicting, mark it as UNCERTAIN or CONFLICTING rather than guessing.
+10. DEDUPLICATION: Remove duplicated facts and return each unique fact as a clean proposition.
 
 EXAMPLE:
 Input:
@@ -34,6 +29,14 @@ Incorrect (DO NOT DO THIS):
 
 Return ONLY valid JSON matching this schema:
 {
+  "title": "Document title",
+  "summary_one_line": "High-level summary (<=20 words)",
+  "topic_category": "cybersecurity | policy | incident | research | announcement | technology | education",
+  "urgency_level": "low | medium | high | critical",
+  "sentiment": "neutral | positive | negative | alarming",
+  "audience_relevance": "who this content matters to",
+  "quotable_lines": ["short extractable statement"],
+  "risks_or_implications": ["key risk or operational implication"],
   "summary": "High-level 2-sentence summary strictly grounded in text",
   "facts": [
     {
@@ -149,254 +152,210 @@ Return ONLY valid JSON matching this schema:
 
 OUTPUT_INSTRUCTIONS = {
     "linkedin": """
-Create a professional LinkedIn post.
+You are generating a LINKEDIN POST based on structured Stage-1 analysis.
+Follow this exact structure:
+1. Hook line: 1-2 lines scroll-stopper headline.
+2. Body: 2-4 short paragraphs (1-3 sentences each).
+3. Takeaway: Bold lead phrase highlighting the key insight.
+4. Call to Action: Engaging question or link prompt.
+5. Hashtags: 3-6 relevant hashtags derived from topic and entities.
+
+Rules:
+- Max 1 emoji unless tone is Conversational.
+- Do not invent facts, numbers, or quotes.
+- Character count target: 800-1,300 chars.
+
 Return ONLY valid JSON matching this exact structure:
 {
-  "content": "Professional LinkedIn post text with an engaging opening, clear paragraphs, and relevant hashtags."
+  "hook": "1-2 line scroll stopper",
+  "title": "Post Title",
+  "body": "Body text with short paragraphs and bullet points",
+  "content": "Full LinkedIn post text",
+  "callToAction": "Call to action prompt",
+  "hashtags": ["#Topic1", "#Topic2"],
+  "usedFactIds": ["fact_001"]
 }
 """,
 
     "twitter": """
-Create an engaging, concise X/Twitter post or multi-tweet thread.
-Each individual tweet must contain complete sentences and adhere to a 280-character limit.
-If the content requires multiple points or exceeds 280 characters, format it as a numbered thread (e.g., 1/2, 2/2) with double newlines between tweets. Never end mid-sentence or cut words off.
-Return ONLY valid JSON matching this exact structure:
-{
-  "content": "Complete, concise X/Twitter post or thread text."
-}
-""",
-
-    "summary": """
-Summarize ONLY the information provided in the source text.
-
+You are generating a TWITTER/X post or thread based on structured Stage-1 analysis.
 Rules:
-1. Do not add facts, opinions, assumptions, recommendations, or conclusions that are not present in the source.
-2. Do not invent business, organizational, strategic, financial, or technical implications.
-3. Do not use generic filler such as "aligned with organizational objectives" or "actionable advancements."
-4. Preserve the original meaning and context.
-5. Remove repetition and unnecessary details.
-6. If a section such as Strategic Implication, Recommendations, or Conclusion is not supported by the source, OMIT that section.
-7. Do not force the output into a fixed template.
-8. Keep the summary concise.
-9. Every important statement in the output must be traceable to the source text.
+- Single tweet mode (Brief) or Thread mode (Standard/Comprehensive: 3-6 tweets).
+- EVERY tweet text MUST be <= 280 characters.
+- Tweet 1: Hook with 🧵 or 1/N.
+- Middle tweets: One atomic fact per tweet.
+- Final tweet: Takeaway + CTA + hashtags.
 
-Return ONLY valid JSON matching this exact structure:
+Return ONLY valid JSON with an array of tweet objects:
 {
-  "content": "Concise, grounded summary derived strictly from the source text."
-}
-""",
-
-    "advisory": """
-Transform the source content into a formal Advisory Memo. Do not copy the source
-verbatim and do not simply summarize it. Rewrite and reorganize the information
-using clear professional language while preserving every supported fact, name,
-number, date, cost, timeline, and requirement. Do not invent facts, statistics,
-recommendations, or unsupported information. Identify implications, risks,
-considerations, recommendations, and next steps only when they are mentioned or
-clearly supported by the source. Remove unnecessary repetition.
-
-Use this structure in the content:
-
-CONFIDENTIAL - ADVISORY MEMO
-
-Subject: [Relevant subject]
-
-1. EXECUTIVE SUMMARY
-Briefly explain the situation and its significance.
-
-2. KEY FINDINGS
-Extract the most important facts and findings.
-
-3. KEY RISKS & CONSIDERATIONS
-Identify risks, challenges, limitations, or concerns supported by the source.
-
-4. RECOMMENDATIONS
-Present actionable recommendations supported by the source.
-
-5. IMPLEMENTATION / TIMELINE
-Include dates, phases, deadlines, or timelines if present.
-
-6. COST / RESOURCE REQUIREMENTS
-Include costs or resources if present.
-
-7. NEXT STEPS
-List logical next actions supported by the source.
-
-8. CONCLUSION
-Give a concise professional conclusion.
-
-Return ONLY valid JSON matching this exact structure:
-{
-    "content": "Formal advisory memo using all requested sections."
-}
-""",
-
-    "email": """
-Create an engaging corporate or team Email Announcement.
-Return ONLY valid JSON matching this exact structure:
-{
-  "content": "Subject: [Engaging Email Subject]\n\nDear Team / Partners,\n\n[Body text with key announcement points, executive takeaways, call to action, and formal sign-off]."
-}
-""",
-
-    "presentation": """
-Create structured content for a PowerPoint presentation.
-Return ONLY valid JSON with exactly this structure:
-{
-  "presentation_title": "Main Presentation Title",
-  "subtitle": "Subtitle or Deck Summary",
-  "slides": [
+  "content": "Full thread text",
+  "posts": [
     {
-      "slide_number": 1,
-      "title": "Title Slide Title",
-      "layout": "title",
-      "subtitle": "Cover Subtitle",
-      "content": [],
-      "speaker_notes": "Welcome audience to the presentation.",
-      "visual_recommendation": "Modern graphic concept"
+      "order": 1,
+      "postNumber": 1,
+      "text": "1/3 Hook line...",
+      "usedFactIds": ["fact_001"]
     },
     {
-      "slide_number": 2,
-      "title": "Key Market Insights",
-      "layout": "bullet_points",
-      "content": [
-        "Key insight bullet point 1",
-        "Key insight bullet point 2",
-        "Key insight bullet point 3"
-      ],
-      "speaker_notes": "Detailed spoken narration for this slide.",
-      "visual_recommendation": "Bar chart comparing key growth metrics"
-    },
-    {
-      "slide_number": 3,
-      "title": "Strategic Roadmap",
-      "layout": "two_column",
-      "column_left": ["Action step 1", "Action step 2"],
-      "column_right": ["Expected outcome 1", "Expected outcome 2"],
-      "speaker_notes": "Explain how operational actions lead to outcomes.",
-      "visual_recommendation": "Two-column grid layout with accent borders"
+      "order": 2,
+      "postNumber": 2,
+      "text": "2/3 Core fact...",
+      "usedFactIds": ["fact_002"]
     }
   ]
 }
 """,
 
-    "video_script": """You are a professional video storyboard generator.
+    "summary": """
+You are generating an EXECUTIVE SUMMARY based on structured Stage-1 analysis.
+Follow this exact structure in order:
+1. Headline: 1 line stating core takeaway.
+2. Abstract paragraph: 3-5 sentences summarizing core situation without bullets.
+3. Key Points: 3-6 bullets with **bold lead phrase + colon** pattern (e.g., **Exposure scope:** 12,000 records...).
+4. Implications / So-What: 1 short paragraph on why this matters.
+5. Recommended Actions: Bulleted list (only if Stage-1 actions exist).
 
-SOURCE CONTENT:
-{source_content}
+Rules:
+- Do not invent facts, numbers, quotes, or names.
+- Never use generic filler.
 
-UCKR FACTS:
-{uckr_facts}
+Return ONLY valid JSON:
+{
+  "title": "Headline",
+  "summary": "Abstract paragraph",
+  "content": "Full executive summary markdown text",
+  "keyFindings": ["**Lead phrase:** Detail text"],
+  "implications": ["Implication 1"],
+  "recommendedActions": ["Action 1"],
+  "usedFactIds": ["fact_001"]
+}
+""",
 
-TRANSFORMATION TYPE:
-video_script
+    "advisory": """
+You are generating a formal ADVISORY DOCUMENT based on structured Stage-1 analysis.
+Follow this exact structure in order:
+1. Header: Advisory ID, Date, Severity Tag (🔴 CRITICAL | 🟠 HIGH | 🟡 MEDIUM | 🟢 LOW), Issued For.
+2. Summary: 2-4 sentences situational overview.
+3. Background / Context: Paragraph explaining context.
+4. Details: Structured sub-points detailing technical or situational specifics.
+5. Impact / Who is affected: Affected entities and impact scope.
+6. Recommended Actions: Numbered list using imperative voice ("1. Do X", "2. Ensure Y").
+7. References: Attribution and standards.
 
-TARGET AUDIENCE:
-{target_audience}
+Rules:
+- Tone must be Formal, objective Alert/Instruct.
+- Numbered lists for actions, not bullets.
 
-REQUESTED DURATION:
-{requested_duration}
+Return ONLY valid JSON:
+{
+  "advisoryId": "ADV-2026-001",
+  "title": "Advisory Title",
+  "severity": "HIGH",
+  "severityTag": "🟠 HIGH",
+  "situation": "Summary text",
+  "background": "Background paragraph",
+  "details": ["Detail point 1"],
+  "threatImpact": "Impact text",
+  "recommendedActions": [{"phase": "Immediate", "steps": ["1. Step 1"]}],
+  "affectedEntities": ["System A"],
+  "references": ["Ref 1"],
+  "content": "Full markdown advisory text",
+  "usedFactIds": ["fact_001"]
+}
+""",
 
-IMPORTANT RULES:
+    "email": """
+You are generating a corporate or team Email Announcement based on structured Stage-1 analysis.
+Return ONLY valid JSON:
+{
+  "content": "Subject: [Subject]\n\nDear Team,\n\n[Body text with key points, takeaways, and call to action]."
+}
+""",
 
-1. The SOURCE CONTENT is the ONLY source for factual information.
+    "presentation": """
+You are generating a PRESENTATION (Slides + Speaker Notes) based on structured Stage-1 analysis.
+Rules:
+- Slide 1: Title slide (title, subtitle, audience/tone).
+- Slide 2: Overview/Agenda.
+- Slides 3-N: Content slides (one per major theme).
+- Slide N-1: Implications / Key Takeaways.
+- Slide N: Next Steps / Summary.
+- HARD CONSTRAINTS: Max 5 bullets per slide, max 8 words per bullet.
+- Speaker notes: 2-4 full sentences elaborating bullets for oral delivery.
 
-2. The TARGET AUDIENCE must influence tone and complexity only.
-   NEVER use the audience description as video subject matter.
+Return ONLY valid JSON:
+{
+  "presentation_title": "Title",
+  "subtitle": "Subtitle",
+  "slides": [
+    {
+      "slide_number": 1,
+      "title": "Title Slide",
+      "layout": "title",
+      "bullets": ["Bullet 1", "Bullet 2"],
+      "speaker_notes": "Speaker notes text",
+      "visual_recommendation": "Visual layout note",
+      "usedFactIds": ["fact_001"]
+    }
+  ]
+}
+""",
 
-3. "video_script" is a format instruction.
-   NEVER mention the phrase "we are creating a video script"
-   inside the narration.
+    "video_script": """
+You are generating a VIDEO PACKAGE based on structured Stage-1 analysis.
+Target pacing: ~2.5 words/second for narration.
+JSON fields required:
+- video_title
+- duration: total duration in seconds (e.g. 60 seconds)
+- script: full narration script with scene markers
+- storyboard: list of scene objects {scene, duration_sec, visual_description, on_screen_text, narration_line}
+- visual_recommendations: {color_palette, icon_keywords, music_mood, brand_safety}
 
-4. Do NOT describe the transformation request in the video.
+Rules:
+- Script opens with hook in first 3 seconds and closes with CTA.
+- Narration text derived strictly from Stage-1 JSON.
 
-5. Do NOT introduce information from examples, templates,
-   previous requests, memory, or unrelated domains.
-
-6. Every factual statement must be supported by SOURCE CONTENT
-   or an explicitly provided UCKR fact.
-
-7. Extract important facts, numbers, dates, costs, timelines,
-   features, risks, benefits, and recommendations from the source.
-
-8. Each scene must communicate a DIFFERENT meaningful point.
-   Do not repeat the same narration across scenes.
-
-9. Visual descriptions must correspond to the actual source topic.
-
-10. On-screen text must be concise and must not contain "...".
-
-11. Match the requested duration exactly.
-
-12. If requested duration is 30 seconds, create approximately
-    5-6 meaningful scenes whose durations total exactly 30 seconds.
-
-13. Do not invent statistics, outcomes, people, organizations,
-    technologies, or claims.
-
-14. Before returning the result, verify every narration and
-    on-screen claim against the UCKR facts.
-
-Return ONLY valid JSON matching this schema:
-{{
-  "video_title": "Catchy professional title derived strictly from source content",
-  "duration": "{requested_duration}",
+Return ONLY valid JSON:
+{
+  "video_title": "Title",
+  "duration": "60 seconds",
+  "script": "Full narration script",
   "storyboard": [
-    {{
+    {
       "scene": 1,
-      "duration": "0-5 sec",
-      "visuals": "Detailed description of B-roll or visual elements matching source topic",
-      "narration": "Voiceover script text for this scene derived strictly from source",
-      "on_screen_text": "Concise key text callout",
-      "subtitle": "Subtitle text for accessibility",
-      "transition": "Transition effect to next scene"
-    }}
+      "duration_sec": 15,
+      "visuals": "Visual description",
+      "narration": "Voiceover line",
+      "on_screen_text": "Callout text",
+      "usedFactIds": ["fact_001"]
+    }
   ],
-  "music_recommendation": "Suggested background music genre, tempo, and mood",
-  "voice_over_direction": "Tone, pacing, emotion, and accent guidance for voiceover",
-  "thumbnail_recommendation": "Description for engaging video thumbnail concept"
-}}
+  "music_recommendation": "Ambient tech",
+  "voice_over_direction": "Professional, steady pacing"
+}
 """,
 
     "infographic": """
-You are an Infographic Specification Generator.
+You are generating INFOGRAPHIC CONTENT as structured JSON based on Stage-1 analysis.
+Required JSON fields:
+- headline (short, punchy, <=8 words)
+- sub_headline (1 line context)
+- key_statistics: list of {value, label, context} derived strictly from source metrics
+- sections: list of {heading, content, suggested_icon}
+- layout_recommendation: MUST be one of ["timeline", "comparison", "hub-spoke", "step-flow", "stat-grid"]
+- color_mood: suggest color theme
+- icon_keywords: list of 3-5 icon names
 
-Your job is to transform ONLY the CURRENT SOURCE CONTENT into a structured infographic specification.
-
-STRICT GROUNDING RULES:
-1. Use ONLY information present in the current source content and explicitly provided UCKR facts.
-2. NEVER use information from previous requests, examples, templates, demonstrations, memory, or default content.
-3. NEVER introduce a different domain. For example, if the source is about government services, do not introduce healthcare, medicine, finance, education, sports, etc.
-4. Every claim in the output must be supported by the source or UCKR.
-5. Extract important numerical facts into key_statistics. Examples include: costs, percentages, dates, durations, quantities, counts, targets.
-6. If a field cannot be supported by the source, use an empty array or a neutral value rather than inventing information.
-7. icon_recommendations must be relevant to the actual source topic.
-8. Do not generate generic benefits unless they are explicitly stated or directly supported by the source.
-9. The output must describe the CURRENT SOURCE, not an example.
-10. Before returning the JSON, perform a factual consistency check. Remove every claim that cannot be traced to the source or UCKR.
-11. Never introduce information from examples, previous transformations, templates, memory, cached responses, or unrelated domains. Every factual statement, statistic, icon, and section must be derived from the current source or its UCKR facts.
-
-Return ONLY valid JSON matching this schema:
+Return ONLY valid JSON:
 {
-  "title": "Headline derived strictly from source",
-  "main_message": "Core takeaway message from source",
-  "key_statistics": [
-    {
-      "value": "12 months",
-      "label": "Estimated implementation period"
-    }
-  ],
-  "sections": [
-    {
-      "heading": "Section Heading",
-      "content": "Section Content derived from source"
-    }
-  ],
-  "supporting_text": "Contextual summary from source",
-  "visual_hierarchy": "Guidance on primary vs secondary visual focus areas",
-  "icon_recommendations": ["icon1", "icon2"],
-  "color_recommendations": ["Primary Color", "Accent Color"],
-  "layout_recommendation": "Recommended visual structure layout"
+  "title": "Headline",
+  "main_message": "Sub headline",
+  "key_statistics": [{"value": "100%", "label": "Verified Grounding"}],
+  "sections": [{"heading": "Key Insight", "content": "Section text", "icon": "sparkles"}],
+  "layout_recommendation": "timeline",
+  "color_mood": "Corporate Tech",
+  "icon_keywords": ["cpu", "shield", "activity"],
+  "usedFactIds": ["fact_001"]
 }
 """
 }

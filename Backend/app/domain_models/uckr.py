@@ -8,10 +8,26 @@ from pydantic import BaseModel, Field
 class SourceRef(BaseModel):
     sourceId: str
     chunkId: str = "chunk_001"
+    sourceType: str = "PDF"  # PDF, PPTX, IMAGE, VIDEO, AUDIO, SPREADSHEET, DOCX, TXT, MD
     pageNumber: int = 1
     paragraph: Optional[int] = None
     line: Optional[int] = None
     textQuote: Optional[str] = None
+    # Multimodal location extensions
+    slide: Optional[int] = None
+    shape: Optional[int] = None
+    x: Optional[float] = None
+    y: Optional[float] = None
+    width: Optional[float] = None
+    height: Optional[float] = None
+    start: Optional[str] = None
+    end: Optional[str] = None
+    speaker: Optional[str] = None
+    scene: Optional[int] = None
+    sheet: Optional[str] = None
+    row: Optional[int] = None
+    column: Optional[Union[str, int]] = None
+    location: Optional[Dict[str, Any]] = None
 
 
 class Fact(BaseModel):
@@ -20,8 +36,11 @@ class Fact(BaseModel):
     statement: str
     value: Optional[str] = None
     text: Optional[str] = None
-    type: str = "event_fact"  # event_fact, metric_fact, proposition, risk_fact, action_fact, entity_fact
+    type: str = "SOURCE_FACT"  # SOURCE_FACT, DERIVED_FACT, INFERENCE, UNCERTAIN, CONFLICTING, metric_fact, proposition
+    source_type: str = "PDF"
+    location: Optional[Dict[str, Any]] = None
     confidence: float = Field(default=0.98, ge=0.0, le=1.0)
+    status: str = "VERIFIED"  # VERIFIED, UNVERIFIED, SOURCE_CONFLICT, UNCERTAIN
     sourceRefs: List[Union[SourceRef, Dict[str, Any], str]] = Field(default_factory=list)
     sourceDoc: str = "source"
     page: int = 1
@@ -38,6 +57,8 @@ class Fact(BaseModel):
             self.text = self.statement
         if not self.quote:
             self.quote = self.statement
+        if not self.location:
+            self.location = {"page": self.page}
 
 
 class Entity(BaseModel):

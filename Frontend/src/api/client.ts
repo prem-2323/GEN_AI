@@ -1,3 +1,5 @@
+import { setBackendHealthStatus } from '../services/backendService';
+
 export class ApiError extends Error {
   status: number;
   data: any;
@@ -34,32 +36,43 @@ export async function apiFetch<T = any>(
     headers.set('Content-Type', 'application/json');
   }
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
 
-  if (!response.ok) {
-    let errorDetail = `API error: ${response.status} ${response.statusText}`;
-    let errorData: any = null;
-    try {
-      errorData = await response.json();
-      if (errorData?.detail) {
-        errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
-      } else if (errorData?.message) {
-        errorDetail = errorData.message;
+    setBackendHealthStatus(true);
+
+    if (!response.ok) {
+      let errorDetail = `API error: ${response.status} ${response.statusText}`;
+      let errorData: any = null;
+      try {
+        errorData = await response.json();
+        if (errorData?.detail) {
+          errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+        } else if (errorData?.message) {
+          errorDetail = errorData.message;
+        }
+      } catch {
+        // Non-json response
       }
-    } catch {
-      // Non-json response
+      throw new ApiError(response.status, errorDetail, errorData);
     }
-    throw new ApiError(response.status, errorDetail, errorData);
-  }
 
-  const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
-    return (await response.json()) as T;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return (await response.json()) as T;
+    }
+    return (await response.text()) as unknown as T;
+  } catch (err) {
+    if (err instanceof ApiError) {
+      setBackendHealthStatus(true);
+      throw err;
+    }
+    setBackendHealthStatus(false);
+    throw err;
   }
-  return (await response.text()) as unknown as T;
 }
 
 /**
@@ -78,32 +91,43 @@ export async function workspaceFetch<T = any>(
   const baseUrl = getApiBaseUrl();
   const url = `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
 
-  if (!response.ok) {
-    let errorDetail = `API error: ${response.status} ${response.statusText}`;
-    let errorData: any = null;
-    try {
-      errorData = await response.json();
-      if (errorData?.detail) {
-        errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
-      } else if (errorData?.message) {
-        errorDetail = errorData.message;
+    setBackendHealthStatus(true);
+
+    if (!response.ok) {
+      let errorDetail = `API error: ${response.status} ${response.statusText}`;
+      let errorData: any = null;
+      try {
+        errorData = await response.json();
+        if (errorData?.detail) {
+          errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+        } else if (errorData?.message) {
+          errorDetail = errorData.message;
+        }
+      } catch {
+        // Non-json response
       }
-    } catch {
-      // Non-json response
+      throw new ApiError(response.status, errorDetail, errorData);
     }
-    throw new ApiError(response.status, errorDetail, errorData);
-  }
 
-  const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
-    return (await response.json()) as T;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return (await response.json()) as T;
+    }
+    return (await response.text()) as unknown as T;
+  } catch (err) {
+    if (err instanceof ApiError) {
+      setBackendHealthStatus(true);
+      throw err;
+    }
+    setBackendHealthStatus(false);
+    throw err;
   }
-  return (await response.text()) as unknown as T;
 }
 
 /**
@@ -115,31 +139,41 @@ export async function workspaceUpload<T = any>(
   options: RequestInit = {}
 ): Promise<T> {
   const headers = new Headers(options.headers || {});
-  // Do NOT set Content-Type header so browser calculates multipart boundary
 
   const baseUrl = getApiBaseUrl();
   const url = `${baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
 
-  const response = await fetch(url, {
-    ...options,
-    method: 'POST',
-    headers,
-    body: formData,
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      method: 'POST',
+      headers,
+      body: formData,
+    });
 
-  if (!response.ok) {
-    let errorDetail = `Upload error: ${response.status} ${response.statusText}`;
-    let errorData: any = null;
-    try {
-      errorData = await response.json();
-      if (errorData?.detail) {
-        errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+    setBackendHealthStatus(true);
+
+    if (!response.ok) {
+      let errorDetail = `Upload error: ${response.status} ${response.statusText}`;
+      let errorData: any = null;
+      try {
+        errorData = await response.json();
+        if (errorData?.detail) {
+          errorDetail = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+        }
+      } catch {
+        // Non-json response
       }
-    } catch {
-      // Non-json response
+      throw new ApiError(response.status, errorDetail, errorData);
     }
-    throw new ApiError(response.status, errorDetail, errorData);
-  }
 
-  return (await response.json()) as T;
+    return (await response.json()) as T;
+  } catch (err) {
+    if (err instanceof ApiError) {
+      setBackendHealthStatus(true);
+      throw err;
+    }
+    setBackendHealthStatus(false);
+    throw err;
+  }
 }

@@ -1,6 +1,8 @@
 """UCKR API Routes (Phase 4), Validation, and Temp Logs."""
 from __future__ import annotations
 
+import asyncio
+
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
@@ -43,7 +45,7 @@ async def build_uckr_endpoint(
     """Build or retrieve the canonical UCKR knowledge base for a source."""
     _check_id(project_id, "Project ID")
     _check_id(source_id, "Source ID")
-    uckr = build_and_save_uckr(user["uid"], project_id, source_id, force_rebuild=False)
+    uckr = await asyncio.to_thread(build_and_save_uckr, user["uid"], project_id, source_id, force_rebuild=False)
     return {
         "ok": True,
         "uckrId": uckr.get("uckrId"),
@@ -89,7 +91,7 @@ async def rebuild_source_uckr_endpoint(
     """Force rebuild UCKR from latest AI analysis and increment version."""
     _check_id(project_id, "Project ID")
     _check_id(source_id, "Source ID")
-    uckr = build_and_save_uckr(user["uid"], project_id, source_id, force_rebuild=True)
+    uckr = await asyncio.to_thread(build_and_save_uckr, user["uid"], project_id, source_id, force_rebuild=True)
     return {
         "ok": True,
         "uckrId": uckr.get("uckrId"),

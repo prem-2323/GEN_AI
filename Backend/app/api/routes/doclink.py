@@ -7,6 +7,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import asyncio
 from typing import Any, Dict, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
@@ -46,13 +47,17 @@ async def analyze_document_endpoint(
         if cached:
             return DocLinkAnalyzeResponse(**cached)
 
-    result: DocLinkResult = service.analyze_document(
-        document_id=doc_id,
-        project_id=req.projectId or "",
-        user_id=user.get("uid", ""),
-        use_llm=req.useLlm,
-        chunk_size=req.chunk_size,
-    )
+    # Run in thread pool to avoid blocking the event loop (Ollama calls are synchronous)
+    def _run():
+        return service.analyze_document(
+            document_id=doc_id,
+            project_id=req.projectId or "",
+            user_id=user.get("uid", ""),
+            use_llm=req.useLlm,
+            chunk_size=req.chunk_size,
+        )
+
+    result: DocLinkResult = await asyncio.to_thread(_run)
 
     result_dict = result.model_dump()
     doclink_repo.update_one({"document_id": doc_id}, {"$set": result_dict}, upsert=True)
@@ -70,13 +75,17 @@ async def analyze_text_endpoint(
     if not req.text or not req.text.strip():
         raise HTTPException(status_code=400, detail="Text parameter cannot be empty.")
 
-    result: DocLinkResult = service.analyze_text(
-        text=req.text,
-        document_id=req.document_id,
-        document_name=req.name,
-        use_llm=req.useLlm,
-        chunk_size=req.chunk_size,
-    )
+    # Run in thread pool to avoid blocking the event loop (Ollama calls are synchronous)
+    def _run():
+        return service.analyze_text(
+            text=req.text,
+            document_id=req.document_id,
+            document_name=req.name,
+            use_llm=req.useLlm,
+            chunk_size=req.chunk_size,
+        )
+
+    result: DocLinkResult = await asyncio.to_thread(_run)
 
     result_dict = result.model_dump()
     return DocLinkAnalyzeResponse(**result_dict)
@@ -93,8 +102,10 @@ async def get_doclink_result_endpoint(
     if not cached:
         cached = doclink_repo.find_one({"documentId": document_id})
     if not cached:
-        # Run on demand
-        result = service.analyze_document(document_id=document_id, user_id=user.get("uid", ""))
+        # Run on demand in thread pool
+        def _run():
+            return service.analyze_document(document_id=document_id, user_id=user.get("uid", ""))
+        result = await asyncio.to_thread(_run)
         cached = result.model_dump()
         doclink_repo.update_one({"document_id": document_id}, {"$set": cached}, upsert=True)
 

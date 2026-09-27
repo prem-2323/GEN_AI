@@ -11,6 +11,8 @@ Endpoints:
 """
 from __future__ import annotations
 
+import asyncio
+
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
@@ -48,9 +50,12 @@ async def ingest_document_graph_endpoint(
         raise HTTPException(status_code=400, detail="Missing document_id in request body.")
 
     try:
+        # Run in thread pool — ingest_document calls DocLink which blocks on Ollama
         if "entities" in payload:
-            return graph_service.ingest_doclink_result(payload)
-        return graph_service.ingest_document(document_id=doc_id, use_llm=payload.get("useLlm", True))
+            return await asyncio.to_thread(graph_service.ingest_doclink_result, payload)
+        return await asyncio.to_thread(
+            graph_service.ingest_document, document_id=doc_id, use_llm=payload.get("useLlm", True)
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Graph ingestion failed: {exc}")
 

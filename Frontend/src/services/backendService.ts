@@ -7,34 +7,81 @@ const BASE = (import.meta as unknown as { env?: Record<string, string | undefine
 
 export const backendEnabled = true;
 
+let _currentBaseUrl = BASE;
 let _isBackendReachableCache: boolean | null = null;
 let _lastCheckTime = 0;
+const _healthListeners = new Set<(online: boolean) => void>();
 
 export function getBackendUrl(): string {
-  return BASE;
+  return _currentBaseUrl;
+}
+
+export function subscribeBackendHealth(listener: (online: boolean) => void): () => void {
+  _healthListeners.add(listener);
+  if (_isBackendReachableCache !== null) {
+    listener(_isBackendReachableCache);
+  }
+  return () => {
+    _healthListeners.delete(listener);
+  };
+}
+
+export function setBackendHealthStatus(online: boolean) {
+  const changed = _isBackendReachableCache !== online;
+  _isBackendReachableCache = online;
+  _lastCheckTime = Date.now();
+  if (changed) {
+    _healthListeners.forEach((fn) => {
+      try {
+        fn(online);
+      } catch (err) {
+        console.error('Health listener error:', err);
+      }
+    });
+  }
 }
 
 export async function checkBackendHealth(forceRefresh: boolean = false): Promise<boolean> {
   const now = Date.now();
-  if (!forceRefresh && _isBackendReachableCache !== null && now - _lastCheckTime < 3000) {
-    return _isBackendReachableCache;
+  if (!forceRefresh && _isBackendReachableCache === true && now - _lastCheckTime < 10000) {
+    return true;
   }
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const res = await fetch(`${BASE}/health`, {
-      method: 'GET',
-      signal: controller.signal,
-    }).catch(() => null);
-    clearTimeout(timeoutId);
-    _isBackendReachableCache = Boolean(res && res.ok);
-    _lastCheckTime = Date.now();
-    return _isBackendReachableCache;
-  } catch {
-    _isBackendReachableCache = false;
-    _lastCheckTime = Date.now();
-    return false;
+
+  const urlsToTry = [
+    _currentBaseUrl,
+    _currentBaseUrl.includes('127.0.0.1')
+      ? _currentBaseUrl.replace('127.0.0.1', 'localhost')
+      : _currentBaseUrl.replace('localhost', '127.0.0.1'),
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+  ];
+  const uniqueUrls = Array.from(new Set(urlsToTry));
+
+  for (const url of uniqueUrls) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(`${url}/health`, {
+        method: 'GET',
+        signal: controller.signal,
+      }).catch(() => null);
+      clearTimeout(timeoutId);
+
+      if (res && res.ok) {
+        _currentBaseUrl = url;
+        setBackendHealthStatus(true);
+        return true;
+      }
+    } catch {
+      // Continue to fallback
+    }
   }
+
+  // Only set false if we haven't seen a successful request recently
+  if (now - _lastCheckTime > 30000) {
+    setBackendHealthStatus(false);
+  }
+  return _isBackendReachableCache ?? false;
 }
 
 async function headers(): Promise<HeadersInit> {
@@ -48,48 +95,47 @@ async function uploadHeaders(): Promise<HeadersInit> {
 }
 
 async function req(path: string, init?: RequestInit) {
-  if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
   const h = await headers();
+  const targetUrl = `${_currentBaseUrl}${path}`;
   try {
-    const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...h, ...(init?.headers || {}) } });
+    const res = await fetch(targetUrl, { ...init, headers: { ...h, ...(init?.headers || {}) } });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
       throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
     }
-    _isBackendReachableCache = true;
-    _lastCheckTime = Date.now();
+    setBackendHealthStatus(true);
     return res.json().catch(() => ({}));
   } catch (err) {
-    _isBackendReachableCache = false;
-    _lastCheckTime = Date.now();
     if (err instanceof Error && err.message.startsWith('Backend ')) {
+      // HTTP response error from backend -> backend is online!
+      setBackendHealthStatus(true);
       throw err;
     }
-    throw new Error(`Backend server unavailable at ${BASE}`);
+    setBackendHealthStatus(false);
+    throw new Error(`Backend server unavailable at ${_currentBaseUrl}`);
   }
 }
 
 async function uploadReq(path: string, file: File) {
-  if (!BASE) throw new Error('VITE_BACKEND_URL is not set.');
   const h = await uploadHeaders();
   const form = new FormData();
   form.append('file', file);
+  const targetUrl = `${_currentBaseUrl}${path}`;
   try {
-    const res = await fetch(`${BASE}${path}`, { method: 'POST', headers: h, body: form });
+    const res = await fetch(targetUrl, { method: 'POST', headers: h, body: form });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
       throw new Error(`Backend ${res.status}: ${text || res.statusText}`);
     }
-    _isBackendReachableCache = true;
-    _lastCheckTime = Date.now();
+    setBackendHealthStatus(true);
     return res.json().catch(() => ({}));
   } catch (err) {
-    _isBackendReachableCache = false;
-    _lastCheckTime = Date.now();
     if (err instanceof Error && err.message.startsWith('Backend ')) {
+      setBackendHealthStatus(true);
       throw err;
     }
-    throw new Error(`Backend server unavailable at ${BASE}`);
+    setBackendHealthStatus(false);
+    throw new Error(`Backend server unavailable at ${_currentBaseUrl}`);
   }
 }
 

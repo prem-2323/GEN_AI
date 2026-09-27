@@ -37,38 +37,63 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-### Future Planned System Architecture (Phases 2 – 16)
+### Universal Pipeline Architecture (Rule-Enforced Pipeline)
 
 ```text
-React UI
-   ↓
-FastAPI Entrypoint (app.main:app)
-   ↓
-Document Ingestion (Phase 3)
-   ↓
-Document Extraction (Phase 3)
-   ↓
-DocLink Entity / Fact / Relation Engine (Phase 4)
-   ↓
-Neo4j Knowledge Graph + Vector Index (Phase 5)
-   ↓
-Hybrid Vector + Graph RAG (Phase 7)
-   ↓
-Quantum / Hybrid Optimization (Phase 8)
-   ↓
-PyTorch Model Layer (Phase 9 — app/models/)
-   ↓
-Knowledge Distillation (Phase 10 — app/distillation/)
-   ↓
-Active Parameter Engine (Phase 11 — app/active_params/)
-   ↓
-Transformation Engine (Phase 12 — app/transformation/)
-   ↓
-Validation + Consistency Engine (Phase 13 — app/validation/)
-   ↓
-Provenance / Evidence Lineage (Phase 14 — app/provenance/)
-   ↓
-React Output UI (Phase 15)
+             ANY INPUT (PDF / DOCX / PPTX / IMAGE / AUDIO / VIDEO / CSV)
+                                     │
+                           ┌─────────┴─────────┐
+                           │                   │
+                        DOCUMENT             MEDIA
+                           │                   │
+                           └─────────┬─────────┘
+                                     ↓
+                            ┌─────────────────┐
+                            │ UNIVERSAL       │
+                            │ EXTRACTION      │
+                            └────────┬────────┘
+                                     ↓
+                            ┌─────────────────┐
+                            │ STRUCTURED      │
+                            │ SOURCE MODEL    │
+                            └────────┬────────┘
+                                     ↓
+                            ┌─────────────────┐
+                            │ UNIVERSAL UCKR  │
+                            │ Facts (Typed)   │
+                            │ Entities        │
+                            │ Relations       │
+                            │ Numbers & Units │
+                            │ Evidence        │
+                            │ Provenance      │
+                            └────────┬────────┘
+                                     ↓
+                            ┌─────────────────┐
+                            │ TRANSFORMATION  │
+                            │ ENGINE          │
+                            └────────┬────────┘
+                                     ↓
+                           LinkedIn / X / PPTX /
+                           Summary / Video / Advisory
+                                     ↓
+                            ┌─────────────────┐
+                            │ CLAIM EXTRACTOR │
+                            └────────┬────────┘
+                                     ↓
+                            ┌─────────────────┐
+                            │ UCKR VALIDATOR  │
+                            │ Supported ?     │
+                            │ Unsupported ?   │
+                            │ Contradiction ? │
+                            │ Provenance ?    │
+                            └────────┬────────┘
+                                     ↓
+                              ┌──────┴──────┐
+                              │             │
+                            PASS          FAIL
+                              │             │
+                              ↓             ↓
+                           DELIVER       REGENERATE
 ```
 
 ---
@@ -141,9 +166,7 @@ cd Backend
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 # Start Full Platform (Backend + Frontend)
-cd ..
-.\start.bat
-```
+
 
 - API Docs: `http://localhost:8000/docs`
 - Health Check: `http://localhost:8000/health`

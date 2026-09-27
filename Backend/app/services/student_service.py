@@ -21,7 +21,7 @@ DEFAULT_ADAPTER_PATH = os.getenv(
     str(Path(__file__).resolve().parent.parent.parent / "outputs" / "distillation" / "student")
 )
 DEFAULT_DEVICE_SETTING = os.getenv("STUDENT_DEVICE", "auto")
-DEFAULT_MAX_NEW_TOKENS = int(os.getenv("STUDENT_MAX_NEW_TOKENS", "256"))
+DEFAULT_MAX_NEW_TOKENS = int(os.getenv("STUDENT_MAX_NEW_TOKENS", "2048"))
 DEFAULT_TEMPERATURE = float(os.getenv("STUDENT_TEMPERATURE", "0.1"))
 DEFAULT_TOP_P = float(os.getenv("STUDENT_TOP_P", "0.9"))
 

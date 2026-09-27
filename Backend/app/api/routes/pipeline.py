@@ -37,6 +37,8 @@ def _check_pid(project_id: str) -> None:
         raise HTTPException(status_code=400, detail="Invalid project ID format.")
 
 
+import asyncio
+
 # ---- Phase 3+4: analyse -> UCKR ----
 @router.post("/api/projects/{project_id}/analyze")
 async def analyze_source(project_id: str, payload: dict[str, Any],
@@ -52,10 +54,14 @@ async def analyze_source(project_id: str, payload: dict[str, Any],
     norm = src.get("normalized")
     if not norm:
         raise HTTPException(status_code=409, detail="Source has no extraction yet.")
-    analysis = ai_orchestrator.analyze_text(norm["text"]["content"],
-                                            use_cache_on_source=src if src.get("analysis") else None)
-    uckr = uckr_service.build_and_save(uid, project_id, source_id, analysis, norm)
-    return {"ok": True, "uckr": uckr, "analysisProvider": analysis.get("provider")}
+    
+    def _run_analyze():
+        analysis = ai_orchestrator.analyze_text(norm["text"]["content"],
+                                                use_cache_on_source=src if src.get("analysis") else None)
+        uckr = uckr_service.build_and_save(uid, project_id, source_id, analysis, norm)
+        return {"ok": True, "uckr": uckr, "analysisProvider": analysis.get("provider")}
+        
+    return await asyncio.to_thread(_run_analyze)
 
 
 @router.get("/api/projects/{project_id}/uckr")
@@ -84,15 +90,19 @@ async def transform_project(project_id: str, payload: dict[str, Any] = {},
     uckr_v = payload.get("uckrVersion")
     source_id = payload.get("sourceId")
     cfg = payload.get("config") or payload.get("configuration")
-    out = []
-    for t in types:
-        gen_type = type_map.get(t, t)
-        doc = transformation_service.generate(
-            user["uid"], project_id, uckr_v, gen_type, cfg, source_id
-        )
-        doc["type"] = t
-        out.append(doc)
-    return {"ok": True, "projectId": project_id, "deliverables": out, "count": len(out)}
+    
+    def _run_transform():
+        out = []
+        for t in types:
+            gen_type = type_map.get(t, t)
+            doc = transformation_service.generate(
+                user["uid"], project_id, uckr_v, gen_type, cfg, source_id
+            )
+            doc["type"] = t
+            out.append(doc)
+        return {"ok": True, "projectId": project_id, "deliverables": out, "count": len(out)}
+        
+    return await asyncio.to_thread(_run_transform)
 
 
 @router.get("/api/projects/{project_id}/deliverables")

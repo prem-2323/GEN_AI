@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
-import { backendApi, checkBackendHealth } from '../services/backendService';
+import { backendApi, checkBackendHealth, subscribeBackendHealth } from '../services/backendService';
 import { TransformationProject } from '../types';
 
 const STORAGE_KEY = 'contentforge_workspace_projects';
@@ -51,7 +51,7 @@ function setStoredProjects(projects: TransformationProject[]) {
 export const WorkspaceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [projects, setProjects] = useState<TransformationProject[]>(() => getStoredProjects());
   const [isSyncing, setIsSyncing] = useState(false);
-  const [backendOnline, setBackendOnline] = useState<boolean | null>(null);
+  const [backendOnline, setBackendOnline] = useState<boolean | null>(true);
 
   const checkBackend = useCallback(async (): Promise<boolean> => {
     const isHealthy = await checkBackendHealth(true);
@@ -87,26 +87,50 @@ export const WorkspaceProvider: React.FC<{ children: ReactNode }> = ({ children 
         }
       }
     } catch {
-      setBackendOnline(false);
+      // Backend is temporarily down or starting
     }
   }, []);
 
+  const backendOnlineRef = React.useRef<boolean | null>(null);
+  backendOnlineRef.current = backendOnline;
+
   useEffect(() => {
+    // Subscribe to immediate real-time health notifications
+    const unsubscribe = subscribeBackendHealth((online) => {
+      setBackendOnline(online);
+      if (online) {
+        void loadProjects();
+      }
+    });
+
     void loadProjects();
 
-    // Check health on window focus or periodically
+    // Aggressive startup check (checks every 1.2s until connected)
+    let startupTries = 0;
+    const startupInterval = setInterval(() => {
+      startupTries++;
+      if (backendOnlineRef.current === true || startupTries > 30) {
+        clearInterval(startupInterval);
+      } else {
+        void checkBackendHealth(true);
+      }
+    }, 1200);
+
+    // Continuous heartbeat polling
+    const heartbeatInterval = setInterval(() => {
+      void checkBackendHealth();
+    }, 8000);
+
     const handleFocus = () => {
-      void checkBackendHealth(true).then((online) => setBackendOnline(online));
+      void checkBackendHealth(true);
     };
     window.addEventListener('focus', handleFocus);
 
-    const interval = setInterval(() => {
-      void checkBackendHealth().then((online) => setBackendOnline(online));
-    }, 15000);
-
     return () => {
+      unsubscribe();
+      clearInterval(startupInterval);
+      clearInterval(heartbeatInterval);
       window.removeEventListener('focus', handleFocus);
-      clearInterval(interval);
     };
   }, [loadProjects]);
 

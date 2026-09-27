@@ -62,14 +62,14 @@ class ExtractionService:
                     source_id=source_id,
                     persist_images=persist_images,
                 )
-            elif resolved_ext == "docx":
+            elif resolved_ext in ("docx", "doc"):
                 doc = extract_docx_document(
                     file_bytes=file_bytes,
                     filename=filename,
                     document_id=document_id,
                     mime_type=mime_type or "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 )
-            elif resolved_ext == "pptx":
+            elif resolved_ext in ("pptx", "ppt"):
                 doc = extract_pptx_document(
                     file_bytes=file_bytes,
                     filename=filename,
@@ -79,6 +79,62 @@ class ExtractionService:
                     project_id=project_id,
                     source_id=source_id,
                     persist_images=persist_images,
+                )
+            elif resolved_ext == "csv":
+                from .spreadsheet import extract_csv_document
+                doc = extract_csv_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or "text/csv",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                )
+            elif resolved_ext in ("xlsx", "xls"):
+                from .spreadsheet import extract_excel_document
+                doc = extract_excel_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                )
+            elif resolved_ext == "json":
+                from .structured import extract_json_document
+                doc = extract_json_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or "application/json",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                )
+            elif resolved_ext == "xml":
+                from .structured import extract_xml_document
+                doc = extract_xml_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type or "application/xml",
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
+                )
+            elif resolved_ext in ("mp3", "wav", "m4a", "aac", "flac", "ogg", "mp4", "mkv", "mov", "avi", "webm"):
+                from .media_extractor import extract_media_document
+                doc = extract_media_document(
+                    file_bytes=file_bytes,
+                    filename=filename,
+                    document_id=document_id,
+                    mime_type=mime_type,
+                    ext=resolved_ext,
+                    uid=uid,
+                    project_id=project_id,
+                    source_id=source_id,
                 )
             elif resolved_ext in ("png", "jpg", "jpeg", "webp", "gif", "bmp", "tiff"):
                 doc = extract_image_document(

@@ -154,14 +154,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-700 flex items-center justify-center font-bold text-white text-xs border border-purple-400/30 shadow-inner">
-                {backendOnline ? <Server className="w-4 h-4" /> : <HardDrive className="w-4 h-4" />}
+                <Server className={`w-4 h-4 ${backendOnline ? 'text-emerald-300' : 'text-purple-300'}`} />
               </div>
               <div className="leading-tight overflow-hidden">
                 <div className="text-sm font-semibold text-slate-200 truncate max-w-[130px]">
-                  Local Workspace
+                  Workspace Server
                 </div>
                 <div className="text-[11px] text-slate-400 truncate max-w-[130px]">
-                  {backendOnline ? 'FastAPI + File storage' : 'Browser storage (Offline)'}
+                  {backendOnline ? 'FastAPI API + Storage' : 'FastAPI Local Core'}
                 </div>
               </div>
             </div>
@@ -188,16 +188,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <Activity className="w-3.5 h-3.5 opacity-70" />
             </div>
           ) : backendOnline === false ? (
-            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs">
+            <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 text-xs">
               <div className="flex items-center gap-2">
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-400 animate-pulse"></span>
                 <span className="font-medium text-[11px]">
-                  Offline Mode (Local Active)
+                  Connecting to Port 8000...
                 </span>
               </div>
               <button
                 onClick={() => void checkBackend()}
-                className="text-[10px] font-semibold underline text-amber-300 hover:text-amber-100"
+                className="text-[10px] font-semibold underline text-indigo-300 hover:text-indigo-100"
               >
                 Retry
               </button>
@@ -207,7 +207,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-slate-400 animate-pulse"></span>
                 <span className="font-medium text-[11px]">
-                  Checking Backend...
+                  Verifying Backend (8000)...
                 </span>
               </div>
             </div>

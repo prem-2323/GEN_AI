@@ -22,11 +22,11 @@ DeliverableType = Literal[
 
 class TransformationConfig(BaseModel):
     """User-selected configuration parameters for output transformation."""
-    audience: AudienceType = "executive"
-    tone: ToneType = "professional"
+    audience: str = "executive"
+    tone: str = "professional"
     language: str = "English"
-    detailLevel: DetailLevelType = "medium"
-    objective: ObjectiveType = "awareness"
+    detailLevel: str = "medium"
+    objective: str = "awareness"
 
 
 # Content Schemas for Deliverables

@@ -2,7 +2,13 @@
 from __future__ import annotations
 
 import logging
+import os
 import sys
+
+# Silence third-party warnings in environment
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 def setup_logging(log_level: str = "INFO") -> logging.Logger:
@@ -22,7 +28,12 @@ def setup_logging(log_level: str = "INFO") -> logging.Logger:
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("pypdf").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
-    logging.getLogger("httpx").setLevel(logging.INFO)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("huggingface_hub").setLevel(logging.ERROR)
+    logging.getLogger("transformers").setLevel(logging.WARNING)
+    logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
+    logging.getLogger("datasets").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
     
     logger = logging.getLogger("gen-transform")
     logger.setLevel(level)

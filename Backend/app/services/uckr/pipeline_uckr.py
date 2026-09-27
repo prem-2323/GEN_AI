@@ -64,6 +64,8 @@ def build_uckr(
     full_source_text = normalized_text or " ".join(page_of.values())
     raw_facts = merge_and_repair_facts(raw_facts_raw, full_source_text)
 
+    from ..transformation.templates import _clean_text_noise
+
     facts, citations = [], []
     for i, f in enumerate(raw_facts[:60]):
         if isinstance(f, dict):
@@ -80,7 +82,10 @@ def build_uckr(
             conf = 0.9
             fact_type = "Proposition"
 
-        if not value:
+        value = _clean_text_noise(value)
+        quote = _clean_text_noise(quote)
+
+        if not value or len(value) < 8 or value.lower().startswith("smart india hackathon"):
             continue
 
         if page_no == 0:

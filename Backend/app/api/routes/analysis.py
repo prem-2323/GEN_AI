@@ -18,6 +18,8 @@ class AnalyzeRequest(BaseModel):
     forceRefresh: bool = False
 
 
+import asyncio
+
 @router.post("", response_model=AnalysisRecord)
 @router.post("/analyze", response_model=AnalysisRecord, include_in_schema=False)
 async def start_analysis(
@@ -31,7 +33,8 @@ async def start_analysis(
     images = payload.extractedImages if payload else None
     refresh = payload.forceRefresh if payload else False
 
-    return analyze_source(
+    return await asyncio.to_thread(
+        analyze_source,
         project_id=project_id,
         source_id=source_id,
         user_id=user["uid"],
@@ -39,6 +42,7 @@ async def start_analysis(
         extracted_images=images,
         force_refresh=refresh,
     )
+
 
 
 @router.get("", response_model=AnalysisRecord)
@@ -72,7 +76,8 @@ async def retry_source_analysis(
     text = payload.extractedText if payload else None
     images = payload.extractedImages if payload else None
 
-    return analyze_source(
+    return await asyncio.to_thread(
+        analyze_source,
         project_id=project_id,
         source_id=source_id,
         user_id=user["uid"],

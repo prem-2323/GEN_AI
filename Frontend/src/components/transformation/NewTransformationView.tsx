@@ -587,7 +587,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                       <span className="text-[11px] text-slate-400">Ready for analysis</span>
                     )}
                     {!isAnalyzing && analysis && (
-                      <span className="text-[11px] text-emerald-300">✓ Analyzed: {analysis.detectedTopic.slice(0, 40)}</span>
+                      <span className="text-[11px] text-emerald-300">✓ Analyzed: {(analysis.detectedTopic || 'Topic identified').slice(0, 40)}</span>
                     )}
                   </div>
 
@@ -920,13 +920,13 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
             <div className="space-y-4 text-xs">
               <div>
                 <span className="font-semibold text-slate-400 uppercase tracking-wider block mb-1">Detected Topic</span>
-                <p className="text-sm font-bold text-purple-300">{analysis.detectedTopic}</p>
+                <p className="text-sm font-bold text-purple-300">{analysis.detectedTopic || 'Topic identified'}</p>
               </div>
 
               <div>
                 <span className="font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">Key Identified Entities</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {analysis.keyEntities.map((entity, i) => (
+                  {(analysis.keyEntities || []).map((entity, i) => (
                     <span key={i} className="px-2.5 py-1 rounded bg-slate-800 text-slate-200 border border-slate-700">
                       {entity}
                     </span>
@@ -937,7 +937,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               <div>
                 <span className="font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">Key Extracted Facts & Metrics</span>
                 <ul className="space-y-1.5 list-disc pl-4 text-slate-300">
-                  {analysis.importantFacts.map((fact, i) => (
+                  {(analysis.importantFacts || []).map((fact, i) => (
                     <li key={i}>{fact}</li>
                   ))}
                 </ul>
@@ -946,11 +946,11 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
                   <span className="text-slate-400 font-semibold block mb-1">Audience Signals</span>
-                  <p className="text-slate-200">{analysis.audienceSignals.join(', ')}</p>
+                  <p className="text-slate-200">{(analysis.audienceSignals || []).join(', ') || 'General Audience'}</p>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
                   <span className="text-slate-400 font-semibold block mb-1">Communication Objective</span>
-                  <p className="text-slate-200">{analysis.communicationObjective}</p>
+                  <p className="text-slate-200">{analysis.communicationObjective || 'Inform stakeholders'}</p>
                 </div>
               </div>
             </div>

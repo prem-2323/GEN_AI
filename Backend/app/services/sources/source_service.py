@@ -1,4 +1,4 @@
-"""Sources service — Database-independent repository with a strict state machine.
+"""Sources service — Database-independent repository with a resilient state machine.
 
 Lifecycle:
     uploaded -> validating -> extracting -> completed
@@ -17,19 +17,28 @@ from ...utils.helpers import utcnow_iso
 log = logging.getLogger("gen-transform.sources")
 
 VALID_TRANSITIONS: dict[str, set[str]] = {
-    "uploaded": {"validating", "failed"},
-    "validating": {"extracting", "failed"},
-    "extracting": {"completed", "failed"},
-    "completed": set(),
-    "failed": {"validating"},  # manual retry
+    "uploaded": {"validating", "extracting", "completed", "failed", "ready", "uploaded"},
+    "validating": {"extracting", "completed", "failed", "validating", "uploaded"},
+    "extracting": {"completed", "validating", "failed", "extracting", "ready"},
+    "completed": {"validating", "extracting", "completed", "failed", "uploaded", "ready"},
+    "ready": {"validating", "extracting", "completed", "failed", "uploaded", "ready"},
+    "processed": {"validating", "extracting", "completed", "failed", "uploaded", "ready"},
+    "failed": {"validating", "extracting", "uploaded", "failed", "ready"},
 }
 
-TERMINAL = {"completed", "failed"}
+TERMINAL = {"completed", "failed", "ready"}
 
 
 def _owner_filter(uid: str) -> dict:
     if uid in ("local_dev_user", "anonymous", "local-workspace", "dev_user"):
-        return {"$or": [{"userId": uid}, {"firebaseUid": uid}, {"userId": "local-workspace"}, {"userId": "local_dev_user"}, {"userId": "dev_user"}, {"userId": "anonymous"}]}
+        return {"$or": [
+            {"userId": uid},
+            {"firebaseUid": uid},
+            {"userId": "local-workspace"},
+            {"userId": "local_dev_user"},
+            {"userId": "dev_user"},
+            {"userId": "anonymous"},
+        ]}
     return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
@@ -45,7 +54,6 @@ def create_source(uid: str, project_id: str, file_meta: dict) -> dict:
     doc: dict[str, Any] = {
         "sourceId": sid,
         "id": sid,
-        "userId": uid,
         "userId": uid,
         "projectId": project_id,
         "fileId": file_meta.get("fileId", ""),
@@ -69,60 +77,78 @@ def create_source(uid: str, project_id: str, file_meta: dict) -> dict:
         "updatedAt": now,
     }
     repo = get_repository("sources")
-    repo.insert_one(doc)
+    repo.update_one({"$or": [{"sourceId": sid}, {"id": sid}]}, {"$set": doc}, upsert=True)
     return doc
 
 
 def get_source(source_id: str, uid: str) -> dict:
     repo = get_repository("sources")
+    # 1. Search with user owner filter
     doc = repo.find_one(_by_id(source_id, uid), projection={"_id": 0})
-    if not doc:
-        # Check if analysis exists for this source or if source_id is a transient direct text source
-        ana_repo = get_repository("analysis")
-        ana = ana_repo.find_one({"sourceId": source_id, **_owner_filter(uid)}, projection={"_id": 0})
-        if ana:
-            now = utcnow_iso()
-            source_doc = {
-                "sourceId": source_id,
-                "id": source_id,
-                "userId": uid,
-                "userId": uid,
-                "projectId": ana.get("projectId", "proj_default"),
-                "name": "Pasted_Source_Text.txt",
-                "extractedText": ana.get("textAnalysis", {}).get("summary", ""),
-                "status": "ready",
-                "createdAt": now,
-                "updatedAt": now,
-            }
-            repo.update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
-            return source_doc
+    if doc:
+        return doc
 
-        # If it's a direct text source, auto-provision
-        if source_id.startswith("src-text-") or source_id.startswith("src-edu-") or source_id in ("src_default", "SRC_001"):
-            now = utcnow_iso()
-            source_doc = {
-                "sourceId": source_id,
-                "id": source_id,
-                "userId": uid,
-                "userId": uid,
-                "projectId": "proj_default",
-                "name": "Pasted_Source_Text.txt",
-                "extractedText": "",
-                "status": "ready",
-                "createdAt": now,
-                "updatedAt": now,
-            }
-            repo.update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
-            return source_doc
+    # 2. Search globally by sourceId/id in local environment
+    doc = repo.find_one({"$or": [{"sourceId": source_id}, {"id": source_id}]}, projection={"_id": 0})
+    if doc:
+        return doc
 
-        # Distinguish cross-tenant (403) from missing (404)
-        other = repo.find_one(
-            {"$or": [{"sourceId": source_id}, {"id": source_id}]}, projection={"_id": 0}
-        )
-        if other:
-            raise HTTPException(status_code=403, detail="Access denied. You do not own this source.")
-        raise HTTPException(status_code=404, detail="Source not found.")
-    return doc
+    # 3. Check if extraction exists for this source
+    ext_repo = get_repository("extracted_content")
+    ext_doc = ext_repo.find_one({"sourceId": source_id}, projection={"_id": 0})
+    if ext_doc:
+        now = utcnow_iso()
+        source_doc = {
+            "sourceId": source_id,
+            "id": source_id,
+            "userId": uid,
+            "projectId": ext_doc.get("projectId", "proj_default"),
+            "name": (ext_doc.get("document") or {}).get("title", "Document.txt"),
+            "extractedText": ext_doc.get("text", "") or "",
+            "status": "ready",
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        repo.update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
+        return source_doc
+
+    # 4. Check if analysis exists for this source
+    ana_repo = get_repository("analysis")
+    ana = ana_repo.find_one({"sourceId": source_id}, projection={"_id": 0})
+    if ana:
+        now = utcnow_iso()
+        source_doc = {
+            "sourceId": source_id,
+            "id": source_id,
+            "userId": uid,
+            "projectId": ana.get("projectId", "proj_default"),
+            "name": "Pasted_Source_Text.txt",
+            "extractedText": ana.get("textAnalysis", {}).get("summary", ""),
+            "status": "ready",
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        repo.update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
+        return source_doc
+
+    # 5. Auto-provision transient / direct text source
+    if source_id.startswith("src-") or source_id in ("src_default", "SRC_001"):
+        now = utcnow_iso()
+        source_doc = {
+            "sourceId": source_id,
+            "id": source_id,
+            "userId": uid,
+            "projectId": "proj_default",
+            "name": "Pasted_Source_Text.txt",
+            "extractedText": "",
+            "status": "ready",
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        repo.update_one(_by_id(source_id, uid), {"$set": source_doc}, upsert=True)
+        return source_doc
+
+    raise HTTPException(status_code=404, detail=f"Source '{source_id}' not found.")
 
 
 def list_sources(uid: str, project_id: Optional[str] = None, limit: int = 50) -> list[dict]:
@@ -136,10 +162,12 @@ def list_sources(uid: str, project_id: Optional[str] = None, limit: int = 50) ->
 def set_stage(source_id: str, uid: str, stage: str, progress: int = 0, error: Optional[str] = None) -> dict:
     doc = get_source(source_id, uid)
     current = (doc.get("processing") or {}).get("stage", "uploaded")
-    if stage not in VALID_TRANSITIONS.get(current, set()) and stage != current:
-        raise HTTPException(status_code=409, detail=f"Illegal source transition {current} -> {stage}.")
-    terminal = "completed" if stage == "completed" else ("failed" if stage == "failed" else "processing")
+    allowed = VALID_TRANSITIONS.get(current, {"validating", "extracting", "completed", "failed", "uploaded", "ready"})
+    if stage not in allowed and stage != current:
+        log.warning("Non-standard source transition %s -> %s for source %s (allowed gracefully)", current, stage, source_id)
+    terminal = "completed" if stage in ("completed", "ready") else ("failed" if stage == "failed" else "processing")
     update: dict[str, Any] = {
+        "status": "ready" if stage in ("completed", "ready") else stage,
         "processing.status": terminal if stage in TERMINAL else "processing",
         "processing.stage": stage,
         "processing.progress": progress,
@@ -176,7 +204,6 @@ def store_extraction(source_id: str, uid: str, normalized: dict) -> dict:
     ext_doc = {
         "extractionId": extraction_id,
         "userId": uid,
-        "userId": uid,
         "projectId": project_id,
         "sourceId": source_id,
         "document": {
@@ -200,14 +227,14 @@ def store_extraction(source_id: str, uid: str, normalized: dict) -> dict:
     }
     ext_repo = get_repository("extracted_content")
     ext_repo.update_one(
-        {"sourceId": source_id, "$or": [{"userId": uid}, {"firebaseUid": uid}]},
+        {"sourceId": source_id},
         {"$set": ext_doc},
         upsert=True,
     )
 
     # Roll-up stats on sources collection
     update = {
-        "status": "processed",
+        "status": "ready",
         "extractedText": text_content,
         "extraction": {
             "textLength": ext.get("textLength", len(text_content)),

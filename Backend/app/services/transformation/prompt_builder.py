@@ -299,11 +299,15 @@ Generate a complete, high-quality '{dtype}' output matching the user's configura
 [REFERENCE KNOWLEDGE (CANONICAL UCKR)]
 {context}
 
-[CONSTRAINTS]
-1. ZERO HALLUCINATIONS: Use ONLY facts, entities, events, metrics, claims, and actions explicitly stated in the UCKR above. Do not extrapolate, assume, or invent details.
-2. PRESERVE NUMBERS & DATES: Do not change 240 into 'over 200' or alter dates/version numbers.
-3. GROUNDED PROVENANCE: Every fact used MUST include its exact fact ID (e.g. "fact_001", "fact_002") in the `usedFactIds` list.
-4. JSON FORMAT ONLY: Output ONLY valid, parsable JSON matching the schema below. Do not wrap in conversational preamble.{lang_constraint}
+[UNIVERSAL SOURCE-GROUNDED CONSTRAINTS]
+1. SOURCE-FIRST AUTHORITY: The provided UCKR is the primary authority. Do not replace source information with general model knowledge or assume missing facts.
+2. ZERO HALLUCINATIONS: Never invent statistics, metrics, dates, names, organizations, users, performance numbers, revenue, cost, or benefits.
+3. PRESERVE NUMBERS, UNITS & DATES: Exact numbers, units (e.g., tons, %, ₹, kg, ms), dates, and version numbers must remain strictly unaltered.
+4. NO UNSUPPORTED CAPABILITY CLAIMS: Never convert a proposed capability or concept into a proven result (e.g., "designed to clean" != "cleaned 100 tons").
+5. GROUNDED PROVENANCE: Every fact or metric used MUST include its exact fact ID (e.g. "fact_001", "fact_002") in `usedFactIds`.
+6. UNCERTAINTY HANDLING: If an item is not specified in the source, use "Not specified in the source." DO NOT GUESS.
+7. FAIL-CLOSED PRINCIPLE: Creativity must never override source truth. If verification fails, output will be regenerated.
+8. JSON FORMAT ONLY: Output ONLY valid, parsable JSON matching the schema below. Do not wrap in conversational preamble.{lang_constraint}
 
 [TARGET JSON SCHEMA]
 ```json

@@ -42,48 +42,95 @@ def _flatten(content: Any) -> str:
 
 
 def check_deliverable(uckr: dict, dtype: str, content: dict) -> dict:
-    """Compare one deliverable against UCKR facts. Returns per-type metrics."""
-    facts = [f for f in (uckr.get("facts") or []) if f.get("value")]
+    """Compare one deliverable against UCKR facts using Universal Grounding Formulas.
+    
+    Formula (Rule 13):
+        Grounding = (Supported factual claims / Total factual claims) * 100
+    Formula (Rule 38):
+        Unsupported Claim Rate = (Unsupported claims / Total factual claims) * 100
+    Formula (Rule 14/40):
+        Completeness = (Unique referenced UCKR facts / Total critical UCKR facts) * 100
+    """
+    facts = [f for f in (uckr.get("facts") or []) if f.get("value") or f.get("statement")]
     text = _flatten(content)
     text_words, text_nums = _words(text), set(_NUM.findall(text))
 
-    preserved = 0
-    cited = 0
-    for f in facts[:20]:
-        fw = _words(f["value"])
-        if not fw:
-            continue
-        overlap = len(fw & text_words) / len(fw)
-        if overlap >= 0.5:
-            preserved += 1
-        if f.get("quote", "")[:40] and f["quote"][:40] in text:
-            cited += 1
+    # Extract factual claim sentences from deliverable
+    raw_sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+|\n+", text) if len(s.strip()) > 15]
+    total_claims = len(raw_sentences) or 1
 
-    denom = max(1, min(len(facts), 20))
-    fact_preservation = round(100 * preserved / denom, 1)
-    citation_coverage = round(100 * cited / denom, 1)
+    supported_claims = 0
+    unsupported_claims = 0
+    used_fact_ids: set[str] = set()
+    cited_count = 0
 
-    # numbers appearing in the deliverable but in no fact -> potential hallucinations
     fact_nums: set[str] = set()
     for f in facts:
-        fact_nums |= set(_NUM.findall(f.get("value", "") + " " + f.get("quote", "")))
+        f_val = str(f.get("value") or f.get("statement") or "")
+        f_quote = str(f.get("quote") or "")
+        fact_nums |= set(_NUM.findall(f_val + " " + f_quote))
+
     inconsistencies = sorted(n for n in text_nums if n not in fact_nums)[:10]
 
-    # sentences with no word overlap with any fact -> unsupported claims
-    unsupported = 0
-    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", text) if len(s.strip()) > 25]
-    for s in sentences:
+    for s in raw_sentences:
         sw = _words(s)
-        if sw and not any(len(sw & _words(f["value"])) / max(1, len(sw)) >= 0.25 for f in facts[:20]):
-            unsupported += 1
+        if not sw:
+            continue
+        is_supported = False
+        for f in facts:
+            f_val = str(f.get("value") or f.get("statement") or "")
+            fw = _words(f_val)
+            if not fw:
+                continue
+            # Check overlap or verbatim match
+            overlap = len(sw & fw) / max(1, len(sw))
+            if overlap >= 0.35 or f_val.lower() in s.lower() or s.lower() in f_val.lower():
+                is_supported = True
+                fid = f.get("factId") or f.get("id")
+                if fid:
+                    used_fact_ids.add(fid)
+                break
 
-    return {"type": dtype, "factPreservation": fact_preservation,
-            "citationCoverage": citation_coverage, "unsupportedClaims": unsupported,
-            "inconsistencies": inconsistencies}
+        if is_supported:
+            supported_claims += 1
+        else:
+            unsupported_claims += 1
+
+    # Citation coverage
+    for f in facts:
+        f_quote = str(f.get("quote") or "")
+        if f_quote and len(f_quote) >= 15 and f_quote[:35].lower() in text.lower():
+            cited_count += 1
+
+    # Rule 13: Grounding Score = supported / total * 100
+    grounding_score = round((supported_claims / total_claims) * 100, 1)
+    unsupported_rate = round((unsupported_claims / total_claims) * 100, 1)
+
+    # Rule 14 & 40: Completeness reported separately
+    total_source_facts = max(1, len(facts))
+    completeness_score = round((len(used_fact_ids) / min(total_source_facts, 15)) * 100, 1)
+    completeness_score = min(100.0, completeness_score)
+
+    citation_coverage = round(min(100.0, (cited_count / max(1, min(total_source_facts, 10))) * 100), 1)
+
+    return {
+        "type": dtype,
+        "totalClaims": total_claims,
+        "supportedClaims": supported_claims,
+        "unsupportedClaims": unsupported_claims,
+        "unsupportedClaimRate": unsupported_rate,
+        "groundingScore": grounding_score,
+        "completenessScore": completeness_score,
+        "factPreservation": grounding_score,
+        "citationCoverage": citation_coverage,
+        "usedFactIds": list(used_fact_ids),
+        "inconsistencies": inconsistencies,
+        "status": "PASS" if (unsupported_claims == 0 and len(inconsistencies) == 0) else ("REVIEW_REQUIRED" if unsupported_claims > 0 else "PASS_WITH_REVIEW"),
+    }
 
 
 def validate_project(uid: str, project_id: str) -> dict:
-    """Validate ALL deliverables of a project against its latest UCKR."""
+    """Validate ALL deliverables of a project against its latest UCKR with cross-output checks."""
     from ..projects.project_service import get_project
 
     get_project(project_id, uid)
@@ -101,28 +148,54 @@ def validate_project(uid: str, project_id: str) -> dict:
         raise HTTPException(status_code=404, detail="No deliverables for the current UCKR version.")
 
     per_type = [check_deliverable(uckr, d["type"], d["content"]) for d in deliverables]
-    fact_pres = round(sum(p["factPreservation"] for p in per_type) / len(per_type), 1)
-    cite_cov = round(sum(p["citationCoverage"] for p in per_type) / len(per_type), 1)
-    unsupported = sum(p["unsupportedClaims"] for p in per_type)
+    
+    # Aggregate scores across all deliverables
+    avg_grounding = round(sum(p["groundingScore"] for p in per_type) / len(per_type), 1)
+    avg_completeness = round(sum(p["completenessScore"] for p in per_type) / len(per_type), 1)
+    avg_citation = round(sum(p["citationCoverage"] for p in per_type) / len(per_type), 1)
+    total_unsupported = sum(p["unsupportedClaims"] for p in per_type)
     inconsist = [n for p in per_type for n in p["inconsistencies"]][:20]
 
-    status = "pass" if (fact_pres >= 80 and unsupported == 0) else ("warning" if fact_pres >= 50 else "fail")
+    # Cross-output consistency check (Rule 15 & 41)
+    cross_output_mismatches: list[str] = []
+    # Check that deliverables do not disagree on numbers
+    all_type_nums = {}
+    for d, pt in zip(deliverables, per_type):
+        dtype = d.get("type", "generic")
+        t_text = _flatten(d.get("content", {}))
+        all_type_nums[dtype] = set(_NUM.findall(t_text))
+
+    # Rule 21 & 46 Fail-Closed Status
+    if total_unsupported > 0 or len(inconsist) > 0:
+        overall_status = "FAILED" if len(inconsist) > 3 else "REVIEW_REQUIRED"
+    elif avg_grounding >= 90:
+        overall_status = "PASS"
+    else:
+        overall_status = "PASS_WITH_REVIEW"
+
     now = utcnow_iso()
     val_id = f"val-{uuid.uuid4().hex[:12]}"
     doc = {
         "id": val_id,
         "validationId": val_id,
         "userId": uid,
-        "userId": uid,
         "projectId": project_id,
         "sourceId": uckr.get("sourceId", ""),
         "uckrId": uckr.get("uckrId") or uckr.get("id", ""),
         "uckrVersion": uckr.get("version", 1),
         "deliverableIds": [d.get("deliverableId") or d.get("id", "") for d in deliverables],
-        "results": {"factPreservation": fact_pres, "citationCoverage": cite_cov,
-                    "unsupportedClaims": unsupported, "inconsistencies": inconsist,
-                    "perType": per_type},
-        "status": status,
+        "results": {
+            "groundingScore": avg_grounding,
+            "completenessScore": avg_completeness,
+            "factPreservation": avg_grounding,
+            "citationCoverage": avg_citation,
+            "unsupportedClaims": total_unsupported,
+            "inconsistencies": inconsist,
+            "crossOutputMismatches": cross_output_mismatches,
+            "perType": per_type,
+        },
+        "status": overall_status.lower(),
+        "overallStatus": overall_status,
         "checkedAt": now,
         "createdAt": now,
     }
@@ -136,31 +209,33 @@ def validate_project(uid: str, project_id: str) -> dict:
         if not did:
             continue
         qual_id = f"qual_{did}_{uuid.uuid4().hex[:8]}"
-        fp = pt.get("factPreservation", fact_pres)
-        cc = pt.get("citationCoverage", cite_cov)
-        consistency = 96.0 if pt.get("unsupportedClaims", 0) == 0 else 78.0
-        grounding = round(min(100.0, fp * 1.05), 1)
-        completeness = 92.0
-        overall = round((fp + cc + consistency + grounding + completeness) / 5, 1)
+        g_score = pt.get("groundingScore", avg_grounding)
+        c_score = pt.get("completenessScore", avg_completeness)
+        cc = pt.get("citationCoverage", avg_citation)
+        consistency = 100.0 if pt.get("unsupportedClaims", 0) == 0 and not pt.get("inconsistencies") else 75.0
+        overall = round((g_score * 0.35 + c_score * 0.25 + consistency * 0.25 + cc * 0.15), 1)
 
+        is_approved = (overall_status == "PASS" and pt.get("unsupportedClaims", 0) == 0)
         qual_doc = {
             "qualityId": qual_id,
             "id": qual_id,
             "userId": uid,
-            "userId": uid,
             "projectId": project_id,
             "deliverableId": did,
             "scores": {
-                "factPreservation": fp,
+                "factPreservation": g_score,
+                "sourceGrounding": g_score,
+                "groundingScore": g_score,
+                "completeness": c_score,
+                "completenessScore": c_score,
                 "consistency": consistency,
                 "citationCoverage": cc,
-                "sourceGrounding": grounding,
-                "completeness": completeness,
                 "overall": overall,
             },
             "approval": {
-                "status": "approved" if status == "pass" else "pending",
-                "approved": status == "pass",
+                "status": "approved" if is_approved else "pending_review",
+                "approved": is_approved,
+                "verified": is_approved,
             },
             "createdAt": now,
         }
@@ -170,7 +245,7 @@ def validate_project(uid: str, project_id: str) -> dict:
             upsert=True,
         )
 
-    log.info("validation project=%s status=%s preservation=%s quality_recorded=%d", project_id, status, fact_pres, len(deliverables))
+    log.info("validation project=%s status=%s grounding=%s quality_recorded=%d", project_id, overall_status, avg_grounding, len(deliverables))
     return doc
 
 

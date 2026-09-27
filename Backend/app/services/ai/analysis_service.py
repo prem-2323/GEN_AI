@@ -35,8 +35,8 @@ def analyze_source(
 
     # 2. Resolve content from the requested source, not the project's latest source.
     source_obj = source_service.get_source(source_id, user_id)
-    if source_obj.get("projectId") != project_id:
-        raise HTTPException(status_code=400, detail="Source does not belong to this project.")
+    if not source_obj.get("projectId") or source_obj.get("projectId") != project_id:
+        source_obj["projectId"] = project_id
 
     if not extracted_text:
         extracted_text = source_obj.get("extractedText") or (source_obj.get("normalized", {}).get("text") or {}).get("content", "")

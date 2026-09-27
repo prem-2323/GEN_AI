@@ -784,12 +784,12 @@ export function _getUiLabels(language?: string): UiLabels {
       audience: 'Audience',
       tone: 'Tone',
       slide1Title: 'Executive Overview',
-      slide2Title: 'Core Capabilities & Student Impact',
-      slide3Title: 'Teacher Augmentation & Accessibility',
-      slide4Title: 'Responsible AI & Human Competencies',
+      slide2Title: 'Core Capabilities & System Features',
+      slide3Title: 'Technical Architecture & Workflow',
+      slide4Title: 'Impact, Viability & Recommendations',
       notesWelcome: 'Welcome to this briefing.',
       notesAnalysis: 'Detailed review of core capabilities.',
-      notesEnablement: 'Analyzing practitioner augmentation and accessibility advantages.',
+      notesEnablement: 'Analyzing operational capabilities and system advantages.',
       notesGovernance: 'Key governance mandates and operational considerations.',
       notesConclusions: 'Operational review and conclusions.',
       actionItem: 'Action item:',
@@ -797,7 +797,7 @@ export function _getUiLabels(language?: string): UiLabels {
       maintain: 'Maintain:',
       monitor: 'Monitor:',
       hashtags: ['#ArtificialIntelligence', '#Leadership', '#Innovation', '#Strategy'],
-      complianceRefs: ['Institutional Academic Governance Standards', 'Responsible AI in Education Framework'],
+      complianceRefs: ['Automated Content Governance Standard', 'Source Grounding & System Architecture Protocol'],
       claimsMapped: 'Atomic Claims Mapped',
       claimsGrounding: 'Claim Grounding',
       completeCoverage: 'Complete source coverage',
@@ -1456,8 +1456,8 @@ export async function generateDeliverables(
           return mapped;
         }
       }
-    } catch {
-      // fallback to client-side deterministic generator
+    } catch (err) {
+      console.warn('[Transformation Fallback]: Backend LLM transformation unavailable, falling back to structured UCKR claim synthesis:', err);
     }
   }
 

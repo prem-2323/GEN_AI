@@ -30,6 +30,15 @@ log = logging.getLogger("gen-transform.uckr_builder")
 
 
 def _owner_filter(uid: str) -> dict:
+    if uid in ("local_dev_user", "anonymous", "local-workspace", "dev_user"):
+        return {"$or": [
+            {"userId": uid},
+            {"firebaseUid": uid},
+            {"userId": "local-workspace"},
+            {"userId": "local_dev_user"},
+            {"userId": "dev_user"},
+            {"userId": "anonymous"},
+        ]}
     return {"$or": [{"userId": uid}, {"firebaseUid": uid}]}
 
 
@@ -286,12 +295,15 @@ def get_latest_uckr_record(
     if doc:
         return doc
 
-    # Try auto-build if source exists
-    src_repo = get_repository("sources")
-    src_filt: dict[str, Any] = {"projectId": project_id, **_owner_filter(uid)}
     if source_id:
-        src_filt["$or"] = [{"sourceId": source_id}, {"id": source_id}]
-    src = src_repo.find_one(src_filt, projection={"_id": 0})
+        try:
+            return build_and_save_uckr(uid, project_id, source_id)
+        except Exception as exc:
+            log.warning("Auto-building UCKR for source %s failed: %s", source_id, exc)
+
+    # Try auto-build if any source exists for project
+    src_repo = get_repository("sources")
+    src = src_repo.find_one({"projectId": project_id, **_owner_filter(uid)}, projection={"_id": 0})
     if src:
         sid = src.get("sourceId") or src.get("id") or "SRC_001"
         return build_and_save_uckr(uid, project_id, sid)
