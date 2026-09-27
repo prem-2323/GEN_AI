@@ -43,7 +43,7 @@ export interface AIAnalysisVisualEvidence {
 }
 
 export interface AIAnalysis {
-  provider?: 'ollama' | 'gemini' | 'deterministic' | 'hybrid';
+  provider?: 'ollama' | 'deterministic' | 'hybrid';
   model?: string;
   visionModel?: string;
   detectedTopic: string;

@@ -47,7 +47,7 @@ export const AgentsView: React.FC = () => {
         <div className="p-12 rounded-2xl border border-dashed border-slate-800 text-center space-y-3 bg-slate-900/30">
           <Bot className="w-8 h-8 text-slate-600 mx-auto" />
           <h3 className="text-base font-bold text-white">No AI agents configured</h3>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">Connect your agent backend to see live extraction, synthesis, and verification agents here. Generation uses the Gemini API directly.</p>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">Connect your agent backend to see live extraction, synthesis, and verification agents here.</p>
         </div>
       ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -79,7 +79,7 @@ export const AgentsView: React.FC = () => {
               <div className="mt-4 pt-3 border-t border-slate-800/80 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-slate-400">
                   <span>Model Foundation:</span>
-                  <span className="font-mono text-slate-200 font-semibold">{agent.model || 'Gemini 2.5 Flash'}</span>
+                  <span className="font-mono text-slate-200 font-semibold">{agent.model || 'Qwen 2.5 / Gemma'}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-400">
                   <span>Tasks Executed:</span>
@@ -136,7 +136,7 @@ export const AgentsView: React.FC = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
                   <span className="text-slate-400 font-semibold block mb-0.5">Underlying Engine</span>
-                  <span className="text-purple-300 font-mono font-bold">{selectedAgent.model || 'Gemini 2.5 Flash'}</span>
+                  <span className="text-purple-300 font-mono font-bold">{selectedAgent.model || 'Qwen 2.5 / Gemma'}</span>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
                   <span className="text-slate-400 font-semibold block mb-0.5">Factual Verification</span>

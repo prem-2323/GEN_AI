@@ -29,6 +29,8 @@ class VectorStoreRepository(VectorStoreInterface):
         return self.store.add_vectors(ids, vectors, metadata)
 
     def add_records(self, records: List[VectorRecord]) -> bool:
+        if not records:
+            return True
         if hasattr(self.store, "add_records"):
             return self.store.add_records(records)
         # Fallback to add_vectors for interface compatibility
@@ -36,8 +38,15 @@ class VectorStoreRepository(VectorStoreInterface):
         vectors = [r.vector for r in records]
         metadata = []
         for r in records:
-            m = r.metadata.model_dump()
-            m["text"] = r.text
+            if hasattr(r.metadata, "model_dump"):
+                m = r.metadata.model_dump()
+            elif hasattr(r.metadata, "dict"):
+                m = r.metadata.dict()
+            elif isinstance(r.metadata, dict):
+                m = dict(r.metadata)
+            else:
+                m = {}
+            m["text"] = getattr(r, "text", "")
             metadata.append(m)
         return self.store.add_vectors(ids, vectors, metadata)
 
@@ -47,7 +56,12 @@ class VectorStoreRepository(VectorStoreInterface):
         top_k: int = 5,
         filter_dict: Optional[Dict[str, Any]] = None,
     ) -> List[SearchResult]:
-        return self.store.similarity_search(query_vector, top_k=top_k, filter_dict=filter_dict)
+        if hasattr(self.store, "similarity_search"):
+            try:
+                return self.store.similarity_search(query_vector, top_k=top_k, filter_dict=filter_dict)
+            except TypeError:
+                return self.store.similarity_search(query_vector, top_k=top_k)
+        return []
 
     def delete_vectors(self, ids: List[str]) -> bool:
         if hasattr(self.store, "delete_vectors"):
@@ -69,6 +83,58 @@ class VectorStoreRepository(VectorStoreInterface):
             return self.store.get_document_vectors(document_id)
         return []
 
+    def clear(self) -> None:
+        """Clear all records from the vector store."""
+        if hasattr(self.store, "clear"):
+            self.store.clear()
+
+    def get_status(self) -> Dict[str, Any]:
+        """Return status and diagnostic info from vector store."""
+        if hasattr(self.store, "get_status"):
+            return self.store.get_status()
+        return {
+            "backend": getattr(self.store, "backend", "unknown"),
+            "total_vectors": self.total_vectors,
+            "dimension": self.dimension,
+        }
+
+    def force_save(self) -> None:
+        """Force manual persistence flush."""
+        if hasattr(self.store, "force_save"):
+            self.store.force_save()
+
+    @property
+    def total_vectors(self) -> int:
+        """Total vectors stored."""
+        if hasattr(self.store, "total_vectors"):
+            return self.store.total_vectors
+        if hasattr(self.store, "_records"):
+            return len(self.store._records)
+        return 0
+
+    @property
+    def dimension(self) -> int:
+        """Vector dimensionality."""
+        if hasattr(self.store, "dimension"):
+            return self.store.dimension
+        return getattr(self.store, "_dimension", 384)
+
+    @property
+    def persistence_dir(self) -> Any:
+        """Persistence directory or path."""
+        return getattr(self.store, "persistence_dir", getattr(self.store, "_persist_dir", None))
+
+    @property
+    def is_persisted(self) -> bool:
+        """Check if vector store is persisted on disk."""
+        return getattr(self.store, "is_persisted", False)
+
+    def __getattr__(self, name: str) -> Any:
+        """Forward any other attributes to underlying store."""
+        if "store" in self.__dict__ and hasattr(self.store, name):
+            return getattr(self.store, name)
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+
 
 VectorStoreBoundaryRepository = VectorStoreRepository
 
@@ -86,7 +152,8 @@ def _create_vector_store() -> VectorStoreInterface:
     from ..core.config import get_settings
 
     settings = get_settings()
-    backend = getattr(settings, "vector_backend", "faiss").lower().strip()
+    backend_raw = getattr(settings, "vector_backend", "faiss")
+    backend = (backend_raw or "faiss").lower().strip()
 
     if backend == "faiss":
         try:
@@ -112,7 +179,7 @@ def _create_vector_store() -> VectorStoreInterface:
                 "Check FAISS installation and STORAGE_ROOT permissions."
             ) from exc
 
-    elif backend in ("memory", "mock"):
+    elif backend in ("memory", "mock", "in_memory", "in-memory", "deterministic"):
         from .vector_store import MemoryVectorStore
 
         log.warning(
@@ -140,7 +207,7 @@ def get_vector_store() -> VectorStoreInterface:
     return _GLOBAL_VECTOR_STORE
 
 
-def set_vector_store(store: VectorStoreInterface) -> None:
+def set_vector_store(store: Optional[VectorStoreInterface]) -> None:
     """Inject vector store instance for testing."""
     global _GLOBAL_VECTOR_STORE
     _GLOBAL_VECTOR_STORE = store

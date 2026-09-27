@@ -1,5 +1,0 @@
-CYBER SECURITY INCIDENT
-
-Date: 15 August 2026
-Target: Identity Gateway
-Resolution: Patch deployed.

@@ -4,7 +4,7 @@ All prompts force **strict JSON** output — the model must never return prose.
 Every returned item must carry a verbatim quote so DocLink can attach evidence.
 
 The prompt text is provider-agnostic: prompts are handed to whatever
-``DocLinkLLM`` implementation is configured (Ollama, Gemini, or a future
+``DocLinkLLM`` implementation is configured (Ollama or a future
 PyTorch model in Phase 9).
 """
 from __future__ import annotations

@@ -2,7 +2,7 @@
 
 Provides a clean interface connecting RAGService to PyTorch ModelService,
 allowing future PyTorch text/generation/reranker models to augment RAG generation
-without replacing the existing Ollama/Gemini/fallback execution paths.
+without replacing the existing Ollama/fallback execution paths.
 """
 from __future__ import annotations
 

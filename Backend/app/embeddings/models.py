@@ -107,7 +107,7 @@ class IndexingMetrics(BaseModel):
 class EmbeddingProvider:
     DETERMINISTIC = "deterministic"
     OLLAMA = "ollama"
-    GEMINI = "gemini"
+    SENTENCE_TRANSFORMERS = "sentence_transformers"
 
 
 __all__ = [

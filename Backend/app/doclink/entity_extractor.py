@@ -7,7 +7,7 @@ Pipeline position::
 Two cooperating strategies:
 
 * **LLM strategy** — a structured-JSON prompt routed through ``DocLinkLLM``
-  (Ollama / Gemini / any injected provider). Never a hard-coded provider call.
+  (Ollama / any injected provider). Never a hard-coded provider call.
 * **Deterministic strategy** — lexicon, gazetteer and pattern based recognition
   that always runs, so DocLink still produces entities when no model is
   available (offline, CI, deterministic test suites).

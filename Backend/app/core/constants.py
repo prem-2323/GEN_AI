@@ -72,6 +72,6 @@ SUPPORTED_EXPORT_FORMATS = [
 
 # AI / Model Defaults
 DEFAULT_TEXT_MODEL = "qwen3:4b"
+VISION_MODEL = "gemma3:4b"
 DEFAULT_VISION_MODEL = "gemma3:4b"
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
-DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"

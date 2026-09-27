@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import time
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from ..core.config import get_settings
 from .citations import CitationTracker
@@ -36,7 +36,7 @@ log = logging.getLogger("gen-transform.rag.service")
 
 
 class RAGGenerationEngine:
-    """Executes model generation using Ollama, Gemini, or grounded fallback engine."""
+    """Executes model generation using Ollama or grounded fallback engine."""
 
     def generate_answer(self, prompt: Dict[str, str], candidates: List[RetrievalResult]) -> Tuple[str, float]:
         t_start = time.time()
@@ -68,22 +68,6 @@ class RAGGenerationEngine:
             return resp["message"]["content"].strip()
         except Exception as exc:
             log.debug("Ollama RAG generation skipped (%s)", exc)
-            return None
-
-    def _call_gemini(self, prompt: Dict[str, str], settings: Any) -> Optional[str]:
-        if not getattr(settings, "gemini_api_key", None):
-            return None
-        try:
-            from google import genai
-            client = genai.Client(api_key=settings.gemini_api_key)
-            combined = f"{prompt['system']}\n\n{prompt['user']}"
-            resp = client.models.generate_content(
-                model=getattr(settings, "gemini_model", "gemini-2.5-flash"),
-                contents=combined,
-            )
-            return resp.text.strip() if resp and resp.text else None
-        except Exception as exc:
-            log.debug("Gemini RAG generation skipped (%s)", exc)
             return None
 
     def _generate_grounded_fallback(self, candidates: List[Any]) -> str:

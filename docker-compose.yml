@@ -7,7 +7,7 @@
 # Both are optional, GPU-heavy services.
 # - If you wish to use local Ollama LLMs, run Ollama natively on your host machine
 #   and set OLLAMA_BASE_URL=http://host.docker.internal:11434 in your root .env file.
-# - Otherwise, DocLink will automatically use Gemini or its built-in
+# - Otherwise, DocLink will automatically use its built-in
 #   deterministic fallback engine when Ollama is unavailable.
 # ==============================================================================
 

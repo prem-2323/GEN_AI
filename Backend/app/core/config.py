@@ -17,7 +17,6 @@ from .constants import (
     DEFAULT_TEXT_MODEL,
     DEFAULT_VISION_MODEL,
     DEFAULT_OLLAMA_URL,
-    DEFAULT_GEMINI_MODEL,
 )
 
 
@@ -44,8 +43,6 @@ class Settings(BaseSettings):
     gemma_model: str = DEFAULT_VISION_MODEL
     ai_fallback_enabled: bool = True
     deterministic_extraction_enabled: bool = True
-    gemini_api_key: str = ""
-    gemini_model: str = DEFAULT_GEMINI_MODEL
 
     # Neo4j Graph Database Configuration
     graph_backend: str = "neo4j"  # "neo4j" | "mock"

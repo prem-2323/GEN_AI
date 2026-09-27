@@ -254,29 +254,6 @@ class OllamaEmbeddingModel(EmbeddingModelInterface):
         return [self.embed_text(t) for t in texts]
 
 
-class GeminiEmbeddingModel(EmbeddingModelInterface):
-    """Deprecated Gemini embedding provider stub."""
-
-    def __init__(self, model_name: str = "text-embedding-004", dimension: int = 768) -> None:
-        self._model = model_name
-        self._dim = dimension
-        self._name = f"gemini:{model_name}"
-
-    @property
-    def dimension(self) -> int:
-        return self._dim
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    def embed_text(self, text: str) -> List[float]:
-        raise NotImplementedError("Gemini API has been removed. Use SentenceTransformerEmbeddingModel.")
-
-    def embed_batch(self, texts: List[str], batch_size: Optional[int] = None) -> List[List[float]]:
-        raise NotImplementedError("Gemini API has been removed. Use SentenceTransformerEmbeddingModel.")
-
-
 _DEFAULT_EMBEDDER: Optional[EmbeddingModelInterface] = None
 
 
@@ -314,9 +291,6 @@ def get_embedder(provider: Optional[str] = None) -> EmbeddingModelInterface:
     if p.startswith("ollama"):
         return OllamaEmbeddingModel()
 
-    if p.startswith("gemini"):
-        return GeminiEmbeddingModel()
-
     try:
         inst = SentenceTransformerEmbeddingModel()
         if provider is None:
@@ -337,7 +311,6 @@ __all__ = [
     "SentenceTransformerEmbeddingModel",
     "DeterministicEmbeddingModel",
     "OllamaEmbeddingModel",
-    "GeminiEmbeddingModel",
     "get_embedder",
     "set_default_embedder",
     "clear_embedding_cache",

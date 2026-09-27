@@ -100,7 +100,7 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
         setProgress(14);
         let liveAnalysis = initialAnalysis || null;
         if (!liveAnalysis) {
-          addLog('AI_EXTRACT', 'Running Gemini source analysis…', 'info');
+          addLog('AI_EXTRACT', 'Running source document analysis…', 'info');
           liveAnalysis = await analyzeSourceContent(source);
           if (cancelled) return;
           addLog('AI_COMPLETE', `Topic detected: ${liveAnalysis.detectedTopic.slice(0, 80)}`, 'success');
@@ -112,7 +112,7 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
         setActiveStepIndex(2);
         let liveUckr = initialUckr || null;
         if (!liveUckr && liveAnalysis) {
-          addLog('UCKR_BUILD', 'Building UCKR knowledge base with Gemini…', 'info');
+          addLog('UCKR_BUILD', 'Building UCKR knowledge base…', 'info');
           try {
             liveUckr = await buildUckrKnowledge(source, liveAnalysis);
             if (cancelled) return;
@@ -290,7 +290,7 @@ export const GenerationPipelineView: React.FC<GenerationPipelineViewProps> = ({
             </div>
             <div className="flex items-center gap-1.5 text-slate-400 font-mono text-[11px]">
               <Activity className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-              <span>{progress === 100 ? 'Complete — opening workspace' : 'Gemini synthesis in flight'}</span>
+              <span>{progress === 100 ? 'Complete — opening workspace' : 'AI synthesis in flight'}</span>
             </div>
           </div>
         </div>

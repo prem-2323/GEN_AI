@@ -32,7 +32,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onUpdateConfig,
   onShowToast
 }) => {
-  const [selectedModel, setSelectedModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState<'qwen-fast' | 'qwen-deep'>('qwen-fast');
   const [temperature, setTemperature] = useState(0.3);
   const [autoVerify, setAutoVerify] = useState(true);
   const [cacheExtractions, setCacheExtractions] = useState(true);
@@ -69,34 +69,34 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div
-            onClick={() => setSelectedModel('gemini-2.5-flash')}
+            onClick={() => setSelectedModel('qwen-fast')}
             className={`p-4 rounded-xl border cursor-pointer transition-all ${
-              selectedModel === 'gemini-2.5-flash'
+              selectedModel === 'qwen-fast'
                 ? 'bg-purple-950/40 border-purple-500 ring-1 ring-purple-500/40'
                 : 'bg-slate-900 border-slate-800 hover:border-slate-700'
             }`}
           >
             <div className="flex items-center justify-between mb-1">
-              <span className="font-bold text-white text-sm">Gemini 2.5 Flash</span>
+              <span className="font-bold text-white text-sm">Qwen 2.5 Fast</span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">
-                Fast (~1.2s)
+                Fast (~0.8s)
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed mt-1">
-              Optimized for high-speed multi-output transformation and responsive social generation.
+              Optimized for high-speed multi-output transformation and responsive deliverable generation.
             </p>
           </div>
 
           <div
-            onClick={() => setSelectedModel('gemini-2.5-pro')}
+            onClick={() => setSelectedModel('qwen-deep')}
             className={`p-4 rounded-xl border cursor-pointer transition-all ${
-              selectedModel === 'gemini-2.5-pro'
+              selectedModel === 'qwen-deep'
                 ? 'bg-purple-950/40 border-purple-500 ring-1 ring-purple-500/40'
                 : 'bg-slate-900 border-slate-800 hover:border-slate-700'
             }`}
           >
             <div className="flex items-center justify-between mb-1">
-              <span className="font-bold text-white text-sm">Gemini 2.5 Pro</span>
+              <span className="font-bold text-white text-sm">Qwen 3 Deep Analysis</span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
                 Deep Analysis
               </span>

@@ -533,7 +533,7 @@ export const NewTransformationView: React.FC<NewTransformationViewProps> = ({
                 <div className="p-6 text-center space-y-2">
                   <p className="text-sm font-semibold text-white">No source selected</p>
                   <p className="text-xs text-slate-400">Upload a file or paste text to begin.</p>
-                  {isAnalyzing && <p className="text-xs text-purple-300 animate-pulse">Analyzing with Gemini…</p>}
+                  {isAnalyzing && <p className="text-xs text-purple-300 animate-pulse">Analyzing source content…</p>}
                 </div>
               ) : (
               <div>

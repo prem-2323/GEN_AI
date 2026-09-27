@@ -37,7 +37,7 @@ _ENTITY_REGEX = re.compile(
 # Known technologies & domain terms matching (case-insensitive)
 _TECH_PATTERNS = [
     "pytorch", "cuda", "openai", "nvidia", "transformer", "hbm3e", "gpu", "gpt",
-    "gpt-4", "gemini", "gemma", "qwen", "neo4j", "python", "fastapi", "react",
+    "gpt-4", "gemma", "qwen", "neo4j", "python", "fastapi", "react",
     "docker", "kubernetes", "tensorflow", "scikit-learn", "langchain", "llama",
     "ollama", "redis", "mongodb", "postgresql", "cypher"
 ]

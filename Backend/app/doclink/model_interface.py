@@ -6,10 +6,9 @@
     DocLinkLLM  (abstract protocol — this module)
           |
           +--> OllamaDocLinkLLM   (local Qwen, private)
-          +--> GeminiDocLinkLLM   (remote, when a key exists)
           +--> NullDocLinkLLM     (offline / deterministic-only mode)
 
-Extractors never import ``ollama`` or ``google.genai`` directly. Swapping the
+Extractors never import ``ollama`` directly. Swapping the
 provider (or dropping in the Phase 9 PyTorch model layer) is a one-line change
 here or via ``configure_doclink_llm()``.
 """
@@ -122,37 +121,6 @@ class OllamaDocLinkLLM:
             return None
 
 
-class GeminiDocLinkLLM:
-    """Gemini provider (used only when an API key is configured)."""
-
-    def __init__(self, model: str = "", api_key: str = "", timeout: float = 45.0) -> None:
-        settings = get_settings()
-        self.model = model or settings.gemini_model
-        self.api_key = api_key or settings.gemini_api_key
-        self.timeout = timeout
-        self.name = f"gemini:{self.model}"
-
-    def is_available(self) -> bool:
-        return bool(self.api_key)
-
-    def generate_json(self, system: str, prompt: str) -> Optional[Dict[str, Any]]:
-        if not self.api_key:
-            return None
-        try:
-            from google import genai
-
-            client = genai.Client(api_key=self.api_key)
-            resp = client.models.generate_content(
-                model=self.model,
-                contents=f"{system}\n\n{prompt}",
-                config={"responseMimeType": "application/json"},
-            )
-            return _coerce_json(getattr(resp, "text", "") or "")
-        except Exception as exc:
-            log.info("DocLink gemini request failed (%s); falling back", str(exc)[:150])
-            return None
-
-
 def _probe_ollama() -> tuple[bool, List[str]]:
     """Cached availability probe (1.5s timeout, 60s TTL) so requests stay fast."""
     now = time.time()
@@ -184,7 +152,7 @@ def reset_doclink_llm() -> None:
 
 
 def get_doclink_llm(provider: Optional[str] = None, use_llm: bool = True) -> "DocLinkLLM":
-    """Resolve the active DocLink provider chain: Ollama -> Gemini -> deterministic."""
+    """Resolve the active DocLink provider chain: Ollama -> deterministic."""
     if _OVERRIDE is not None:
         return _OVERRIDE
     if not use_llm:
@@ -195,9 +163,6 @@ def get_doclink_llm(provider: Optional[str] = None, use_llm: bool = True) -> "Do
         return NullDocLinkLLM()
     if requested.startswith("ollama"):
         candidate: "DocLinkLLM" = OllamaDocLinkLLM()
-        return candidate if candidate.is_available() else NullDocLinkLLM()
-    if requested.startswith("gemini"):
-        candidate = GeminiDocLinkLLM()
         return candidate if candidate.is_available() else NullDocLinkLLM()
 
     ollama_ok, installed = _probe_ollama()
@@ -212,7 +177,6 @@ __all__ = [
     "DocLinkLLM",
     "NullDocLinkLLM",
     "OllamaDocLinkLLM",
-    "GeminiDocLinkLLM",
     "configure_doclink_llm",
     "reset_doclink_llm",
     "get_doclink_llm",

@@ -82,32 +82,6 @@ def _call_ollama(text: str, model_name: str, timeout: float = 180.0) -> Optional
         return None
 
 
-def _call_gemini(text: str) -> Optional[dict]:
-    settings = get_settings()
-    if not settings.gemini_api_key:
-        return None
-    try:
-        from google import genai
-        client = genai.Client(api_key=settings.gemini_api_key)
-        prompt = f"{QWEN_EXTRACTION_SYSTEM_PROMPT}\n\nDocument text to analyze:\n\n{text[:16000]}"
-        resp = client.models.generate_content(
-            model=settings.gemini_model,
-            contents=prompt,
-        )
-        content = resp.text or ""
-        cleaned = _clean_json_str(content)
-        parsed = json.loads(cleaned)
-        if isinstance(parsed, dict):
-            if parsed.get("facts"):
-                parsed["facts"] = merge_and_repair_facts(parsed["facts"], text)
-            if not parsed.get("timeline"):
-                parsed["timeline"] = _extract_timeline_deterministic(text)
-        return parsed
-    except Exception as exc:
-        log.info("Gemini fallback call skipped (%s)", exc)
-        return None
-
-
 def _deterministic_extractive_analysis(text: str) -> dict:
     """Deterministic, hallucination-free extraction from raw text with clean sentence boundary preservation."""
     paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
@@ -269,7 +243,7 @@ def analyze_text_with_qwen(
     max_retries: int = 2,
     preferred_model: Optional[str] = None,
 ) -> tuple[TextAnalysis, str]:
-    """Analyze text using Qwen via Ollama, falling back to Gemini and Deterministic Grounded Engine."""
+    """Analyze text using Qwen via Ollama, falling back to the Deterministic Grounded Engine."""
     settings = get_settings()
     model_to_use = preferred_model or settings.text_model or settings.qwen_model
     raw_dict: Optional[dict] = None
@@ -316,7 +290,7 @@ def generate_with_qwen(prompt: str, timeout: Optional[float] = None, num_predict
 
 
 def generate_qwen_json(prompt: str, schema: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """Generate structured JSON via Qwen or Gemini."""
+    """Generate structured JSON via Qwen."""
     raw = generate_with_qwen(prompt)
     try:
         cleaned = _clean_json_str(raw)

@@ -14,9 +14,8 @@ pillow>=10.0
 pytesseract>=0.3
 # Phase 3 OCR (optional, requires Tesseract binary on PATH)
 # https://github.com/UB-Mannheim/tesseract/wiki (Windows installer)
-# Phase 3 AI providers (both optional at runtime; fallback is extractive)
+# Phase 3 AI providers (optional at runtime; fallback is extractive)
 ollama>=0.4
-google-genai>=1.0
 # Phase 5 Graph Database
 neo4j>=5.0
 # Phase 3 Embedding Model

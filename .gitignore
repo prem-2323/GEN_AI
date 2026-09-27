@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches and test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+tmp_test_ckpt/
+.freebuff/
+*.tmp
+*.bak
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+
+# Environment Variables
+
+
+# Node / Frontend
+node_modules/
+Frontend/node_modules/
+dist/
+Frontend/dist/
+build/
+Frontend/build/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local service accounts / secrets
+serviceAccountKey.json
+serviceAccount*.json

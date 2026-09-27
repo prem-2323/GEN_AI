@@ -2,8 +2,7 @@
 
 Provider chain for TEXT (Qwen role):
     1. Ollama `qwen_model` (local Qwen) — preferred, keeps data private
-    2. Gemini (`gemini_model`) when a key is configured
-    3. Deterministic extractive fallback (no invented numbers; everything
+    2. Deterministic extractive fallback (no invented numbers; everything
        quoted or counted from the source text)
 
 Provider chain for IMAGES (Gemma role):
@@ -119,38 +118,7 @@ def _coerce_json(raw: str) -> Optional[dict]:
 
 
 # ------------------------------------------------------------------
-# Provider 2: Gemini
-# ------------------------------------------------------------------
-def _gemini_text_analysis(text: str) -> Optional[dict]:
-    key = get_settings().gemini_api_key
-    if not key:
-        return None
-    try:
-        from google import genai
-
-        client = genai.Client(api_key=key)
-        resp = client.models.generate_content(
-            model=get_settings().gemini_model,
-            contents=(
-                "Analyse the document and return STRICT JSON with keys summary, facts[{value,quote}], "
-                "entities[{name,role}], events[{title,timestamp}], metrics[{name,value,context}], "
-                "timeline[{description,duration_value,duration_unit,sequence,kind,source_text,start_relationship,end_relationship}], "
-                "relationships[{source,relation,target}], actions[{action,priority}]. "
-                "Extract explicitly stated total durations and ordered phases with exact source_text. "
-                "Do not invent dates, durations, or relationships. Ground every fact in a verbatim quote. "
-                "Do not invent statistics.\n\n"
-                f"TEXT:\n{text[:12000]}"
-            ),
-            config={"responseMimeType": "application/json"},
-        )
-        return json.loads(resp.text or "{}")
-    except Exception as exc:
-        log.info("gemini unavailable (%s); using extractive fallback", str(exc)[:150])
-        return None
-
-
-# ------------------------------------------------------------------
-# Provider 3: deterministic extractive fallback
+# Provider 2: deterministic extractive fallback
 # ------------------------------------------------------------------
 def _sentences(text: str) -> list[str]:
     parts = [s.strip() for s in _SENT_SPLIT.split((text or "").strip()) if s and len(s.strip()) > 20]
